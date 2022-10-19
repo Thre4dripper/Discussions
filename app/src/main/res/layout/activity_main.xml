@@ -19,7 +19,7 @@
         app:lottie_rawRes="@raw/discuss" />
 
     <FrameLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/wave_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@drawable/login_wave"
@@ -31,7 +31,7 @@
 
 
     <LinearLayout
-        android:id="@+id/linearLayout3"
+        android:id="@+id/login_fields_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -39,44 +39,46 @@
         android:paddingTop="16dp"
         android:paddingEnd="32dp"
         android:paddingBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
+        app:layout_constraintBottom_toTopOf="@+id/login_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/wave_layout">
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
+            android:id="@+id/username_til"
             style="@style/LoginFieldsStyle"
-            android:hint="Username">
+            android:hint="@string/username">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout2"
+            android:id="@+id/password_til"
             style="@style/LoginFieldsStyle"
             android:layout_marginTop="16dp"
-            android:hint="Password"
+            android:hint="@string/password"
             app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/remember_me_cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:buttonTint="@color/login_wave_color"
-            android:text="Remember me" />
+            android:text="@string/remember_me" />
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+        android:id="@+id/login_btn"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:clickable="true"
@@ -85,10 +87,10 @@
         app:cardBackgroundColor="@color/login_wave_color"
         app:cardCornerRadius="50dp"
         app:cardElevation="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
+        app:layout_constraintBottom_toTopOf="@+id/or_label"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+        app:layout_constraintTop_toBottomOf="@+id/login_fields_ll">
 
         <TextView
             android:layout_width="wrap_content"
@@ -98,58 +100,60 @@
             android:layout_marginTop="12dp"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="12dp"
-            android:text="Log In"
+            android:text="@string/log_in_label"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold" />
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/or_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Or"
+        android:text="@string/or_label"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/cardView2"
+        app:layout_constraintBottom_toTopOf="@+id/facebook_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
+        app:layout_constraintTop_toBottomOf="@+id/login_btn" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView2"
+        android:id="@+id/facebook_btn"
         style="@style/SocialLoginStyle"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/cardView3"
+        app:layout_constraintEnd_toStartOf="@+id/google_btn"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3">
+        app:layout_constraintTop_toBottomOf="@+id/or_label">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
+            android:contentDescription="@string/desc_facebook"
             android:src="@drawable/facebook_logo" />
 
     </androidx.cardview.widget.CardView>
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardView3"
+        android:id="@+id/google_btn"
         style="@style/SocialLoginStyle"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView2"
+        app:layout_constraintBottom_toBottomOf="@+id/facebook_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cardView2"
-        app:layout_constraintTop_toTopOf="@+id/cardView2">
+        app:layout_constraintStart_toEndOf="@+id/facebook_btn"
+        app:layout_constraintTop_toTopOf="@+id/facebook_btn">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
+            android:contentDescription="@string/desc_google"
             android:src="@drawable/google_logo" />
 
     </androidx.cardview.widget.CardView>

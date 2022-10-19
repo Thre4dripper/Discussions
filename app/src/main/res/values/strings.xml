@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Discussions</string>
+
+    //Login Activity
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="log_in_label">Log In</string>
+    <string name="or_label">Or</string>
+    <string name="desc_facebook">Log in with Facebook</string>
+    <string name="desc_google">Log in with Google</string>
+
 </resources>
