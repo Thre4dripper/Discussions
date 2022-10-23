@@ -1,5 +1,6 @@
 package com.example.discussions.ui.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.databinding.FragmentLoginBinding
 import com.example.discussions.databinding.LoadingDialogBinding
+import com.example.discussions.ui.home.HomeActivity
 import com.example.discussions.viewModels.LoginViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -49,6 +51,8 @@ class LoginFragment : Fragment() {
             //login success
             if (it == LoginViewModel.API_SUCCESS) {
                 loadingDialog.dismiss()
+                val intent = Intent(requireContext(), HomeActivity::class.java)
+                startActivity(intent)
                 Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
             }
             //login failed
