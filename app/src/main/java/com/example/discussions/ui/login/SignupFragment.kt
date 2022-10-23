@@ -20,9 +20,6 @@ class SignupFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
         binding.viewModel = viewModel
-        binding.signupBtn.setOnClickListener {
-            viewModel.login()
-        }
         return binding.root
     }
 
