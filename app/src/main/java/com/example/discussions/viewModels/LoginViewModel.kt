@@ -4,8 +4,12 @@ import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.repositories.LoginRepository
+import com.example.discussions.store.LoginStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
@@ -18,7 +22,17 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     var password: String = ""
     var rememberMe: Boolean = false
 
-    var isAuthenticated = MutableLiveData("")
+    var loginStore: LoginStore = LoginStore(application)
+    var isAuthenticated = MutableLiveData<String?>(null)
+
+    fun checkLoginStatus() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = loginStore.getJWTToken()
+            if (token != null) {
+                isAuthenticated.postValue(API_SUCCESS)
+            }
+        }
+    }
 
     fun login(
         context: Context,
@@ -29,6 +43,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         LoginRepository.loginUser(context, username, password, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 isAuthenticated.value = API_SUCCESS
+                //also logged session will be saved
+                if (rememberMe) {
+                    viewModelScope.launch(Dispatchers.IO) {
+                        loginStore.saveJWTToken(response)
+                    }
+                }
             }
 
             override fun onError(response: String) {

@@ -31,14 +31,23 @@ class LoginFragment : Fragment() {
     }
 
     private fun initLogin() {
+        progressDialog = ProgressDialog(requireContext())
+        progressDialog.setMessage("Logging in...")
+        progressDialog.setCancelable(false)
+        progressDialog.show()
+        viewModel.checkLoginStatus()
         viewModel.isAuthenticated.observe(viewLifecycleOwner) {
+            //initial case
+            if (it == null) return@observe
+
+            //login success
             if (it == LoginViewModel.API_SUCCESS) {
                 progressDialog.dismiss()
-                //navigate to home
                 Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
-            } else if(it.isNotEmpty()) {
+            }
+            //login failed
+            else {
                 progressDialog.dismiss()
-                //show error
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }
         }
