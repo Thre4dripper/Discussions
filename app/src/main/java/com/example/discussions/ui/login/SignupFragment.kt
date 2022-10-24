@@ -53,9 +53,32 @@ class SignupFragment : Fragment() {
             //login failed
             else {
                 loadingDialog.dismiss()
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                handleSignupErrors(it)
             }
         }
+    }
+
+    private fun handleSignupErrors(message: String) {
+        //showing toast for other errors and returning
+        if (message == LoginViewModel.API_ERROR) {
+            Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        //username already exists error
+        binding.usernameEt.error =
+            if (message == LoginViewModel.API_ERROR_USERNAME || message == LoginViewModel.API_ERROR_USERNAME_EMAIL) {
+                binding.usernameEt.requestFocus()
+                "Username already exists"
+            } else null
+
+        //email already exists error
+        binding.emailEt.error =
+            if (message == LoginViewModel.API_ERROR_EMAIL || message == LoginViewModel.API_ERROR_USERNAME_EMAIL) {
+                binding.emailEt.requestFocus()
+                "Email already exists"
+            } else null
+
     }
 
     private fun signup() {

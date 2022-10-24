@@ -55,12 +55,16 @@ class AuthRepository {
                 }
 
                 override fun onError(response: String) {
-                    if (response.contains("com.android.volley.TimeoutError")) {
+                    if (response.contains("already exists")) {
+                        callback.onError(response)
+                    } else if (response.contains("com.android.volley.ClientError")) {
+                        callback.onError("User Already Exists")
+                    } else if (response.contains("com.android.volley.TimeoutError")) {
                         callback.onError("Time Out")
                     } else if (response.contains("com.android.volley.NoConnectionError")) {
                         callback.onError("Please check your internet connection")
                     } else if (response.contains("com.android.volley.AuthFailureError")) {
-                        callback.onError("Username or Email already exists")
+                        callback.onError("Invalid Credentials")
                     } else if (response.contains("com.android.volley.NetworkError")) {
                         callback.onError("Network Error")
                     } else if (response.contains("com.android.volley.ServerError")) {
