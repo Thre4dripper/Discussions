@@ -6,7 +6,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.repositories.LoginRepository
+import com.example.discussions.repositories.AuthRepository
 import com.example.discussions.store.LoginStore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,7 +40,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
         password: String,
         rememberMe: Boolean,
     ) {
-        LoginRepository.loginUser(context, username, password, object : ResponseCallback {
+        AuthRepository.loginUser(context, username, password, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 isAuthenticated.value = API_SUCCESS
                 //also logged session will be saved

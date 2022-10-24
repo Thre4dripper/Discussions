@@ -39,6 +39,7 @@ class LoginFragment : Fragment() {
         val dialogBinding = LoadingDialogBinding.inflate(layoutInflater)
         loadingDialog = MaterialAlertDialogBuilder(requireContext()).setView(dialogBinding.root)
             .setCancelable(false).show()
+        loadingDialog.dismiss()
     }
 
     private fun initLogin() {
@@ -53,7 +54,7 @@ class LoginFragment : Fragment() {
                 loadingDialog.dismiss()
                 val intent = Intent(requireContext(), HomeActivity::class.java)
                 startActivity(intent)
-                Toast.makeText(requireContext(), "Login Successful", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Welcome", Toast.LENGTH_SHORT).show()
             }
             //login failed
             else {
@@ -68,6 +69,7 @@ class LoginFragment : Fragment() {
         val username = binding.usernameEt.text.toString()
         val password = binding.passwordEt.text.toString()
 
+        //checking for username field
         if (username.isEmpty()) {
             binding.usernameEt.error = "Username is required"
             binding.usernameEt.requestFocus()
@@ -77,6 +79,8 @@ class LoginFragment : Fragment() {
             //clearing error
             binding.usernameEt.error = null
         }
+
+        //checking for password field (error should be displayed on text input layout in password field)
         if (password.isEmpty()) {
             binding.passwordTil.error = "Password is required"
             binding.passwordEt.requestFocus()
@@ -86,7 +90,6 @@ class LoginFragment : Fragment() {
             //clearing error
             binding.passwordTil.error = null
         }
-
 
 
         viewModel.login(requireActivity(), username, password, binding.rememberMeCb.isChecked)
