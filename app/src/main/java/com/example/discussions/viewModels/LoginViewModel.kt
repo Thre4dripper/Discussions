@@ -24,6 +24,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
     var loginStore: LoginStore = LoginStore(application)
     var isAuthenticated = MutableLiveData<String?>(null)
+    var isRegistered = MutableLiveData<String?>(null)
 
     fun checkLoginStatus() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -53,6 +54,24 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
             override fun onError(response: String) {
                 isAuthenticated.value = response
+            }
+        })
+    }
+
+
+    fun signup(
+        context: Context,
+        username: String,
+        email: String,
+        password: String,
+    ) {
+        AuthRepository.signupUser(context, username, email, password, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                isRegistered.value = API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                isRegistered.value = response
             }
         })
     }

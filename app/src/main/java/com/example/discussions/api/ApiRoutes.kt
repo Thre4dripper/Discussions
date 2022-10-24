@@ -5,5 +5,6 @@ class ApiRoutes {
         const val BASE_URL = "https://nexus-discuss.herokuapp.com"
 
         const val LOGIN = "/api/users/login/"
+        const val REGISTER = "/api/users/register/"
     }
 }
