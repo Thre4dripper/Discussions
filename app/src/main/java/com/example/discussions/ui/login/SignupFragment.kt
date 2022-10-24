@@ -24,10 +24,11 @@ class SignupFragment(private var tabLayout: TabLayout) : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentSignupBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this)[LoginViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[LoginViewModel::class.java]
 
         initLoadingDialog()
         initSignup()
+        binding.lifecycleOwner = requireActivity()
         binding.viewModel = viewModel
 
         binding.signupBtn.setOnClickListener { signup() }

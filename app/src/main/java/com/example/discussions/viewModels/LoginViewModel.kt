@@ -21,10 +21,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val TAG = "LoginViewModel"
-    var username: String = ""
-    var email: String = ""
-    var password: String = ""
-    var rememberMe: Boolean = false
+    var username = MutableLiveData<String>()
+    var email = MutableLiveData<String>()
+    var password = MutableLiveData<String>()
+    var rememberMe = MutableLiveData<Boolean>()
 
     var loginStore: LoginStore = LoginStore(application)
     var isAuthenticated = MutableLiveData<String?>(null)
