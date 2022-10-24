@@ -47,7 +47,10 @@ class LoginFragment : Fragment() {
         viewModel.checkLoginStatus()
         viewModel.isAuthenticated.observe(viewLifecycleOwner) {
             //initial case
-            if (it == null) return@observe
+            if (it == null) {
+                loadingDialog.dismiss()
+                return@observe
+            }
 
             //login success
             if (it == LoginViewModel.API_SUCCESS) {
