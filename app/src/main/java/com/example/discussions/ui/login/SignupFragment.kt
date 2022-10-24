@@ -13,6 +13,7 @@ import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.LoginViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
+import org.json.JSONObject
 
 class SignupFragment(private var tabLayout: TabLayout) : Fragment() {
 
@@ -50,8 +51,10 @@ class SignupFragment(private var tabLayout: TabLayout) : Fragment() {
             //login success
             if (it == LoginViewModel.API_SUCCESS) {
                 loadingDialog.dismiss()
+                //switching to login tab
                 tabLayout.selectTab(tabLayout.getTabAt(0))
-                Toast.makeText(requireContext(), "Welcome", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Registered Successfully", Toast.LENGTH_SHORT)
+                    .show()
             }
             //login failed
             else {
@@ -63,23 +66,29 @@ class SignupFragment(private var tabLayout: TabLayout) : Fragment() {
 
     private fun handleSignupErrors(message: String) {
         //showing toast for other errors and returning
-        if (message == LoginViewModel.API_ERROR) {
+        if (!message.contains("{")) {
             Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             return
         }
+        val rootObject = JSONObject(message)
+        val usernameError =
+            if (rootObject.has("username")) rootObject.getJSONArray("username").get(0)
+                .toString() else null
+        val emailError = if (rootObject.has("email")) rootObject.getJSONArray("email").get(0)
+            .toString() else null
 
         //username already exists error
         binding.usernameEt.error =
-            if (message == LoginViewModel.API_ERROR_USERNAME || message == LoginViewModel.API_ERROR_USERNAME_EMAIL) {
+            if (usernameError != null) {
                 binding.usernameEt.requestFocus()
-                "Username already exists"
+                usernameError
             } else null
 
         //email already exists error
         binding.emailEt.error =
-            if (message == LoginViewModel.API_ERROR_EMAIL || message == LoginViewModel.API_ERROR_USERNAME_EMAIL) {
+            if (emailError != null) {
                 binding.emailEt.requestFocus()
-                "Email already exists"
+                emailError
             } else null
 
     }

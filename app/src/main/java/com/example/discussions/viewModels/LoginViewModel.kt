@@ -14,10 +14,6 @@ import kotlinx.coroutines.launch
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         const val API_SUCCESS = "success"
-        const val API_ERROR = "error"
-        const val API_ERROR_USERNAME_EMAIL = "Username and Email already exists"
-        const val API_ERROR_USERNAME = "Username already exists"
-        const val API_ERROR_EMAIL = "Email already exists"
     }
 
     private val TAG = "LoginViewModel"

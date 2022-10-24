@@ -55,7 +55,8 @@ class AuthRepository {
                 }
 
                 override fun onError(response: String) {
-                    if (response.contains("already exists")) {
+                    //if response is in json format
+                    if (response.contains("{")) {
                         callback.onError(response)
                     } else if (response.contains("com.android.volley.ClientError")) {
                         callback.onError("User Already Exists")
