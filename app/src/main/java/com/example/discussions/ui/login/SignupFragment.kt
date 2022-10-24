@@ -12,8 +12,9 @@ import com.example.discussions.databinding.FragmentSignupBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.LoginViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.tabs.TabLayout
 
-class SignupFragment : Fragment() {
+class SignupFragment(private var tabLayout: TabLayout) : Fragment() {
 
     private lateinit var binding: FragmentSignupBinding
     private lateinit var viewModel: LoginViewModel
@@ -48,6 +49,7 @@ class SignupFragment : Fragment() {
             //login success
             if (it == LoginViewModel.API_SUCCESS) {
                 loadingDialog.dismiss()
+                tabLayout.selectTab(tabLayout.getTabAt(0))
                 Toast.makeText(requireContext(), "Welcome", Toast.LENGTH_SHORT).show()
             }
             //login failed
