@@ -12,4 +12,11 @@
     <string name="desc_facebook">Log in with Facebook</string>
     <string name="desc_google">Log in with Google</string>
 
+    //Home Activity
+    <string name="home_label">Home</string>
+    <string name="poll_label">Polls</string>
+    <string name="desc_add">Add New Post or Poll</string>
+    <string name="notification_label">Notifications</string>
+    <string name="profile_label">Profile</string>
+
 </resources>
