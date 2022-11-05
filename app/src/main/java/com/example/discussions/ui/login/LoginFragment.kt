@@ -44,7 +44,7 @@ class LoginFragment : Fragment() {
 
     private fun initLogin() {
         loadingDialog.show()
-        viewModel.checkLoginStatus()
+        viewModel.checkLoginStatus(requireContext())
         viewModel.isAuthenticated.observe(viewLifecycleOwner) {
             //initial case
             if (it == null) {

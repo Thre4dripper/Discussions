@@ -1,17 +1,13 @@
 package com.example.discussions.viewModels
 
-import android.app.Application
 import android.content.Context
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.ViewModel
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.repositories.AuthRepository
 import com.example.discussions.store.LoginStore
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-class LoginViewModel(application: Application) : AndroidViewModel(application) {
+class LoginViewModel : ViewModel() {
     companion object {
         const val API_SUCCESS = "success"
     }
@@ -22,16 +18,13 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     var password = MutableLiveData<String>()
     var rememberMe = MutableLiveData<Boolean>()
 
-    var loginStore: LoginStore = LoginStore(application)
     var isAuthenticated = MutableLiveData<String?>(null)
     var isRegistered = MutableLiveData<String?>(null)
 
-    fun checkLoginStatus() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val token = loginStore.getJWTToken()
-            if (token != null) {
-                isAuthenticated.postValue(API_SUCCESS)
-            }
+    fun checkLoginStatus(context: Context) {
+        val token = LoginStore.getJWTToken(context)
+        if (token != null) {
+            isAuthenticated.postValue(API_SUCCESS)
         }
     }
 
@@ -46,9 +39,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 isAuthenticated.value = API_SUCCESS
                 //also logged session will be saved
                 if (rememberMe) {
-                    viewModelScope.launch(Dispatchers.IO) {
-                        loginStore.saveJWTToken(response)
-                    }
+                    LoginStore.saveJWTToken(context, response)
                 }
             }
 

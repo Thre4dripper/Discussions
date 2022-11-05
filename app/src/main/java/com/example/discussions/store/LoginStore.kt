@@ -1,29 +1,21 @@
 package com.example.discussions.store
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.first
 
-class LoginStore(context: Context) {
+class LoginStore {
     companion object {
-        const val PREF_NAME = "login_pref"
-        val PREF_KEY_JWT = stringPreferencesKey("jwt_token")
-    }
+        private const val PREF_NAME = "login_pref"
+        private const val PREF_KEY_JWT = "jwt"
 
-    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = PREF_NAME)
-    private val dataStore = context.dataStore
-
-    suspend fun saveJWTToken(token: String) {
-        dataStore.edit { preferences ->
-            preferences[PREF_KEY_JWT] = token
+        fun saveJWTToken(context: Context, token: String) {
+            val editor = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit()
+            editor.putString(PREF_KEY_JWT, token)
+            editor.apply()
         }
-    }
 
-    suspend fun getJWTToken(): String? {
-        return dataStore.data.first()[PREF_KEY_JWT]
+        fun getJWTToken(context: Context): String? {
+            return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+                .getString(PREF_KEY_JWT, null)
+        }
     }
 }
