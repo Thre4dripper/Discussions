@@ -35,7 +35,7 @@
     //Edit Profile Activity
     <string name="edit_profile_back_button_desc">Back Button</string>
     <string name="edit_profile_label_personal_data">Personal Data</string>
-    <string name="edit_profile_edit_profile_desc">Edit Profile Photo</string>
+    <string name="edit_profile_desc">Edit Profile Photo</string>
     <string name="edit_profile_label_username">Username</string>
     <string name="edit_profile_label_first_name">First Name</string>
     <string name="edit_profile_label_last_name">Last Name</string>
@@ -48,4 +48,13 @@
     <string name="edit_profile_label_text_dob">%d-%d-%d</string>
     <string name="edit_profile_label_address">Address</string>
     <string name="edit_profile_update_profile_btn">UPDATE PROFILE</string>
+
+    //Settings Activity
+    <string name="settings_label">Settings</string>
+    <string name="settings_label_change_password">Change Password</string>
+    <string name="settings_label_theme">Theme</string>
+    <string name="settings_label_feedback">Feedback</string>
+    <string name="settings_faq_label">FAQ</string>
+    <string name="settings_about_label">About</string>
+    <string name="settings_logout_label">Logout</string>
 </resources>

@@ -93,4 +93,24 @@
         <item name="android:textSize">16sp</item>
         <item name="android:layout_marginStart">12dp</item>
     </style>
+
+    //Settings Activity
+    <style name="SettingsListLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:focusable">true</item>
+        <item name="android:clickable">true</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="SettingsTvStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:drawablePadding">16dp</item>
+    </style>
 </resources>

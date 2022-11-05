@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="6dp"
-                android:contentDescription="@string/edit_profile_edit_profile_desc"
+                android:contentDescription="@string/edit_profile_desc"
                 android:src="@drawable/ic_edit"
                 app:tint="@color/login_header_color" />
 
