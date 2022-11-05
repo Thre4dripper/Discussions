@@ -36,7 +36,7 @@ class ProfileApi {
             val rootObject = JSONObject(json)
             val firstName = rootObject.getString("first_name")
             val lastName = rootObject.getString("last_name")
-            val gender = rootObject.getString("gender")
+            val gender = if(rootObject.has("gender")) rootObject.getString("gender") else ""
             val email = rootObject.getString("email")
             val mobileNo = rootObject.getString("mobile_no")
             val dob = rootObject.getString("dob")

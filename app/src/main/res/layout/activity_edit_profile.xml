@@ -17,7 +17,7 @@
         tools:context=".ui.editProfile.EditProfileActivity">
 
         <ImageView
-            android:id="@+id/personal_data_back_btn"
+            android:id="@+id/edit_profile_back_btn"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_marginStart="16dp"
@@ -29,7 +29,7 @@
             android:src="@drawable/ic_back_arrow"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/icon_tint" />
+            app:tint="@color/white" />
 
         <TextView
             android:id="@+id/textView"
@@ -40,10 +40,10 @@
             android:textColor="@color/light_gray"
             android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/personal_data_back_btn"
+            app:layout_constraintBottom_toBottomOf="@+id/edit_profile_back_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/personal_data_back_btn" />
+            app:layout_constraintTop_toTopOf="@+id/edit_profile_back_btn" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/profile_image_cv"
@@ -65,7 +65,7 @@
                 app:cardCornerRadius="10dp">
 
                 <ImageView
-                    android:id="@+id/personal_data_iv"
+                    android:id="@+id/edit_profile_iv"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"

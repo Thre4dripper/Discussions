@@ -1,19 +1,24 @@
 package com.example.discussions.repositories
 
 import android.content.Context
+import android.util.Log
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.ProfileApi
+import com.example.discussions.store.LoginStore
 
 class ProfileRepository {
     companion object {
+        private const val TAG = "ProfileRepository"
         var map = mapOf<String, String>()
 
         fun getProfile(
-            context: Context, token: String, callback: ResponseCallback
+            context: Context, callback: ResponseCallback
         ) {
+            val token = LoginStore.getJWTToken(context)!!
             ProfileApi.getProfileJson(context, token, object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     map = ProfileApi.parseProfileJson(response)
+                    Log.d(TAG, "onSuccess: $map")
                     callback.onSuccess("Success")
                 }
 
