@@ -5,17 +5,21 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.R
 import com.example.discussions.databinding.ActivityEditProfileBinding
+import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.EditProfileViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class EditProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityEditProfileBinding
     private lateinit var viewModel: EditProfileViewModel
 
+    private lateinit var loadingDialog: AlertDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile)
@@ -26,10 +30,18 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         binding.lifecycleOwner = this
-        getProfile()
-
+        initLoadingDialog()
         initRadioButtons()
         initDOBDialog()
+
+        getProfile()
+    }
+
+    private fun initLoadingDialog() {
+        val dialogBinding = LoadingDialogBinding.inflate(layoutInflater)
+        loadingDialog = MaterialAlertDialogBuilder(this).setView(dialogBinding.root)
+            .setCancelable(false).show()
+        loadingDialog.dismiss()
     }
 
     /**
@@ -78,17 +90,21 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
+    /**
+     *  METHOD TO GET PROFILE DATA FROM SERVER AND SET IT TO UI
+     */
     private fun getProfile() {
+        loadingDialog.show()
         viewModel.isProfileLoaded.observe(this) {
             if (it != null) {
                 //clearing progress dialog
-//                progressDialog.dismiss()
+                loadingDialog.dismiss()
 
                 //setting data
                 if (it) {
                     binding.viewModel = viewModel
                     //setting gender radios
-//                    setRadioButtons(viewModel.gender)
+                    setRadioButtons(viewModel.gender)
                 } else {
                     Toast.makeText(this, "Error loading profile", Toast.LENGTH_SHORT).show()
                     finish()
@@ -96,5 +112,22 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
         viewModel.getProfile(this)
+    }
+
+    /**
+     * METHOD FOR SETTING GENDER RADIO BUTTONS ON PROFILE LOAD
+     */
+    private fun setRadioButtons(radio: String = "M") {
+        if (radio == "M") {
+            binding.maleRadio.isChecked = true
+            binding.maleRadioLayout.setBackgroundResource(R.drawable.radio_checked)
+            binding.femaleRadioLayout.setBackgroundResource(R.drawable.radio_regular)
+            binding.femaleRadio.isChecked = false
+        } else {
+            binding.femaleRadio.isChecked = true
+            binding.femaleRadioLayout.setBackgroundResource(R.drawable.radio_checked)
+            binding.maleRadioLayout.setBackgroundResource(R.drawable.radio_regular)
+            binding.maleRadio.isChecked = false
+        }
     }
 }

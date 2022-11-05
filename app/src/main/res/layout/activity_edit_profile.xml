@@ -117,6 +117,22 @@
                 android:layout_marginEnd="32dp"
                 android:orientation="vertical">
 
+                <!--                Username-->
+                <TextView
+                    style="@style/EditProfileFieldsTvStyle"
+                    android:text="@string/edit_profile_label_username" />
+
+                <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/username_et"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="false"
+                        android:inputType="text"
+                        android:text="@={viewModel.username}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <!--                First Name-->
                 <TextView
                     style="@style/EditProfileFieldsTvStyle"

@@ -10,6 +10,7 @@ import com.example.discussions.repositories.ProfileRepository
 class EditProfileViewModel : ViewModel() {
     private val TAG = "EditProfileViewModel"
 
+    var username: String = ""
     var firstName: String = ""
     var lastName: String = ""
     var gender: String = ""
@@ -26,6 +27,7 @@ class EditProfileViewModel : ViewModel() {
     fun getProfile(context: Context) {
         ProfileRepository.getProfile(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
+                ProfileRepository.map["username"]?.let { username = it }
                 ProfileRepository.map["firstName"]?.let { firstName = it }
                 ProfileRepository.map["lastName"]?.let { lastName = it }
                 ProfileRepository.map["gender"]?.let { gender = it }

@@ -36,6 +36,7 @@
     <string name="edit_profile_back_button_desc">Back Button</string>
     <string name="edit_profile_label_personal_data">Personal Data</string>
     <string name="edit_profile_edit_profile_desc">Edit Profile Photo</string>
+    <string name="edit_profile_label_username">Username</string>
     <string name="edit_profile_label_first_name">First Name</string>
     <string name="edit_profile_label_last_name">Last Name</string>
     <string name="edit_profile_label_gender_name">Gender</string>
