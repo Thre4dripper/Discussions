@@ -6,12 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.databinding.FragmentLoginBinding
 import com.example.discussions.databinding.LoadingDialogBinding
+import com.example.discussions.store.LoginStore
 import com.example.discussions.ui.home.HomeActivity
+import com.example.discussions.ui.settings.SettingsActivity
 import com.example.discussions.viewModels.LoginViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -55,8 +58,7 @@ class LoginFragment : Fragment() {
             //login success
             if (it == LoginViewModel.API_SUCCESS) {
                 loadingDialog.dismiss()
-                val intent = Intent(requireContext(), HomeActivity::class.java)
-                startActivity(intent)
+                homeActivityCallback.launch(Intent(requireContext(), HomeActivity::class.java))
                 Toast.makeText(requireContext(), "Welcome", Toast.LENGTH_SHORT).show()
             }
             //login failed
@@ -98,4 +100,14 @@ class LoginFragment : Fragment() {
         viewModel.login(requireActivity(), username, password, binding.rememberMeCb.isChecked)
     }
 
+    /**
+     * Home Activity launch callback
+     */
+    private var homeActivityCallback =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == SettingsActivity.RESULT_LOGOUT) {
+                //delete jwt on logout
+                LoginStore.saveJWTToken(requireContext(), null)
+            }
+        }
 }

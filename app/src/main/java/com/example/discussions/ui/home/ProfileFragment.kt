@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.discussions.databinding.FragmentProfileBinding
@@ -30,9 +31,19 @@ class ProfileFragment : Fragment() {
         }
 
         binding.profileSettingsBtn.setOnClickListener {
-            val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
+            settingsCallback.launch(Intent(requireContext(), SettingsActivity::class.java))
         }
         return binding.root
     }
+
+    /**
+     * Settings Activity launch callback
+     */
+    private val settingsCallback =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == SettingsActivity.RESULT_LOGOUT) {
+                requireActivity().setResult(SettingsActivity.RESULT_LOGOUT)
+                requireActivity().finish()
+            }
+        }
 }
