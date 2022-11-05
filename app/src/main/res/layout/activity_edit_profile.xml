@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.example.discussions.viewModels.EditProfileViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#1B1E23"
+        tools:context=".ui.editProfile.EditProfileActivity">
+
+        <ImageView
+            android:id="@+id/personal_data_back_btn"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/edit_profile_back_button_desc"
+            android:focusable="true"
+            android:src="@drawable/ic_back_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/icon_tint" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="9dp"
+            android:text="@string/edit_profile_label_personal_data"
+            android:textColor="@color/light_gray"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/personal_data_back_btn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/personal_data_back_btn" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/profile_image_cv"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="32dp"
+            android:shadowColor="@color/black"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="6dp"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="10dp">
+
+                <ImageView
+                    android:id="@+id/personal_data_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/profile_image_desc"
+                    android:src="@drawable/ic_profile" />
+            </androidx.cardview.widget.CardView>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/edit_profile_image_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="-8dp"
+            android:layout_marginBottom="-8dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:shadowColor="@color/black"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_image_cv"
+            app:layout_constraintEnd_toEndOf="@+id/profile_image_cv">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="6dp"
+                android:contentDescription="@string/edit_profile_edit_profile_desc"
+                android:src="@drawable/ic_edit"
+                app:tint="@color/login_header_color" />
+
+        </androidx.cardview.widget.CardView>
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/profile_bottom_bg"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image_cv">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:orientation="vertical">
+
+                <!--                First Name-->
+                <TextView
+                    style="@style/EditProfileFieldsTvStyle"
+                    android:text="@string/edit_profile_label_first_name" />
+
+                <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/first_name_et"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@={viewModel.firstName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!--                Last Name-->
+                <TextView
+                    style="@style/EditProfileFieldsTvStyle"
+                    android:text="@string/edit_profile_label_last_name" />
+
+                <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/last_name_et"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@={viewModel.lastName}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!--                Gender-->
+                <TextView
+                    style="@style/EditProfileFieldsTvStyle"
+                    android:text="@string/edit_profile_label_gender_name" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/male_radio_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/radio_regular">
+
+                        <RadioButton
+                            android:id="@+id/male_radio"
+                            style="@style/EditProfileRbStyle"
+                            android:buttonTint="@color/login_header_color"
+                            android:text="@string/edit_profile_label_gender_male" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/female_radio_layout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/radio_regular">
+
+                        <RadioButton
+                            android:id="@+id/female_radio"
+                            style="@style/EditProfileRbStyle"
+                            android:buttonTint="@color/login_header_color"
+                            android:text="@string/edit_profile_label_gender_female" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!--               Personal Email-->
+                <TextView
+                    style="@style/EditProfileFieldsTvStyle"
+                    android:text="@string/edit_profile_label_email" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/EditProfileFieldsTilStyle"
+                    app:suffixText="\@gmail.com">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:text="@={viewModel.email}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!--                Mobile Number-->
+                <TextView
+                    style="@style/EditProfileFieldsTvStyle"
+                    android:text="@string/edit_profile_label_mobile_no" />
+
+                <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/mobile_no_et"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:text="@={viewModel.mobileNo}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!--                Date of Birth-->
+                <TextView
+                    style="@style/EditProfileFieldsTvStyle"
+                    android:text="@string/edit_profile_label_dob" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dob_til"
+                    style="@style/EditProfileFieldsTilStyle"
+                    app:endIconDrawable="@drawable/ic_calender"
+                    app:endIconMode="custom"
+                    app:endIconTint="@color/login_header_color">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/dob_et"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="date"
+                        android:text="@={viewModel.dob}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!--                Address-->
+                <TextView
+                    style="@style/EditProfileFieldsTvStyle"
+                    android:text="@string/edit_profile_label_address" />
+
+                <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:text="@={viewModel.address}" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/update_profile_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="16dp"
+                    android:backgroundTint="@color/login_header_color"
+                    android:paddingStart="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/edit_profile_update_profile_btn"
+                    app:cornerRadius="50dp" />
+            </LinearLayout>
+        </ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

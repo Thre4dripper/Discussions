@@ -12,4 +12,8 @@
     <color name="login_til_stroke_color">@color/login_header_color</color>
     <color name="dark_gray">#222831</color>
     <color name="light_gray">#B7BABC</color>
+
+    <color name="icon_tint">#21252B</color>
+    <color name="text_color">#262A2E</color>
+    <color name="bg_color">@color/white</color>
 </resources>
