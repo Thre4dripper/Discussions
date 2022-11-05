@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.ui.editProfile.EditProfileActivity
+import com.example.discussions.ui.settings.SettingsActivity
 
 class ProfileFragment : Fragment() {
     lateinit var binding: FragmentProfileBinding
@@ -28,6 +29,10 @@ class ProfileFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.profileSettingsBtn.setOnClickListener {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+        }
         return binding.root
     }
 }
