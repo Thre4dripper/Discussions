@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.R
+import com.example.discussions.api.ResponseCallback
 import com.example.discussions.databinding.ActivityEditProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.EditProfileViewModel
@@ -35,6 +36,11 @@ class EditProfileActivity : AppCompatActivity() {
         initDOBDialog()
 
         getProfile()
+
+        binding.updateProfileBtn.setOnClickListener {
+            updateProfile()
+            getProfile()
+        }
     }
 
     private fun initLoadingDialog() {
@@ -112,6 +118,101 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
         viewModel.getProfile(this)
+    }
+
+    /**
+     * METHOD FOR UPDATE PROFILE TO THE SERVER
+     */
+    private fun updateProfile() {
+        val firstName = binding.profileFirstNameEt.text.toString().trim()
+        val lastName = binding.profileLastNameEt.text.toString().trim()
+        val gender = if (binding.maleRadio.isChecked) "M" else "F"
+        val email = binding.profileEmailEt.text.toString().trim()
+        val mobileNo = binding.profileMobileNoEt.text.toString().trim()
+        val dob = binding.dobEt.text.toString().trim()
+        val address = binding.profileAddressEt.text.toString().trim()
+
+        //checking firstname empty field
+        if (firstName.isEmpty()) {
+            binding.profileFirstNameEt.error = "First name is required"
+            binding.profileFirstNameEt.requestFocus()
+            return
+        } else {
+            binding.profileFirstNameEt.error = null
+        }
+
+        //checking lastname empty field
+        if (lastName.isEmpty()) {
+            binding.profileLastNameEt.error = "Last name is required"
+            binding.profileLastNameEt.requestFocus()
+            return
+        } else {
+            binding.profileLastNameEt.error = null
+        }
+
+        //checking email empty field
+        if (email.isEmpty()) {
+            binding.profileEmailEt.error = "Email Required"
+            binding.profileEmailEt.requestFocus()
+            return
+        } else {
+            binding.profileEmailEt.error = null
+        }
+
+        //checking mobile no empty field
+        if (mobileNo.isEmpty()) {
+            binding.profileMobileNoEt.error = "Mobile no is required"
+            binding.profileMobileNoEt.requestFocus()
+            return
+        } else {
+            binding.profileMobileNoEt.error = null
+        }
+
+        //checking dob empty field
+        if (dob.isEmpty()) {
+            binding.dobEt.error = "Date of birth is required"
+            binding.dobEt.requestFocus()
+            return
+        } else {
+            binding.dobEt.error = null
+        }
+
+        //checking address empty field
+        if (address.isEmpty()) {
+            binding.profileAddressEt.error = "Address is required"
+            binding.profileAddressEt.requestFocus()
+            return
+        } else {
+            binding.profileAddressEt.error = null
+        }
+
+        loadingDialog.show()
+        viewModel.updateProfile(this,
+            firstName,
+            lastName,
+            gender,
+            email,
+            mobileNo,
+            dob,
+            address,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    loadingDialog.dismiss()
+                    Toast.makeText(
+                        this@EditProfileActivity,
+                        "Profile updated successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                }
+
+                override fun onError(response: String) {
+                    loadingDialog.dismiss()
+                    Toast.makeText(
+                        this@EditProfileActivity, response, Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
     }
 
     /**

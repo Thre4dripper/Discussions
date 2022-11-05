@@ -44,4 +44,36 @@ class EditProfileViewModel : ViewModel() {
         })
 
     }
+
+    fun updateProfile(
+        context: Context,
+        firstName: String,
+        lastName: String,
+        gender: String,
+        email: String,
+        mobileNo: String,
+        dob: String,
+        address: String,
+        callback: ResponseCallback,
+    ) {
+
+        ProfileRepository.updateProfile(context,
+            username,
+            firstName,
+            lastName,
+            gender,
+            email,
+            mobileNo,
+            dob,
+            address,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    callback.onSuccess(response)
+                }
+
+                override fun onError(response: String) {
+                    callback.onError(response)
+                }
+            })
+    }
 }
