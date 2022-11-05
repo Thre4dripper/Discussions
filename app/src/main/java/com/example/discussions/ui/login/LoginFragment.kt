@@ -108,6 +108,8 @@ class LoginFragment : Fragment() {
             if (it.resultCode == SettingsActivity.RESULT_LOGOUT) {
                 //delete jwt on logout
                 LoginStore.saveJWTToken(requireContext(), null)
+            } else if (it.resultCode == HomeActivity.RESULT_CLOSE) {
+                requireActivity().finish()
             }
         }
 }
