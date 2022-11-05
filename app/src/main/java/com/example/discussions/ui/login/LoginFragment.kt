@@ -69,29 +69,29 @@ class LoginFragment : Fragment() {
 
     private fun login() {
         loadingDialog.show()
-        val username = binding.usernameEt.text.toString()
-        val password = binding.passwordEt.text.toString()
+        val username = binding.loginUsernameEt.text.toString()
+        val password = binding.loginPasswordEt.text.toString()
 
         //checking for username field
         if (username.isEmpty()) {
-            binding.usernameEt.error = "Username is required"
-            binding.usernameEt.requestFocus()
+            binding.loginUsernameEt.error = "Username is required"
+            binding.loginUsernameEt.requestFocus()
             loadingDialog.dismiss()
             return
         } else {
             //clearing error
-            binding.usernameEt.error = null
+            binding.loginUsernameEt.error = null
         }
 
         //checking for password field (error should be displayed on text input layout in password field)
         if (password.isEmpty()) {
-            binding.passwordTil.error = "Password is required"
-            binding.passwordEt.requestFocus()
+            binding.loginPasswordTil.error = "Password is required"
+            binding.loginPasswordEt.requestFocus()
             loadingDialog.dismiss()
             return
         } else {
             //clearing error
-            binding.passwordTil.error = null
+            binding.loginPasswordTil.error = null
         }
 
 

@@ -16,7 +16,7 @@
         tools:context=".ui.login.LoginFragment">
 
         <LinearLayout
-            android:id="@+id/login_fields_ll"
+            android:id="@+id/signup_fields_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -31,12 +31,12 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/username_til"
+                android:id="@+id/signup_username_til"
                 style="@style/LoginFieldsStyle"
                 android:hint="@string/username">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/username_et"
+                    android:id="@+id/signup_username_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textShortMessage"
@@ -44,13 +44,13 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/email_til"
+                android:id="@+id/signup_email_til"
                 style="@style/LoginFieldsStyle"
                 android:layout_marginTop="16dp"
                 android:hint="@string/email">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/email_et"
+                    android:id="@+id/signup_email_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
@@ -58,14 +58,14 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_til"
+                android:id="@+id/signup_password_til"
                 style="@style/LoginFieldsStyle"
                 android:layout_marginTop="16dp"
                 android:hint="@string/password"
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/password_et"
+                    android:id="@+id/signup_password_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
@@ -81,7 +81,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/login_fields_ll">
+            app:layout_constraintTop_toBottomOf="@+id/signup_fields_ll">
 
             <TextView
                 style="@style/LoginSignupTvStyle"

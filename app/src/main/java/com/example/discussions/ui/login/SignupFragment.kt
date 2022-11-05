@@ -78,16 +78,16 @@ class SignupFragment(private var tabLayout: TabLayout) : Fragment() {
             .toString() else null
 
         //username already exists error
-        binding.usernameEt.error =
+        binding.signupUsernameEt.error =
             if (usernameError != null) {
-                binding.usernameEt.requestFocus()
+                binding.signupUsernameEt.requestFocus()
                 usernameError
             } else null
 
         //email already exists error
-        binding.emailEt.error =
+        binding.signupEmailEt.error =
             if (emailError != null) {
-                binding.emailEt.requestFocus()
+                binding.signupEmailEt.requestFocus()
                 emailError
             } else null
 
@@ -95,38 +95,38 @@ class SignupFragment(private var tabLayout: TabLayout) : Fragment() {
 
     private fun signup() {
         loadingDialog.show()
-        val username = binding.usernameEt.text.toString()
-        val email = binding.emailEt.text.toString()
-        val password = binding.passwordEt.text.toString()
+        val username = binding.signupUsernameEt.text.toString()
+        val email = binding.signupEmailEt.text.toString()
+        val password = binding.signupPasswordEt.text.toString()
 
         //checking for username field
         if (username.isEmpty()) {
-            binding.usernameEt.error = "Username is required"
-            binding.usernameEt.requestFocus()
+            binding.signupUsernameEt.error = "Username is required"
+            binding.signupUsernameEt.requestFocus()
             loadingDialog.dismiss()
             return
         } else {
-            binding.usernameEt.error = null
+            binding.signupUsernameEt.error = null
         }
 
         //checking for email field
         if (email.isEmpty()) {
-            binding.emailEt.error = "Email is required"
-            binding.emailEt.requestFocus()
+            binding.signupEmailEt.error = "Email is required"
+            binding.signupEmailEt.requestFocus()
             loadingDialog.dismiss()
             return
         } else {
-            binding.emailEt.error = null
+            binding.signupEmailEt.error = null
         }
 
         //checking for password field (error should be displayed on text input layout in password field)
         if (password.isEmpty()) {
-            binding.passwordTil.error = "Password is required"
-            binding.passwordEt.requestFocus()
+            binding.signupPasswordTil.error = "Password is required"
+            binding.signupPasswordEt.requestFocus()
             loadingDialog.dismiss()
             return
         } else {
-            binding.passwordTil.error = null
+            binding.signupPasswordTil.error = null
         }
 
         viewModel.signup(requireActivity(), username, email, password)

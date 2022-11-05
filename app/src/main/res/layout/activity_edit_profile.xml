@@ -125,7 +125,7 @@
                 <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/username_et"
+                        android:id="@+id/profile_username_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
@@ -141,7 +141,7 @@
                 <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/first_name_et"
+                        android:id="@+id/profile_first_name_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
@@ -157,7 +157,7 @@
                 <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/last_name_et"
+                        android:id="@+id/profile_last_name_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
@@ -212,11 +212,10 @@
                     style="@style/EditProfileFieldsTvStyle"
                     android:text="@string/edit_profile_label_email" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/EditProfileFieldsTilStyle"
-                    app:suffixText="\@gmail.com">
+                <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/profile_email_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textEmailAddress"
@@ -232,7 +231,7 @@
                 <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/mobile_no_et"
+                        android:id="@+id/profile_mobile_no_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
@@ -246,7 +245,7 @@
                     android:text="@string/edit_profile_label_dob" />
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/dob_til"
+                    android:id="@+id/profile_dob_til"
                     style="@style/EditProfileFieldsTilStyle"
                     app:endIconDrawable="@drawable/ic_calender"
                     app:endIconMode="custom"
@@ -269,6 +268,7 @@
                 <com.google.android.material.textfield.TextInputLayout style="@style/EditProfileFieldsTilStyle">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/profile_address_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textMultiLine"

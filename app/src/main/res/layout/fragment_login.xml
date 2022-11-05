@@ -30,12 +30,12 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/username_til"
+                android:id="@+id/login_username_til"
                 style="@style/LoginFieldsStyle"
                 android:hint="@string/username">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/username_et"
+                    android:id="@+id/login_username_et"
                     android:layout_width="match_parent"
                     android:inputType="textShortMessage"
                     android:layout_height="wrap_content"
@@ -44,14 +44,14 @@
 
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_til"
+                android:id="@+id/login_password_til"
                 style="@style/LoginFieldsStyle"
                 android:layout_marginTop="16dp"
                 android:hint="@string/password"
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/password_et"
+                    android:id="@+id/login_password_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"

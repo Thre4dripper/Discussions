@@ -46,6 +46,6 @@
     <string name="edit_profile_label_mobile_no">Mobile Number</string>
     <string name="edit_profile_label_dob">Date of Birth</string>
     <string name="edit_profile_label_text_dob">%d-%d-%d</string>
-    <string name="edit_profile_label_address">Address (optional)</string>
+    <string name="edit_profile_label_address">Address</string>
     <string name="edit_profile_update_profile_btn">UPDATE PROFILE</string>
 </resources>
