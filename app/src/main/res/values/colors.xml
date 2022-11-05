@@ -10,5 +10,6 @@
 
     <color name="login_header_color">#646897</color>
     <color name="login_til_stroke_color">@color/login_header_color</color>
-    <color name="status_bar_color">#222831</color>
+    <color name="dark_gray">#222831</color>
+    <color name="light_gray">#B7BABC</color>
 </resources>
