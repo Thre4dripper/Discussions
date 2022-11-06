@@ -1,22 +1,34 @@
 package com.example.discussions.ui.editProfile
 
 import android.app.DatePickerDialog
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.discussions.R
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.databinding.ActivityEditProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.EditProfileViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.yalantis.ucrop.UCrop
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 class EditProfileActivity : AppCompatActivity() {
+    private val TAG = "EditProfileActivity"
+
     private lateinit var binding: ActivityEditProfileBinding
     private lateinit var viewModel: EditProfileViewModel
 
@@ -28,6 +40,9 @@ class EditProfileActivity : AppCompatActivity() {
 
         binding.editProfileBackBtn.setOnClickListener {
             finish()
+        }
+        binding.editProfileImageBtn.setOnClickListener {
+            photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         binding.lifecycleOwner = this
@@ -95,6 +110,49 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
     }
+
+    // Registers a photo picker activity launcher in single-select mode.
+    private val photoPickerLauncher =
+        registerForActivityResult(ActivityResultContracts.PickVisualMedia())
+        { pickedPhotoUri ->
+            if (pickedPhotoUri != null) {
+                var uri: Uri? = null
+
+                //async call to create temp file
+                CoroutineScope(Dispatchers.Main).launch {
+                    uri = Uri.fromFile(withContext(Dispatchers.IO) {
+                        val file = File.createTempFile( //creating temp file
+                            "temp", ".jpg", cacheDir
+                        )
+                        file
+                    })
+                }
+                    //on completion of async call
+                    .invokeOnCompletion {
+                        //Crop activity with source and destination uri
+                        val uCrop = UCrop.of(pickedPhotoUri, uri!!).withAspectRatio(1f, 1f)
+                            .withMaxResultSize(1080, 1080)
+
+                        cropImageCallback.launch(uCrop.getIntent(this))
+                    }
+
+            } else {
+                Toast.makeText(this, "No image selected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+    /**
+     * CALLBACK FOR CROPPING RECEIVED IMAGE
+     */
+    private var cropImageCallback =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == RESULT_OK) {
+                val uri = UCrop.getOutput(it.data!!)
+
+                //setting image to image view
+                Glide.with(this).load(uri).into(binding.editProfileIv)
+            }
+        }
 
     /**
      *  METHOD TO GET PROFILE DATA FROM SERVER AND SET IT TO UI
