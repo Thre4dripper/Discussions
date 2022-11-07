@@ -47,7 +47,41 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    //Home Create Post/Polls Bottom Sheet Styles
+
+    <style name="BottomSheetCvStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+    </style>
+
+    <style name="BottomSheetTvStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/dark_gray</item>
+    </style>
+
+
+    <style name="BottomSheetLottieStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">120dp</item>
+        <item name="android:layout_margin">16dp</item>
+        <item name="lottie_loop">true</item>
+        <item name="lottie_autoPlay">true</item>
+    </style>
+
+
     //Profile Fragment Styles
+
     <style name="ProfileDescTvStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -65,6 +99,7 @@
     </style>
 
     //Edit Profile Activity Styles
+
     <style name="EditProfileFieldsTvStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -95,6 +130,7 @@
     </style>
 
     //Settings Activity
+
     <style name="SettingsListLayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

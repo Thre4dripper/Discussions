@@ -19,6 +19,10 @@
     <string name="notification_label">Notifications</string>
     <string name="profile_label">Profile</string>
 
+    //Create Posts/Polls Bottom Sheet
+    <string name="create_post_label">Create Post</string>
+    <string name="create_poll_label">Create Poll</string>
+
     //Profile Fragment
     <string name="profile_image_desc">Display Profile Image</string>
     <string name="profile_name_text">Name</string>

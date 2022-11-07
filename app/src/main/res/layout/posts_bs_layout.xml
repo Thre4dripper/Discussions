@@ -6,16 +6,7 @@
     android:orientation="horizontal"
     android:paddingTop="32dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp">
+    <androidx.cardview.widget.CardView style="@style/BottomSheetCvStyle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,21 +14,12 @@
             android:orientation="vertical">
 
             <com.airbnb.lottie.LottieAnimationView
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_margin="16dp"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
+                style="@style/BottomSheetLottieStyle"
                 app:lottie_rawRes="@raw/create_post" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:text="Create Post"
-                android:textColor="@color/dark_gray"
-                android:textSize="16sp" />
+                style="@style/BottomSheetTvStyle"
+                android:text="@string/create_post_label" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -49,16 +31,7 @@
         android:layout_marginBottom="24dp"
         android:background="@color/light_gray" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="0dp">
+    <androidx.cardview.widget.CardView style="@style/BottomSheetCvStyle">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,22 +39,12 @@
             android:orientation="vertical">
 
             <com.airbnb.lottie.LottieAnimationView
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_margin="16dp"
-
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
+                style="@style/BottomSheetLottieStyle"
                 app:lottie_rawRes="@raw/create_poll" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="8dp"
-                android:text="Create Poll"
-                android:textColor="@color/dark_gray"
-                android:textSize="16sp" />
+                style="@style/BottomSheetTvStyle"
+                android:text="@string/create_poll_label" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
