@@ -36,7 +36,8 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var viewModel: EditProfileViewModel
 
     private lateinit var loadingDialog: AlertDialog
-    private lateinit var profileImageUri: Uri
+    private var selectedImageUri: Uri = Uri.EMPTY
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile)
@@ -58,7 +59,6 @@ class EditProfileActivity : AppCompatActivity() {
 
         binding.updateProfileBtn.setOnClickListener {
             updateProfile()
-            getProfile()
         }
     }
 
@@ -152,10 +152,10 @@ class EditProfileActivity : AppCompatActivity() {
     private var cropImageCallback =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
-                profileImageUri = UCrop.getOutput(it.data!!)!!
+                selectedImageUri = UCrop.getOutput(it.data!!)!!
 
                 //setting image to image view
-                Glide.with(this).load(profileImageUri).into(binding.editProfileIv)
+                Glide.with(this).load(selectedImageUri).into(binding.editProfileIv)
             }
         }
 
@@ -170,15 +170,16 @@ class EditProfileActivity : AppCompatActivity() {
                 loadingDialog.dismiss()
 
                 //setting data
-                if (it) {
+                if (it == EditProfileViewModel.API_SUCCESS) {
                     binding.viewModel = viewModel
 
-                    //setting profile image
+                    //fixing image url
                     viewModel.profileImage = viewModel.profileImage.replace("http://", "https://")
-                    profileImageUri = Uri.parse(viewModel.profileImage)
 
-                    Glide.with(this@EditProfileActivity).load(profileImageUri)
+                    //setting image to imageview
+                    Glide.with(this@EditProfileActivity).load(viewModel.profileImage)
                         .placeholder(R.drawable.ic_profile).into(binding.editProfileIv)
+
                     //setting gender radios
                     setRadioButtons(viewModel.gender)
                 } else {
@@ -280,7 +281,7 @@ class EditProfileActivity : AppCompatActivity() {
                 loadingDialog.dismiss()
 
                 //setting data
-                if (it) {
+                if (it == EditProfileViewModel.API_SUCCESS) {
                     Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
@@ -320,7 +321,13 @@ class EditProfileActivity : AppCompatActivity() {
      */
     private fun uploadImage(callback: ResponseCallback) {
 
-        MediaManager.get().upload(profileImageUri)
+        //if image is not changed then @selectedImageUri will be empty
+        if (selectedImageUri.toString().isEmpty()) {
+            callback.onSuccess(viewModel.profileImage)
+            return
+        }
+
+        MediaManager.get().upload(selectedImageUri)
             .option("folder", "media/")
             .callback(object : UploadCallback {
                 override fun onStart(requestId: String?) {}

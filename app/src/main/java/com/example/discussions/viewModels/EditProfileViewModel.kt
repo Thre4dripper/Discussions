@@ -10,6 +10,10 @@ import com.example.discussions.repositories.ProfileRepository
 class EditProfileViewModel : ViewModel() {
     private val TAG = "EditProfileViewModel"
 
+    companion object {
+        const val API_SUCCESS = "success"
+    }
+
     var profileImage: String = ""
     var username: String = ""
     var firstName: String = ""
@@ -20,13 +24,13 @@ class EditProfileViewModel : ViewModel() {
     var dob: String = ""
     var address: String = ""
 
-    private val _isProfileLoaded = MutableLiveData<Boolean>(null)
-    private val _isProfileUpdated = MutableLiveData<Boolean>(null)
+    private val _isProfileLoaded = MutableLiveData<String>(null)
+    private val _isProfileUpdated = MutableLiveData<String>(null)
 
-    val isProfileLoaded: LiveData<Boolean>
+    val isProfileLoaded: LiveData<String>
         get() = _isProfileLoaded
 
-    val isProfileUpdated: LiveData<Boolean>
+    val isProfileUpdated: LiveData<String>
         get() = _isProfileUpdated
 
     fun getProfile(context: Context) {
@@ -41,11 +45,11 @@ class EditProfileViewModel : ViewModel() {
                 ProfileRepository.map["mobileNo"]?.let { mobileNo = it }
                 ProfileRepository.map["dob"]?.let { dob = it }
                 ProfileRepository.map["address"]?.let { address = it }
-                _isProfileLoaded.value = true
+                _isProfileLoaded.postValue(API_SUCCESS)
             }
 
             override fun onError(response: String) {
-                _isProfileLoaded.value = false
+                _isProfileLoaded.postValue(response)
             }
         })
 
@@ -75,11 +79,11 @@ class EditProfileViewModel : ViewModel() {
             address,
             object : ResponseCallback {
                 override fun onSuccess(response: String) {
-                    _isProfileUpdated.value = true
+                    _isProfileUpdated.postValue(API_SUCCESS)
                 }
 
                 override fun onError(response: String) {
-                    _isProfileUpdated.value = false
+                    _isProfileUpdated.postValue(response)
                 }
             })
     }
