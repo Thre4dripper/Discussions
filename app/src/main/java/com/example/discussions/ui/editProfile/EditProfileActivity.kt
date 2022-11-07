@@ -126,7 +126,7 @@ class EditProfileActivity : AppCompatActivity() {
             .setTitle("Clear Profile Image")
             .setMessage("Are you sure you want to clear profile image?")
             .setPositiveButton("Yes") { _, _ ->
-                Glide.with(this).load(R.drawable.ic_profile).into(binding.editProfileIv)
+                binding.editProfileIv.setImageResource(R.drawable.ic_profile)
                 viewModel.profileImage = ""
             }
             .setNegativeButton("No") { dialog, _ ->
@@ -348,7 +348,7 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         MediaManager.get().upload(selectedImageUri)
-            .option("folder", "media/")
+            .option("folder", "${viewModel.username}/")
             .callback(object : UploadCallback {
                 override fun onStart(requestId: String?) {}
                 override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
