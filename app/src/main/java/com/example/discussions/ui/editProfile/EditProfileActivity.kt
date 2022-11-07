@@ -46,6 +46,9 @@ class EditProfileActivity : AppCompatActivity() {
         binding.editProfileBackBtn.setOnClickListener {
             finish()
         }
+        binding.clearProfileImageBtn.setOnClickListener {
+            clearProfileImage()
+        }
         binding.editProfileImageBtn.setOnClickListener {
             photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
@@ -113,6 +116,23 @@ class EditProfileActivity : AppCompatActivity() {
             datePickerDialog.show()
         }
 
+    }
+
+    /**
+     * METHOD FOR CLEARING PROFILE IMAGE
+     */
+    private fun clearProfileImage() {
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Clear Profile Image")
+            .setMessage("Are you sure you want to clear profile image?")
+            .setPositiveButton("Yes") { _, _ ->
+                Glide.with(this).load(R.drawable.ic_profile).into(binding.editProfileIv)
+                viewModel.profileImage = ""
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
 
