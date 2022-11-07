@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.cloudinary.android.MediaManager
+import com.cloudinary.android.callback.ErrorInfo
+import com.cloudinary.android.callback.UploadCallback
 import com.example.discussions.R
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.databinding.ActivityEditProfileBinding
@@ -33,10 +36,12 @@ class EditProfileActivity : AppCompatActivity() {
     private lateinit var viewModel: EditProfileViewModel
 
     private lateinit var loadingDialog: AlertDialog
+    private lateinit var profileImageUri: Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile)
         viewModel = ViewModelProvider(this)[EditProfileViewModel::class.java]
+        setupCloudinary()
 
         binding.editProfileBackBtn.setOnClickListener {
             finish()
@@ -111,6 +116,16 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
+    private fun setupCloudinary() {
+        val config = HashMap<String, String>()
+        config["cloud_name"] = getString(R.string.cloud_name)
+        config["api_key"] = getString(R.string.api_key)
+        config["api_secret"] = getString(R.string.api_secret)
+        config["secure"] = "true"
+
+        MediaManager.init(this, config)
+    }
+
     // Registers a photo picker activity launcher in single-select mode.
     private val photoPickerLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia())
@@ -147,10 +162,10 @@ class EditProfileActivity : AppCompatActivity() {
     private var cropImageCallback =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == RESULT_OK) {
-                val uri = UCrop.getOutput(it.data!!)
+                profileImageUri = UCrop.getOutput(it.data!!)!!
 
                 //setting image to image view
-                Glide.with(this).load(uri).into(binding.editProfileIv)
+                Glide.with(this).load(profileImageUri).into(binding.editProfileIv)
             }
         }
 
@@ -176,6 +191,24 @@ class EditProfileActivity : AppCompatActivity() {
             }
         }
         viewModel.getProfile(this)
+    }
+
+
+    /**
+     * METHOD FOR SETTING GENDER RADIO BUTTONS ON PROFILE LOAD
+     */
+    private fun setRadioButtons(radio: String = "M") {
+        if (radio == "M") {
+            binding.maleRadio.isChecked = true
+            binding.maleRadioLayout.setBackgroundResource(R.drawable.radio_checked)
+            binding.femaleRadioLayout.setBackgroundResource(R.drawable.radio_regular)
+            binding.femaleRadio.isChecked = false
+        } else {
+            binding.femaleRadio.isChecked = true
+            binding.femaleRadioLayout.setBackgroundResource(R.drawable.radio_checked)
+            binding.maleRadioLayout.setBackgroundResource(R.drawable.radio_regular)
+            binding.maleRadio.isChecked = false
+        }
     }
 
     /**
@@ -245,48 +278,69 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         loadingDialog.show()
-        viewModel.updateProfile(this,
-            firstName,
-            lastName,
-            gender,
-            email,
-            mobileNo,
-            dob,
-            address,
-            object : ResponseCallback {
-                override fun onSuccess(response: String) {
-                    loadingDialog.dismiss()
-                    Toast.makeText(
-                        this@EditProfileActivity,
-                        "Profile updated successfully",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    finish()
-                }
+        viewModel.isProfileUpdated.observe(this) {
+            if (it != null) {
+                //clearing progress dialog
+                loadingDialog.dismiss()
 
-                override fun onError(response: String) {
-                    loadingDialog.dismiss()
-                    Toast.makeText(
-                        this@EditProfileActivity, response, Toast.LENGTH_SHORT
-                    ).show()
+                //setting data
+                if (it) {
+                    Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Error updating profile", Toast.LENGTH_SHORT).show()
                 }
-            })
+            }
+        }
+
+        //first image should be uploaded to server and then profile data
+        uploadImage(object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                viewModel.updateProfile(
+                    this@EditProfileActivity,
+                    imageUrl = response,
+                    firstName,
+                    lastName,
+                    gender,
+                    email,
+                    mobileNo,
+                    dob,
+                    address
+                )
+            }
+
+            override fun onError(response: String) {
+                loadingDialog.dismiss()
+                Toast.makeText(
+                    this@EditProfileActivity, response, Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+
     }
 
     /**
-     * METHOD FOR SETTING GENDER RADIO BUTTONS ON PROFILE LOAD
+     * METHOD FOR UPLOADING IMAGE TO THE SERVER
      */
-    private fun setRadioButtons(radio: String = "M") {
-        if (radio == "M") {
-            binding.maleRadio.isChecked = true
-            binding.maleRadioLayout.setBackgroundResource(R.drawable.radio_checked)
-            binding.femaleRadioLayout.setBackgroundResource(R.drawable.radio_regular)
-            binding.femaleRadio.isChecked = false
-        } else {
-            binding.femaleRadio.isChecked = true
-            binding.femaleRadioLayout.setBackgroundResource(R.drawable.radio_checked)
-            binding.maleRadioLayout.setBackgroundResource(R.drawable.radio_regular)
-            binding.maleRadio.isChecked = false
-        }
+    private fun uploadImage(callback: ResponseCallback) {
+
+        MediaManager.get().upload(profileImageUri)
+            .option("folder", "media/")
+            .callback(object : UploadCallback {
+                override fun onStart(requestId: String?) {}
+                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
+
+                override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
+                    val imageUrl = resultData!!["url"].toString()
+                    callback.onSuccess(imageUrl)
+                }
+
+                override fun onError(requestId: String?, error: ErrorInfo?) {
+                    callback.onError("Error uploading image")
+                }
+
+                override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
+
+            }).dispatch()
     }
 }

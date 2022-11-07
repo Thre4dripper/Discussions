@@ -58,6 +58,7 @@ class ProfileApi {
         fun updateProfile(
             context: Context,
             token: String,
+            imageUrl: String,
             username: String,
             firstName: String,
             lastName: String,
@@ -72,7 +73,7 @@ class ProfileApi {
             val url = "${ApiRoutes.BASE_URL}${ApiRoutes.UPDATE_PROFILE}"
 
             val body = "{\n" +
-                    "    \"image\": \"\",\n" +
+                    "    \"image\": \"$imageUrl\",\n" +
                     "    \"username\": \"$username\",\n" +
                     "    \"first_name\": \"$firstName\",\n" +
                     "    \"last_name\": \"$lastName\",\n" +

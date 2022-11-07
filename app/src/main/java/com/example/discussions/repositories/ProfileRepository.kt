@@ -44,6 +44,7 @@ class ProfileRepository {
 
         fun updateProfile(
             context: Context,
+            imageUrl: String,
             username:String,
             firstName: String,
             lastName: String,
@@ -57,6 +58,7 @@ class ProfileRepository {
             val token = LoginStore.getJWTToken(context)!!
             ProfileApi.updateProfile(context,
                 token,
+                imageUrl,
                 username,
                 firstName,
                 lastName,

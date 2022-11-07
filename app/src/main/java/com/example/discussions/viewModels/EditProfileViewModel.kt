@@ -20,9 +20,13 @@ class EditProfileViewModel : ViewModel() {
     var address: String = ""
 
     private val _isProfileLoaded = MutableLiveData<Boolean>(null)
+    private val _isProfileUpdated = MutableLiveData<Boolean>(null)
 
     val isProfileLoaded: LiveData<Boolean>
         get() = _isProfileLoaded
+
+    val isProfileUpdated: LiveData<Boolean>
+        get() = _isProfileUpdated
 
     fun getProfile(context: Context) {
         ProfileRepository.getProfile(context, object : ResponseCallback {
@@ -47,6 +51,7 @@ class EditProfileViewModel : ViewModel() {
 
     fun updateProfile(
         context: Context,
+        imageUrl: String,
         firstName: String,
         lastName: String,
         gender: String,
@@ -54,10 +59,10 @@ class EditProfileViewModel : ViewModel() {
         mobileNo: String,
         dob: String,
         address: String,
-        callback: ResponseCallback,
     ) {
 
         ProfileRepository.updateProfile(context,
+            imageUrl,
             username,
             firstName,
             lastName,
@@ -68,11 +73,11 @@ class EditProfileViewModel : ViewModel() {
             address,
             object : ResponseCallback {
                 override fun onSuccess(response: String) {
-                    callback.onSuccess(response)
+                    _isProfileUpdated.value = true
                 }
 
                 override fun onError(response: String) {
-                    callback.onError(response)
+                    _isProfileUpdated.value = false
                 }
             })
     }
