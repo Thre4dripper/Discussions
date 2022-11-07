@@ -28,6 +28,10 @@ class HomeActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         binding.bottomNavigationView.background = null
+        binding.homeFab.setOnClickListener {
+            val bottomSheet = CreatePostsBottomSheet()
+            bottomSheet.show(supportFragmentManager, bottomSheet.tag)
+        }
 
         initFragments()
     }
