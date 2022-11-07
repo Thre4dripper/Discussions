@@ -182,6 +182,13 @@ class EditProfileActivity : AppCompatActivity() {
                 //setting data
                 if (it) {
                     binding.viewModel = viewModel
+
+                    //setting profile image
+                    viewModel.profileImage = viewModel.profileImage.replace("http://", "https://")
+                    profileImageUri = Uri.parse(viewModel.profileImage)
+
+                    Glide.with(this@EditProfileActivity).load(profileImageUri)
+                        .placeholder(R.drawable.ic_profile).into(binding.editProfileIv)
                     //setting gender radios
                     setRadioButtons(viewModel.gender)
                 } else {
@@ -192,7 +199,6 @@ class EditProfileActivity : AppCompatActivity() {
         }
         viewModel.getProfile(this)
     }
-
 
     /**
      * METHOD FOR SETTING GENDER RADIO BUTTONS ON PROFILE LOAD

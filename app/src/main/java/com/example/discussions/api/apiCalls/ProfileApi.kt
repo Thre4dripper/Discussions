@@ -34,6 +34,7 @@ class ProfileApi {
 
         fun parseProfileJson(json: String): Map<String, String> {
             val rootObject = JSONObject(json)
+            val profileImage = rootObject.getString("image")
             val username = rootObject.getString("username")
             val firstName = rootObject.getString("first_name")
             val lastName = rootObject.getString("last_name")
@@ -44,6 +45,7 @@ class ProfileApi {
             val address = rootObject.getString("address")
 
             return mapOf(
+                "profileImage" to profileImage,
                 "username" to username,
                 "firstName" to firstName,
                 "lastName" to lastName,

@@ -18,7 +18,6 @@ class ProfileRepository {
             ProfileApi.getProfileJson(context, token, object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     map = ProfileApi.parseProfileJson(response)
-                    Log.d(TAG, "onSuccess: $map")
                     callback.onSuccess("Success")
                 }
 
