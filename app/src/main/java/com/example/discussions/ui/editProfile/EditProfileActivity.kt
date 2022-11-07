@@ -41,7 +41,6 @@ class EditProfileActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile)
         viewModel = ViewModelProvider(this)[EditProfileViewModel::class.java]
-        setupCloudinary()
 
         binding.editProfileBackBtn.setOnClickListener {
             finish()
@@ -116,15 +115,6 @@ class EditProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun setupCloudinary() {
-        val config = HashMap<String, String>()
-        config["cloud_name"] = getString(R.string.cloud_name)
-        config["api_key"] = getString(R.string.api_key)
-        config["api_secret"] = getString(R.string.api_secret)
-        config["secure"] = "true"
-
-        MediaManager.init(this, config)
-    }
 
     // Registers a photo picker activity launcher in single-select mode.
     private val photoPickerLauncher =
