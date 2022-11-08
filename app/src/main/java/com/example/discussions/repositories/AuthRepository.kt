@@ -2,8 +2,8 @@ package com.example.discussions.repositories
 
 import android.content.Context
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.api.apiCalls.LoginApi
-import com.example.discussions.api.apiCalls.SignupApi
+import com.example.discussions.api.apiCalls.auth.LoginApi
+import com.example.discussions.api.apiCalls.auth.SignupApi
 import org.json.JSONObject
 
 class AuthRepository {

@@ -9,7 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.discussions.databinding.FragmentProfileBinding
-import com.example.discussions.ui.editProfile.EditProfileActivity
+import com.example.discussions.ui.editDetails.EditDetailsActivity
 import com.example.discussions.ui.settings.SettingsActivity
 
 class ProfileFragment : Fragment() {
@@ -26,7 +26,7 @@ class ProfileFragment : Fragment() {
             .into(binding.profileIv)
 
         binding.editProfileBtn.setOnClickListener {
-            val intent = Intent(requireContext(), EditProfileActivity::class.java)
+            val intent = Intent(requireContext(), EditDetailsActivity::class.java)
             startActivity(intent)
         }
 

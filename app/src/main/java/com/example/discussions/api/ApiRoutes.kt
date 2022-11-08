@@ -6,7 +6,7 @@ class ApiRoutes {
 
         const val LOGIN = "/api/users/login/"
         const val REGISTER = "/api/users/register/"
-        const val PROFILE = "/api/users/profile/"
-        const val UPDATE_PROFILE = "/api/users/profile/update/"
+        const val USER_DETAILS = "/api/users/details/"
+        const val USER_DETAILS_UPDATE = "/api/users/profile/update/"
     }
 }

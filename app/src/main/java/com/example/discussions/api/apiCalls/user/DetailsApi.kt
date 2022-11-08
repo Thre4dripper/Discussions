@@ -1,4 +1,4 @@
-package com.example.discussions.api.apiCalls
+package com.example.discussions.api.apiCalls.user
 
 import android.content.Context
 import com.android.volley.toolbox.JsonObjectRequest
@@ -7,15 +7,15 @@ import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import org.json.JSONObject
 
-class ProfileApi {
+class DetailsApi {
     companion object {
         private const val TAG = "ProfileApi"
 
-        fun getProfileJson(
+        fun getDetailsJson(
             context: Context, token: String, callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
-            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.PROFILE}"
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.USER_DETAILS}"
 
             val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
                 callback.onSuccess(response.toString())
@@ -32,7 +32,7 @@ class ProfileApi {
             queue.add(request)
         }
 
-        fun parseProfileJson(json: String): Map<String, String> {
+        fun parseDetailsJson(json: String): Map<String, String> {
             val rootObject = JSONObject(json)
             val profileImage = rootObject.getString("image")
             val username = rootObject.getString("username")
@@ -57,7 +57,7 @@ class ProfileApi {
             )
         }
 
-        fun updateProfile(
+        fun updateDetails(
             context: Context,
             token: String,
             imageUrl: String,
@@ -72,7 +72,7 @@ class ProfileApi {
             callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
-            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.UPDATE_PROFILE}"
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.USER_DETAILS_UPDATE}"
 
             val body = "{\n" +
                     "    \"image\": \"$imageUrl\",\n" +

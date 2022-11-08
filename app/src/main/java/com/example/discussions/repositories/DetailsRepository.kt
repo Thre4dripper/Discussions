@@ -1,23 +1,22 @@
 package com.example.discussions.repositories
 
 import android.content.Context
-import android.util.Log
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.api.apiCalls.ProfileApi
+import com.example.discussions.api.apiCalls.user.DetailsApi
 import com.example.discussions.store.LoginStore
 
-class ProfileRepository {
+class DetailsRepository {
     companion object {
         private const val TAG = "ProfileRepository"
         var map = mapOf<String, String>()
 
-        fun getProfile(
+        fun getDetails(
             context: Context, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
-            ProfileApi.getProfileJson(context, token, object : ResponseCallback {
+            DetailsApi.getDetailsJson(context, token, object : ResponseCallback {
                 override fun onSuccess(response: String) {
-                    map = ProfileApi.parseProfileJson(response)
+                    map = DetailsApi.parseDetailsJson(response)
                     callback.onSuccess("Success")
                 }
 
@@ -41,7 +40,7 @@ class ProfileRepository {
             })
         }
 
-        fun updateProfile(
+        fun updateDetails(
             context: Context,
             imageUrl: String,
             username:String,
@@ -55,7 +54,7 @@ class ProfileRepository {
             callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
-            ProfileApi.updateProfile(context,
+            DetailsApi.updateDetails(context,
                 token,
                 imageUrl,
                 username,

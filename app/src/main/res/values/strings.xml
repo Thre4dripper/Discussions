@@ -49,21 +49,21 @@
 
     //Edit Profile Activity
     <string name="back_button_desc">Back Button</string>
-    <string name="edit_profile_label_personal_data">Edit Profile</string>
-    <string name="edit_profile_clear_desc">Clear Profile Photo</string>
-    <string name="edit_profile_desc">Edit Profile Photo</string>
-    <string name="edit_profile_label_username">Username</string>
-    <string name="edit_profile_label_first_name">First Name</string>
-    <string name="edit_profile_label_last_name">Last Name</string>
-    <string name="edit_profile_label_gender_name">Gender</string>
-    <string name="edit_profile_label_gender_male">Male</string>
-    <string name="edit_profile_label_gender_female">Female</string>
-    <string name="edit_profile_label_email">Email</string>
-    <string name="edit_profile_label_mobile_no">Mobile Number</string>
-    <string name="edit_profile_label_dob">Date of Birth</string>
-    <string name="edit_profile_label_text_dob">%d-%d-%d</string>
-    <string name="edit_profile_label_address">Address</string>
-    <string name="edit_profile_update_profile_btn">UPDATE PROFILE</string>
+    <string name="edit_details_label_personal_data">Edit Details</string>
+    <string name="edit_details_clear_desc">Clear Profile Photo</string>
+    <string name="edit_details_desc">Edit Profile Photo</string>
+    <string name="edit_details_label_username">Username</string>
+    <string name="edit_details_label_first_name">First Name</string>
+    <string name="edit_details_label_last_name">Last Name</string>
+    <string name="edit_details_label_gender_name">Gender</string>
+    <string name="edit_details_label_gender_male">Male</string>
+    <string name="edit_details_label_gender_female">Female</string>
+    <string name="edit_details_label_email">Email</string>
+    <string name="edit_details_label_mobile_no">Mobile Number</string>
+    <string name="edit_details_label_dob">Date of Birth</string>
+    <string name="edit_details_label_text_dob">%d-%d-%d</string>
+    <string name="edit_details_label_address">Address</string>
+    <string name="edit_details_update_profile_btn">UPDATE PROFILE</string>
 
     //Settings Activity
     <string name="settings_label">Settings</string>

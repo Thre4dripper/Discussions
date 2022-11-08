@@ -1,4 +1,4 @@
-package com.example.discussions.ui.editProfile
+package com.example.discussions.ui.editDetails
 
 import android.app.DatePickerDialog
 import android.net.Uri
@@ -18,9 +18,9 @@ import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
 import com.example.discussions.R
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.databinding.ActivityEditProfileBinding
+import com.example.discussions.databinding.ActivityEditDetailsBinding
 import com.example.discussions.databinding.LoadingDialogBinding
-import com.example.discussions.viewModels.EditProfileViewModel
+import com.example.discussions.viewModels.EditDetailsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.CoroutineScope
@@ -29,27 +29,27 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class EditProfileActivity : AppCompatActivity() {
+class EditDetailsActivity : AppCompatActivity() {
     private val TAG = "EditProfileActivity"
 
-    private lateinit var binding: ActivityEditProfileBinding
-    private lateinit var viewModel: EditProfileViewModel
+    private lateinit var binding: ActivityEditDetailsBinding
+    private lateinit var viewModel: EditDetailsViewModel
 
     private lateinit var loadingDialog: AlertDialog
     private var selectedImageUri: Uri = Uri.EMPTY
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_profile)
-        viewModel = ViewModelProvider(this)[EditProfileViewModel::class.java]
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_details)
+        viewModel = ViewModelProvider(this)[EditDetailsViewModel::class.java]
 
-        binding.editProfileBackBtn.setOnClickListener {
+        binding.editDetailsBackBtn.setOnClickListener {
             finish()
         }
         binding.clearProfileImageBtn.setOnClickListener {
             clearProfileImage()
         }
-        binding.editProfileImageBtn.setOnClickListener {
+        binding.editDetailsImageBtn.setOnClickListener {
             photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
@@ -58,10 +58,10 @@ class EditProfileActivity : AppCompatActivity() {
         initRadioButtons()
         initDOBDialog()
 
-        getProfile()
+        getDetails()
 
         binding.updateProfileBtn.setOnClickListener {
-            updateProfile()
+            updateDetails()
         }
     }
 
@@ -109,7 +109,7 @@ class EditProfileActivity : AppCompatActivity() {
             datePickerDialog.setOnDateSetListener { _, year, month, dayOfMonth ->
                 binding.dobEt.setText(
                     resources.getString(
-                        R.string.edit_profile_label_text_dob, year, month + 1, dayOfMonth
+                        R.string.edit_details_label_text_dob, year, month + 1, dayOfMonth
                     )
                 )
             }
@@ -126,7 +126,7 @@ class EditProfileActivity : AppCompatActivity() {
             .setTitle("Clear Profile Image")
             .setMessage("Are you sure you want to clear profile image?")
             .setPositiveButton("Yes") { _, _ ->
-                binding.editProfileIv.setImageResource(R.drawable.ic_profile)
+                binding.editDetailsIv.setImageResource(R.drawable.ic_profile)
                 viewModel.profileImage = ""
             }
             .setNegativeButton("No") { dialog, _ ->
@@ -175,30 +175,30 @@ class EditProfileActivity : AppCompatActivity() {
                 selectedImageUri = UCrop.getOutput(it.data!!)!!
 
                 //setting image to image view
-                Glide.with(this).load(selectedImageUri).into(binding.editProfileIv)
+                Glide.with(this).load(selectedImageUri).into(binding.editDetailsIv)
             }
         }
 
     /**
      *  METHOD TO GET PROFILE DATA FROM SERVER AND SET IT TO UI
      */
-    private fun getProfile() {
+    private fun getDetails() {
         loadingDialog.show()
-        viewModel.isProfileLoaded.observe(this) {
+        viewModel.isDetailsLoaded.observe(this) {
             if (it != null) {
                 //clearing progress dialog
                 loadingDialog.dismiss()
 
                 //setting data
-                if (it == EditProfileViewModel.API_SUCCESS) {
+                if (it == EditDetailsViewModel.API_SUCCESS) {
                     binding.viewModel = viewModel
 
                     //fixing image url
                     viewModel.profileImage = viewModel.profileImage.replace("http://", "https://")
 
                     //setting image to imageview
-                    Glide.with(this@EditProfileActivity).load(viewModel.profileImage)
-                        .placeholder(R.drawable.ic_profile).into(binding.editProfileIv)
+                    Glide.with(this@EditDetailsActivity).load(viewModel.profileImage)
+                        .placeholder(R.drawable.ic_profile).into(binding.editDetailsIv)
 
                     //setting gender radios
                     setRadioButtons(viewModel.gender)
@@ -208,7 +208,7 @@ class EditProfileActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.getProfile(this)
+        viewModel.getDetails(this)
     }
 
     /**
@@ -231,7 +231,7 @@ class EditProfileActivity : AppCompatActivity() {
     /**
      * METHOD FOR UPDATE PROFILE TO THE SERVER
      */
-    private fun updateProfile() {
+    private fun updateDetails() {
         val firstName = binding.profileFirstNameEt.text.toString().trim()
         val lastName = binding.profileLastNameEt.text.toString().trim()
         val gender = if (binding.maleRadio.isChecked) "M" else "F"
@@ -295,13 +295,13 @@ class EditProfileActivity : AppCompatActivity() {
         }
 
         loadingDialog.show()
-        viewModel.isProfileUpdated.observe(this) {
+        viewModel.isDetailsUpdated.observe(this) {
             if (it != null) {
                 //clearing progress dialog
                 loadingDialog.dismiss()
 
                 //setting data
-                if (it == EditProfileViewModel.API_SUCCESS) {
+                if (it == EditDetailsViewModel.API_SUCCESS) {
                     Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {
@@ -313,8 +313,8 @@ class EditProfileActivity : AppCompatActivity() {
         //first image should be uploaded to server and then profile data
         uploadImage(object : ResponseCallback {
             override fun onSuccess(response: String) {
-                viewModel.updateProfile(
-                    this@EditProfileActivity,
+                viewModel.updateDetails(
+                    this@EditDetailsActivity,
                     imageUrl = response,
                     firstName,
                     lastName,
@@ -329,7 +329,7 @@ class EditProfileActivity : AppCompatActivity() {
             override fun onError(response: String) {
                 loadingDialog.dismiss()
                 Toast.makeText(
-                    this@EditProfileActivity, response, Toast.LENGTH_SHORT
+                    this@EditDetailsActivity, response, Toast.LENGTH_SHORT
                 ).show()
             }
         })

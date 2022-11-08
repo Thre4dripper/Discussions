@@ -1,4 +1,4 @@
-package com.example.discussions.api.apiCalls
+package com.example.discussions.api.apiCalls.auth
 
 import android.content.Context
 import com.android.volley.Request
