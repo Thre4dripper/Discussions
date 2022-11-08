@@ -1,51 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingTop="32dp">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.cardview.widget.CardView style="@style/BottomSheetCvStyle">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="32dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/create_post_btn"
+            style="@style/BottomSheetCvStyle">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.airbnb.lottie.LottieAnimationView
+                    style="@style/BottomSheetLottieStyle"
+                    app:lottie_rawRes="@raw/create_post" />
+
+                <TextView
+                    style="@style/BottomSheetTvStyle"
+                    android:text="@string/create_post_label" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+
+        <View
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_marginBottom="24dp"
+            android:background="@color/light_gray" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                style="@style/BottomSheetLottieStyle"
-                app:lottie_rawRes="@raw/create_post" />
+        <androidx.cardview.widget.CardView
+            android:id="@+id/create_poll_btn"
+            style="@style/BottomSheetCvStyle">
 
-            <TextView
-                style="@style/BottomSheetTvStyle"
-                android:text="@string/create_post_label" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <com.airbnb.lottie.LottieAnimationView
+                    style="@style/BottomSheetLottieStyle"
+                    app:lottie_rawRes="@raw/create_poll" />
 
+                <TextView
+                    style="@style/BottomSheetTvStyle"
+                    android:text="@string/create_poll_label" />
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="24dp"
-        android:background="@color/light_gray" />
-
-    <androidx.cardview.widget.CardView style="@style/BottomSheetCvStyle">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <com.airbnb.lottie.LottieAnimationView
-                style="@style/BottomSheetLottieStyle"
-                app:lottie_rawRes="@raw/create_poll" />
-
-            <TextView
-                style="@style/BottomSheetTvStyle"
-                android:text="@string/create_poll_label" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-</LinearLayout>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+</layout>
