@@ -23,6 +23,17 @@
     <string name="create_post_label">Create Post</string>
     <string name="create_poll_label">Create Poll</string>
 
+    //Create Post Activity
+    <string name="create_post_btn_text">Post</string>
+    <string name="create_post_profile_image_desc">Profile Image</string>
+    <string name="create_post_user_name">Name</string>
+    <string name="create_post_hint_title">Title</string>
+    <string name="create_post_hint_content">What do you want to talk about?</string>
+    <string name="create_post_remove_image_desc">Remove Image</string>
+    <string name="create_post_post_image_desc">Post\'s Image</string>
+    <string name="create_post_add_image_desc">Add Image to post</string>
+    <string name="create_post_allow_comments_text">Allow Comments</string>
+
     //Profile Fragment
     <string name="profile_image_desc">Display Profile Image</string>
     <string name="profile_name_text">Name</string>
@@ -37,8 +48,8 @@
     <string name="profile_rating_label">Rating</string>
 
     //Edit Profile Activity
-    <string name="edit_profile_back_button_desc">Back Button</string>
-    <string name="edit_profile_label_personal_data">Personal Data</string>
+    <string name="back_button_desc">Back Button</string>
+    <string name="edit_profile_label_personal_data">Edit Profile</string>
     <string name="edit_profile_clear_desc">Clear Profile Photo</string>
     <string name="edit_profile_desc">Edit Profile Photo</string>
     <string name="edit_profile_label_username">Username</string>
