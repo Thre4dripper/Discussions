@@ -26,7 +26,7 @@
     //Create Post Activity
     <string name="create_post_btn_text">Post</string>
     <string name="create_post_profile_image_desc">Profile Image</string>
-    <string name="create_post_user_name">Name</string>
+    <string name="create_post_user_name">@string/profile_username_text</string>
     <string name="create_post_hint_title">Title</string>
     <string name="create_post_hint_content">What do you want to talk about?</string>
     <string name="create_post_remove_image_desc">Remove Image</string>
