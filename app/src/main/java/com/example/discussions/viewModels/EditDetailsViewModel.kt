@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.repositories.DetailsRepository
+import com.example.discussions.repositories.UserRepository
 
 class EditDetailsViewModel : ViewModel() {
     private val TAG = "EditProfileViewModel"
@@ -34,17 +34,17 @@ class EditDetailsViewModel : ViewModel() {
         get() = _isDetailsUpdated
 
     fun getDetails(context: Context) {
-        DetailsRepository.getDetails(context, object : ResponseCallback {
+        UserRepository.getDetails(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                DetailsRepository.map["profileImage"]?.let { profileImage = it }
-                DetailsRepository.map["username"]?.let { username = it }
-                DetailsRepository.map["firstName"]?.let { firstName = it }
-                DetailsRepository.map["lastName"]?.let { lastName = it }
-                DetailsRepository.map["gender"]?.let { gender = it }
-                DetailsRepository.map["email"]?.let { email = it }
-                DetailsRepository.map["mobileNo"]?.let { mobileNo = it }
-                DetailsRepository.map["dob"]?.let { dob = it }
-                DetailsRepository.map["address"]?.let { address = it }
+                UserRepository.map["profileImage"]?.let { profileImage = it }
+                UserRepository.map["username"]?.let { username = it }
+                UserRepository.map["firstName"]?.let { firstName = it }
+                UserRepository.map["lastName"]?.let { lastName = it }
+                UserRepository.map["gender"]?.let { gender = it }
+                UserRepository.map["email"]?.let { email = it }
+                UserRepository.map["mobileNo"]?.let { mobileNo = it }
+                UserRepository.map["dob"]?.let { dob = it }
+                UserRepository.map["address"]?.let { address = it }
                 _isDetailsLoaded.postValue(API_SUCCESS)
             }
 
@@ -67,7 +67,7 @@ class EditDetailsViewModel : ViewModel() {
         address: String,
     ) {
 
-        DetailsRepository.updateDetails(context,
+        UserRepository.updateDetails(context,
             imageUrl,
             username,
             firstName,

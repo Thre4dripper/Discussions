@@ -9,7 +9,7 @@ import org.json.JSONObject
 
 class DetailsApi {
     companion object {
-        private const val TAG = "ProfileApi"
+        private const val TAG = "DetailsApi"
 
         fun getDetailsJson(
             context: Context, token: String, callback: ResponseCallback

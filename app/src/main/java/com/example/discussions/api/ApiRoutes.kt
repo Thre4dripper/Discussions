@@ -8,5 +8,6 @@ class ApiRoutes {
         const val REGISTER = "/api/users/register/"
         const val USER_DETAILS = "/api/users/details/"
         const val USER_DETAILS_UPDATE = "/api/users/profile/update/"
+        const val USER_PROFILE = "/api/users/profile/"
     }
 }
