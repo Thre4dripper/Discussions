@@ -193,9 +193,6 @@ class EditDetailsActivity : AppCompatActivity() {
                 if (it == EditDetailsViewModel.API_SUCCESS) {
                     binding.viewModel = viewModel
 
-                    //fixing image url
-                    viewModel.profileImage = viewModel.profileImage.replace("http://", "https://")
-
                     //setting image to imageview
                     Glide.with(this@EditDetailsActivity).load(viewModel.profileImage)
                         .placeholder(R.drawable.ic_profile).into(binding.editDetailsIv)
@@ -354,7 +351,8 @@ class EditDetailsActivity : AppCompatActivity() {
                 override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
 
                 override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
-                    val imageUrl = resultData!!["url"].toString()
+                    var imageUrl = resultData!!["url"].toString()
+                    imageUrl = imageUrl.replace("http://", "https://")
                     callback.onSuccess(imageUrl)
                 }
 

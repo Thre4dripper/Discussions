@@ -24,15 +24,7 @@ class HomeViewModel : ViewModel() {
     fun getProfile(context: Context) {
         UserRepository.getProfile(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                profileDataModel = ProfileDataModel(
-                    UserRepository.map["userId"]!!,
-                    UserRepository.map["profileImage"]!!,
-                    UserRepository.map["username"]!!,
-                    UserRepository.map["firstName"]!!,
-                    UserRepository.map["lastName"]!!,
-                    UserRepository.map["postsCount"]!!,
-                    UserRepository.map["pollsCount"]!!,
-                )
+                profileDataModel = UserRepository.profileDataModel!!
                 _isProfileLoaded.postValue(API_SUCCESS)
             }
 

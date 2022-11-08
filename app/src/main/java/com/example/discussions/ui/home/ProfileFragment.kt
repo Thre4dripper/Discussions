@@ -10,7 +10,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.example.discussions.R
 import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.editDetails.EditDetailsActivity
@@ -19,6 +18,8 @@ import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ProfileFragment : Fragment() {
+    private val TAG = "ProfileFragment"
+
     private lateinit var binding: FragmentProfileBinding
     private lateinit var viewModel: HomeViewModel
 
@@ -31,10 +32,6 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
-        Glide.with(this)
-            .load("https://media1.popsugar-assets.com/files/thumbor/8su-YMfzKmaONa2ODYaWx7dltHI/fit-in/500x500/filters:format_auto-!!-:strip_icc-!!-/2018/07/16/749/n/1922398/4c32bf875b4ccef29a4812.53698795_/i/Tom-Cruise.jpg")
-            .into(binding.profileIv)
-
         binding.editProfileBtn.setOnClickListener {
             val intent = Intent(requireContext(), EditDetailsActivity::class.java)
             startActivity(intent)
@@ -43,6 +40,8 @@ class ProfileFragment : Fragment() {
         binding.profileSettingsBtn.setOnClickListener {
             settingsCallback.launch(Intent(requireContext(), SettingsActivity::class.java))
         }
+
+        binding.lifecycleOwner = this
 
         initLoadingDialog()
         getProfile()
@@ -63,24 +62,11 @@ class ProfileFragment : Fragment() {
                 loadingDialog.dismiss()
                 if (it == HomeViewModel.API_SUCCESS) {
 
-                    viewModel.profileDataModel.profileImage =
-                        viewModel.profileDataModel.profileImage.replace(
-                            "http://",
-                            "https://"
-                        )
-
                     Glide.with(this)
                         .load(viewModel.profileDataModel.profileImage)
                         .into(binding.profileIv)
 
-                    binding.profileNameTv.text = getString(
-                        R.string.profile_name_text,
-                        viewModel.profileDataModel.firstName,
-                        viewModel.profileDataModel.lastName
-                    )
-                    binding.profileUsernameTv.text = viewModel.profileDataModel.username
-                    binding.profilePostsCountTv.text = viewModel.profileDataModel.postsCount
-                    binding.profilePollsCountTv.text = viewModel.profileDataModel.pollsCount
+                    binding.profile = viewModel.profileDataModel
                 } else {
                     MaterialAlertDialogBuilder(requireContext())
                         .setTitle("Error")

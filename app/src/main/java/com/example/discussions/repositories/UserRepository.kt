@@ -4,12 +4,14 @@ import android.content.Context
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.user.DetailsApi
 import com.example.discussions.api.apiCalls.user.ProfileApi
+import com.example.discussions.models.ProfileDataModel
 import com.example.discussions.store.LoginStore
 
 class UserRepository {
     companion object {
         private const val TAG = "ProfileRepository"
         var map = mapOf<String, String>()
+        var profileDataModel: ProfileDataModel? = null
 
         fun getDetails(
             context: Context, callback: ResponseCallback
@@ -97,7 +99,7 @@ class UserRepository {
             val token = LoginStore.getJWTToken(context)!!
             ProfileApi.getProfileJson(context, token, object : ResponseCallback {
                 override fun onSuccess(response: String) {
-                    map = ProfileApi.parseProfileJson(response)
+                    profileDataModel = ProfileApi.parseProfileJson(response)
                     callback.onSuccess("Success")
                 }
 

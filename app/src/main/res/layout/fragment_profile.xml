@@ -3,6 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+
+        <variable
+            name="profile"
+            type="com.example.discussions.models.ProfileDataModel" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -47,23 +54,25 @@
         <TextView
             android:id="@+id/profile_name_tv"
             style="@style/ProfileDescTvStyle"
-            android:text="@string/profile_name_text"
+            android:text="@{profile.firstName.concat(` `).concat(profile.lastName)}"
             android:textColor="@color/white"
             android:textSize="24sp"
             app:layout_constraintBottom_toTopOf="@+id/profile_username_tv"
             app:layout_constraintEnd_toStartOf="@+id/profile_settings_btn"
             app:layout_constraintStart_toEndOf="@+id/profile_image_cv"
-            app:layout_constraintTop_toTopOf="@+id/profile_image_cv" />
+            app:layout_constraintTop_toTopOf="@+id/profile_image_cv"
+            tools:text="@string/profile_name_text" />
 
         <TextView
             android:id="@+id/profile_username_tv"
             style="@style/ProfileDescTvStyle"
-            android:text="@string/profile_username_text"
+            android:text="@{profile.username}"
             android:textColor="@color/light_gray"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/profile_settings_btn"
             app:layout_constraintStart_toEndOf="@+id/profile_image_cv"
-            app:layout_constraintTop_toBottomOf="@+id/profile_name_tv" />
+            app:layout_constraintTop_toBottomOf="@+id/profile_name_tv"
+            tools:text="@string/profile_username_text" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/edit_profile_btn"
@@ -106,10 +115,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@string/profile_posts_text"
+                        android:text="@{profile.postsCount}"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="@string/profile_posts_text" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -139,10 +149,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@string/profile_polls_text"
+                        android:text="@{profile.pollsCount}"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        tools:text="@string/profile_polls_text" />
 
                     <TextView
                         android:layout_width="wrap_content"

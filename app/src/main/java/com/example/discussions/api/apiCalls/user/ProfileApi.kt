@@ -5,6 +5,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.models.ProfileDataModel
 import org.json.JSONObject
 
 class ProfileApi {
@@ -32,24 +33,25 @@ class ProfileApi {
             queue.add(request)
         }
 
-        fun parseProfileJson(json: String): Map<String, String> {
+        fun parseProfileJson(json: String): ProfileDataModel {
             val rootObject = JSONObject(json)
             val userId = rootObject.getInt("user")
             val profileImage = rootObject.getString("user_image")
-            val username = rootObject.getString("username")
+            var username = rootObject.getString("username")
             val firstName = rootObject.getString("first_name")
             val lastName = rootObject.getString("last_name")
             val postsCount = rootObject.getInt("user_post_count")
             val pollsCount = rootObject.getInt("user_poll_count")
 
-            return mapOf(
-                "userId" to userId.toString(),
-                "profileImage" to profileImage,
-                "username" to username,
-                "firstName" to firstName,
-                "lastName" to lastName,
-                "postsCount" to postsCount.toString(),
-                "pollsCount" to pollsCount.toString(),
+            username = "@$username"
+            return ProfileDataModel(
+                userId.toString(),
+                profileImage,
+                username,
+                firstName,
+                lastName,
+                postsCount.toString(),
+                pollsCount.toString()
             )
         }
     }
