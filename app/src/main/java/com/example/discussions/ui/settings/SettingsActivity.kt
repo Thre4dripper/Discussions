@@ -3,16 +3,13 @@ package com.example.discussions.ui.settings
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ActivitySettingsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SettingsActivity : AppCompatActivity() {
     lateinit var binding: ActivitySettingsBinding
-
-    companion object {
-        const val RESULT_LOGOUT = 100
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,7 +25,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun logoutDialog() {
         MaterialAlertDialogBuilder(this).setTitle("Logout")
             .setMessage("Are you sure you want to logout?").setPositiveButton("Yes") { _, _ ->
-                setResult(RESULT_LOGOUT)
+                setResult(Constants.RESULT_LOGOUT)
                 finish()
             }.setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()

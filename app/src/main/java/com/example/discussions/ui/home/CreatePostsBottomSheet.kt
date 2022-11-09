@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.example.discussions.Constants
 import com.example.discussions.databinding.PostsBsLayoutBinding
 import com.example.discussions.ui.createPost.CreatePostActivity
-import com.example.discussions.viewModels.CreatePostViewModel
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
@@ -26,13 +26,13 @@ class CreatePostsBottomSheet : BottomSheetDialogFragment() {
 
         binding.createPostBtn.setOnClickListener {
             val intent = Intent(context, CreatePostActivity::class.java)
-            if (homeViewModel.isProfileLoaded.value == HomeViewModel.API_SUCCESS) {
+            if (homeViewModel.isProfileLoaded.value == Constants.API_SUCCESS) {
                 intent.putExtra(
-                    CreatePostViewModel.PROFILE_IMAGE,
+                    Constants.PROFILE_IMAGE,
                     homeViewModel.profileDataModel.profileImage
                 )
                 intent.putExtra(
-                    CreatePostViewModel.USERNAME,
+                    Constants.USERNAME,
                     homeViewModel.profileDataModel.username
                 )
             }

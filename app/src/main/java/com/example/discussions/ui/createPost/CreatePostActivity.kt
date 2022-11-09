@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ActivityCreatePostBinding
 import com.example.discussions.viewModels.CreatePostViewModel
@@ -28,8 +29,8 @@ class CreatePostActivity : AppCompatActivity() {
     }
 
     private fun getUserData() {
-        viewModel.profileImage = intent.getStringExtra(CreatePostViewModel.PROFILE_IMAGE)
-        viewModel.username = intent.getStringExtra(CreatePostViewModel.USERNAME)
+        viewModel.profileImage = intent.getStringExtra(Constants.PROFILE_IMAGE)
+        viewModel.username = intent.getStringExtra(Constants.USERNAME)
 
         Glide.with(this)
             .load(viewModel.profileImage)

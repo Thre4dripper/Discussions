@@ -3,6 +3,7 @@ package com.example.discussions.api.apiCalls.user
 import android.content.Context
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.discussions.Constants
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import org.json.JSONObject
@@ -45,15 +46,15 @@ class DetailsApi {
             val address = rootObject.getString("address")
 
             return mapOf(
-                "profileImage" to profileImage,
-                "username" to username,
-                "firstName" to firstName,
-                "lastName" to lastName,
-                "gender" to gender,
-                "email" to email,
-                "mobileNo" to mobileNo,
-                "dob" to if (dob == "null") "" else dob,
-                "address" to address,
+                Constants.PROFILE_IMAGE to profileImage,
+                Constants.USERNAME to username,
+                Constants.FIRST_NAME to firstName,
+                Constants.LAST_NAME to lastName,
+                Constants.GENDER to gender,
+                Constants.EMAIL to email,
+                Constants.MOBILE to mobileNo,
+                Constants.DOB to if (dob == "null") "" else dob,
+                Constants.ADDRESS to address,
             )
         }
 

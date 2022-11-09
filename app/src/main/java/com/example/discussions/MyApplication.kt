@@ -1,8 +1,7 @@
-package com.example.discussions.ui
+package com.example.discussions
 
 import android.app.Application
 import com.cloudinary.android.MediaManager
-import com.example.discussions.R
 
 class MyApplication : Application() {
     companion object {

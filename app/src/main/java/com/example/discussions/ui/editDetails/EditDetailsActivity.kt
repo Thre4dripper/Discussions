@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.databinding.ActivityEditDetailsBinding
@@ -190,7 +191,7 @@ class EditDetailsActivity : AppCompatActivity() {
                 loadingDialog.dismiss()
 
                 //setting data
-                if (it == EditDetailsViewModel.API_SUCCESS) {
+                if (it == Constants.API_SUCCESS) {
                     binding.viewModel = viewModel
 
                     //setting image to imageview
@@ -298,7 +299,7 @@ class EditDetailsActivity : AppCompatActivity() {
                 loadingDialog.dismiss()
 
                 //setting data
-                if (it == EditDetailsViewModel.API_SUCCESS) {
+                if (it == Constants.API_SUCCESS) {
                     Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
                     finish()
                 } else {

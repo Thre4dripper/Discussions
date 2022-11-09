@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.discussions.Constants
 import com.example.discussions.databinding.FragmentSignupBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.LoginViewModel
@@ -49,7 +50,7 @@ class SignupFragment(private var tabLayout: TabLayout) : Fragment() {
             if (it == null) return@observe
 
             //login success
-            if (it == LoginViewModel.API_SUCCESS) {
+            if (it == Constants.API_SUCCESS) {
                 loadingDialog.dismiss()
                 //switching to login tab
                 tabLayout.selectTab(tabLayout.getTabAt(0))

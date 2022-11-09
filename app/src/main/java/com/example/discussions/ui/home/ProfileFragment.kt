@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.discussions.Constants
 import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.editDetails.EditDetailsActivity
@@ -60,7 +61,7 @@ class ProfileFragment : Fragment() {
         viewModel.isProfileLoaded.observe(viewLifecycleOwner) {
             if (it != null) {
                 loadingDialog.dismiss()
-                if (it == HomeViewModel.API_SUCCESS) {
+                if (it == Constants.API_SUCCESS) {
 
                     Glide.with(this)
                         .load(viewModel.profileDataModel.profileImage)
@@ -91,8 +92,8 @@ class ProfileFragment : Fragment() {
      */
     private val settingsCallback =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == SettingsActivity.RESULT_LOGOUT) {
-                requireActivity().setResult(SettingsActivity.RESULT_LOGOUT)
+            if (it.resultCode == Constants.RESULT_LOGOUT) {
+                requireActivity().setResult(Constants.RESULT_LOGOUT)
                 requireActivity().finish()
             }
         }

@@ -4,15 +4,12 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.repositories.UserRepository
 
 class EditDetailsViewModel : ViewModel() {
     private val TAG = "EditProfileViewModel"
-
-    companion object {
-        const val API_SUCCESS = "success"
-    }
 
     var profileImage: String = ""
     var username: String = ""
@@ -36,16 +33,16 @@ class EditDetailsViewModel : ViewModel() {
     fun getDetails(context: Context) {
         UserRepository.getDetails(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                UserRepository.map["profileImage"]?.let { profileImage = it }
-                UserRepository.map["username"]?.let { username = it }
-                UserRepository.map["firstName"]?.let { firstName = it }
-                UserRepository.map["lastName"]?.let { lastName = it }
-                UserRepository.map["gender"]?.let { gender = it }
-                UserRepository.map["email"]?.let { email = it }
-                UserRepository.map["mobileNo"]?.let { mobileNo = it }
-                UserRepository.map["dob"]?.let { dob = it }
-                UserRepository.map["address"]?.let { address = it }
-                _isDetailsLoaded.postValue(API_SUCCESS)
+                UserRepository.map[Constants.PROFILE_IMAGE]?.let { profileImage = it }
+                UserRepository.map[Constants.USERNAME]?.let { username = it }
+                UserRepository.map[Constants.FIRST_NAME]?.let { firstName = it }
+                UserRepository.map[Constants.LAST_NAME]?.let { lastName = it }
+                UserRepository.map[Constants.GENDER]?.let { gender = it }
+                UserRepository.map[Constants.EMAIL]?.let { email = it }
+                UserRepository.map[Constants.MOBILE]?.let { mobileNo = it }
+                UserRepository.map[Constants.DOB]?.let { dob = it }
+                UserRepository.map[Constants.ADDRESS]?.let { address = it }
+                _isDetailsLoaded.postValue(Constants.API_SUCCESS)
             }
 
             override fun onError(response: String) {
@@ -79,7 +76,7 @@ class EditDetailsViewModel : ViewModel() {
             address,
             object : ResponseCallback {
                 override fun onSuccess(response: String) {
-                    _isDetailsUpdated.postValue(API_SUCCESS)
+                    _isDetailsUpdated.postValue(Constants.API_SUCCESS)
                 }
 
                 override fun onError(response: String) {

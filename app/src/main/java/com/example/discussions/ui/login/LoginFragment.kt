@@ -10,11 +10,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.discussions.Constants
 import com.example.discussions.databinding.FragmentLoginBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.store.LoginStore
 import com.example.discussions.ui.home.HomeActivity
-import com.example.discussions.ui.settings.SettingsActivity
 import com.example.discussions.viewModels.LoginViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -56,7 +56,7 @@ class LoginFragment : Fragment() {
             }
 
             //login success
-            if (it == LoginViewModel.API_SUCCESS) {
+            if (it == Constants.API_SUCCESS) {
                 loadingDialog.dismiss()
                 homeActivityCallback.launch(Intent(requireContext(), HomeActivity::class.java))
                 Toast.makeText(requireContext(), "Welcome", Toast.LENGTH_SHORT).show()
@@ -105,10 +105,10 @@ class LoginFragment : Fragment() {
      */
     private var homeActivityCallback =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == SettingsActivity.RESULT_LOGOUT) {
+            if (it.resultCode == Constants.RESULT_LOGOUT) {
                 //delete jwt on logout
                 LoginStore.saveJWTToken(requireContext(), null)
-            } else if (it.resultCode == HomeActivity.RESULT_CLOSE) {
+            } else if (it.resultCode == Constants.RESULT_CLOSE) {
                 requireActivity().finish()
             }
         }

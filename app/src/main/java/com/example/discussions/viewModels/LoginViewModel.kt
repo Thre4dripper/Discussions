@@ -3,16 +3,14 @@ package com.example.discussions.viewModels
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.repositories.AuthRepository
 import com.example.discussions.store.LoginStore
 
 class LoginViewModel : ViewModel() {
-    companion object {
-        const val API_SUCCESS = "success"
-    }
-
     private val TAG = "LoginViewModel"
+
     var username = MutableLiveData<String>()
     var email = MutableLiveData<String>()
     var password = MutableLiveData<String>()
@@ -24,7 +22,7 @@ class LoginViewModel : ViewModel() {
     fun checkLoginStatus(context: Context) {
         val token = LoginStore.getJWTToken(context)
         if (token != null) {
-            isAuthenticated.postValue(API_SUCCESS)
+            isAuthenticated.postValue(Constants.API_SUCCESS)
         }
     }
 
@@ -36,7 +34,7 @@ class LoginViewModel : ViewModel() {
     ) {
         AuthRepository.loginUser(context, username, password, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                isAuthenticated.value = API_SUCCESS
+                isAuthenticated.value = Constants.API_SUCCESS
                 //also logged session will be saved
                 if (rememberMe) {
                     LoginStore.saveJWTToken(context, response)
@@ -58,7 +56,7 @@ class LoginViewModel : ViewModel() {
     ) {
         AuthRepository.signupUser(context, username, email, password, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                isRegistered.value = API_SUCCESS
+                isRegistered.value = Constants.API_SUCCESS
             }
 
             override fun onError(response: String) {
