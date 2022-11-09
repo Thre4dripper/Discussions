@@ -10,9 +10,9 @@ import com.example.discussions.repositories.UserRepository
 
 class CreatePostViewModel : ViewModel() {
     var profileImage: String? = null
-    var username: String? = null
-    var postTitle: String? = null
-    var postContent: String? = null
+    var username: String = ""
+    var postTitle: String = ""
+    var postContent: String = ""
     var postImage: String? = null
     var allowComments: Boolean = true
 
