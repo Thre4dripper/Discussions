@@ -185,7 +185,7 @@ class CreatePostActivity : AppCompatActivity() {
                 }
 
             },
-            selectedImageUri = Uri.parse(viewModel.postImage!!),
+            selectedImageUri = Uri.parse(viewModel.postImage ?: ""),
             fallbackImageUri = Uri.EMPTY,
             folderName = viewModel.username
         )

@@ -6,28 +6,47 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.models.PostModel
 import com.example.discussions.models.ProfileDataModel
+import com.example.discussions.repositories.PostRepository
 import com.example.discussions.repositories.UserRepository
 
 class HomeViewModel : ViewModel() {
-    lateinit var profileDataModel: ProfileDataModel
+    private val TAG = "HomeViewModel"
 
-    private val _isProfileLoaded = MutableLiveData<String>(null)
-    val isProfileLoaded: LiveData<String>
-        get() = _isProfileLoaded
+    lateinit var profileDataModel: ProfileDataModel
+    var postsList = MutableLiveData<MutableList<PostModel>?>()
+
+    private val _isApiFetched = MutableLiveData<String?>(null)
+    val isApiFetched: LiveData<String?>
+        get() = _isApiFetched
 
 
     fun getProfile(context: Context) {
+        _isApiFetched.value = null
         UserRepository.getProfile(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 profileDataModel = UserRepository.profileDataModel!!
-                _isProfileLoaded.postValue(Constants.API_SUCCESS)
+                _isApiFetched.postValue(Constants.API_SUCCESS)
             }
 
             override fun onError(response: String) {
-                _isProfileLoaded.postValue(response)
+                _isApiFetched.postValue(response)
+            }
+        })
+    }
+
+    fun getAllPosts(context: Context) {
+        _isApiFetched.value = null
+        PostRepository.getAllPosts(context, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                postsList.postValue(PostRepository.postsList)
+                _isApiFetched.postValue(Constants.API_SUCCESS)
             }
 
+            override fun onError(response: String) {
+                _isApiFetched.postValue(response)
+            }
         })
     }
 }

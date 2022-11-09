@@ -58,7 +58,7 @@ class ProfileFragment : Fragment() {
 
     private fun getProfile() {
         loadingDialog.show()
-        viewModel.isProfileLoaded.observe(viewLifecycleOwner) {
+        viewModel.isApiFetched.observe(viewLifecycleOwner) {
             if (it != null) {
                 loadingDialog.dismiss()
                 if (it == Constants.API_SUCCESS) {

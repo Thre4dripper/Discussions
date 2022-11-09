@@ -32,8 +32,7 @@ class NameImageApi {
         fun parseUsernameAndImageJson(json: String): Map<String, String> {
             val rootObject = JSONObject(json)
 
-            //TODO simplify this when api is ready
-            val username = if (rootObject.has("username")) rootObject.getString("username") else ""
+            val username = rootObject.getString("username")
             val profileImage = rootObject.getString("user_image")
 
             return mapOf(
