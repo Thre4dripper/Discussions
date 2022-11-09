@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.repositories.PostRepository
 import com.example.discussions.repositories.UserRepository
 
 class CreatePostViewModel : ViewModel() {
@@ -21,6 +22,10 @@ class CreatePostViewModel : ViewModel() {
     val isApiFetched: LiveData<String>
         get() = _isApiFetched
 
+    private var _isPostCreated = MutableLiveData<String?>(null)
+    val isPostCreated: LiveData<String?>
+        get() = _isPostCreated
+
     fun getUsernameAndImage(context: Context) {
         UserRepository.getUsernameAndImage(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -33,5 +38,24 @@ class CreatePostViewModel : ViewModel() {
                 _isApiFetched.postValue(response)
             }
         })
+    }
+
+    fun createPost(context: Context) {
+        _isPostCreated.postValue(null)
+        PostRepository.createPost(
+            context,
+            postTitle,
+            postContent,
+            postImage,
+            allowComments,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    _isPostCreated.postValue(Constants.API_SUCCESS)
+                }
+
+                override fun onError(response: String) {
+                    _isPostCreated.postValue(response)
+                }
+            })
     }
 }

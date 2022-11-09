@@ -151,6 +151,20 @@ class CreatePostActivity : AppCompatActivity() {
             return
         }
 
-        finish()
+        loadingDialog.show()
+
+        viewModel.isPostCreated.observe(this) {
+            if (it != null) {
+                loadingDialog.dismiss()
+
+                if (it == Constants.API_SUCCESS) {
+                    Toast.makeText(this, "Post created", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Error creating post", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+        viewModel.createPost(this)
     }
 }
