@@ -9,5 +9,6 @@ class ApiRoutes {
         const val USER_DETAILS = "/api/users/details/"
         const val USER_DETAILS_UPDATE = "/api/users/profile/update/"
         const val USER_PROFILE = "/api/users/profile/"
+        const val USER_USERNAME_IMAGE = "/api/users/userImage/"
     }
 }
