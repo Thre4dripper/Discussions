@@ -11,8 +11,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.example.discussions.Cloudinary
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.api.ResponseCallback
 import com.example.discussions.databinding.ActivityCreatePostBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.CreatePostViewModel
@@ -165,6 +167,27 @@ class CreatePostActivity : AppCompatActivity() {
                 }
             }
         }
-        viewModel.createPost(this)
+
+        //firstly, post image is uploaded to cloudinary after which post is created with the url of the image received from cloudinary
+        //if no image is selected, post is created directly with fallback image url
+        Cloudinary.uploadImage(
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    viewModel.postImage = response
+                    viewModel.createPost(this@CreatePostActivity)
+                }
+
+                override fun onError(response: String) {
+                    loadingDialog.dismiss()
+                    Toast.makeText(
+                        this@CreatePostActivity, response, Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            },
+            selectedImageUri = Uri.parse(viewModel.postImage!!),
+            fallbackImageUri = Uri.EMPTY,
+            folderName = viewModel.username
+        )
     }
 }
