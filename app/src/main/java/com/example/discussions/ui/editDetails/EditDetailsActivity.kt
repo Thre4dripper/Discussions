@@ -13,9 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
-import com.cloudinary.android.MediaManager
-import com.cloudinary.android.callback.ErrorInfo
-import com.cloudinary.android.callback.UploadCallback
+import com.example.discussions.Cloudinary
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.api.ResponseCallback
@@ -309,60 +307,32 @@ class EditDetailsActivity : AppCompatActivity() {
         }
 
         //first image should be uploaded to server and then profile data
-        uploadImage(object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                viewModel.updateDetails(
-                    this@EditDetailsActivity,
-                    imageUrl = response,
-                    firstName,
-                    lastName,
-                    gender,
-                    email,
-                    mobileNo,
-                    dob,
-                    address
-                )
-            }
-
-            override fun onError(response: String) {
-                loadingDialog.dismiss()
-                Toast.makeText(
-                    this@EditDetailsActivity, response, Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
-
-    }
-
-    /**
-     * METHOD FOR UPLOADING IMAGE TO THE SERVER
-     */
-    private fun uploadImage(callback: ResponseCallback) {
-
-        //if image is not changed then @selectedImageUri will be empty
-        if (selectedImageUri.toString().isEmpty()) {
-            callback.onSuccess(viewModel.profileImage)
-            return
-        }
-
-        MediaManager.get().upload(selectedImageUri)
-            .option("folder", "${viewModel.username}/")
-            .callback(object : UploadCallback {
-                override fun onStart(requestId: String?) {}
-                override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}
-
-                override fun onSuccess(requestId: String?, resultData: MutableMap<Any?, Any?>?) {
-                    var imageUrl = resultData!!["url"].toString()
-                    imageUrl = imageUrl.replace("http://", "https://")
-                    callback.onSuccess(imageUrl)
+        Cloudinary.uploadImage(
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    viewModel.updateDetails(
+                        this@EditDetailsActivity,
+                        imageUrl = response,
+                        firstName,
+                        lastName,
+                        gender,
+                        email,
+                        mobileNo,
+                        dob,
+                        address
+                    )
                 }
 
-                override fun onError(requestId: String?, error: ErrorInfo?) {
-                    callback.onError("Error uploading image")
+                override fun onError(response: String) {
+                    loadingDialog.dismiss()
+                    Toast.makeText(
+                        this@EditDetailsActivity, response, Toast.LENGTH_SHORT
+                    ).show()
                 }
-
-                override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
-
-            }).dispatch()
+            },
+            selectedImageUri = selectedImageUri,
+            fallbackImageUri = Uri.parse(viewModel.profileImage),
+            folderName = viewModel.username
+        )
     }
 }
