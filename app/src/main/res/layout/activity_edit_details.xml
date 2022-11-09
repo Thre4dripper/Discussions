@@ -244,6 +244,7 @@
                         android:id="@+id/profile_email_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:enabled="false"
                         android:inputType="textEmailAddress"
                         android:text="@={viewModel.email}" />
                 </com.google.android.material.textfield.TextInputLayout>

@@ -31,7 +31,7 @@
     <string name="create_post_hint_content">What do you want to talk about?</string>
     <string name="create_post_remove_image_desc">Remove Image</string>
     <string name="create_post_post_image_desc">Post\'s Image</string>
-    <string name="create_post_add_image_desc">Add Image to post</string>
+    <string name="create_post_add_image_text">Add Image</string>
     <string name="create_post_allow_comments_text">Allow Comments</string>
 
     //Profile Fragment

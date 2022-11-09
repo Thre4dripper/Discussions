@@ -152,20 +152,22 @@
         </ScrollView>
 
 
-        <ImageView
+        <TextView
             android:id="@+id/imageView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:contentDescription="@string/create_post_add_image_desc"
+            android:drawablePadding="8dp"
             android:focusable="true"
+            android:gravity="center"
             android:padding="8dp"
-            android:src="@drawable/ic_image"
+            android:text="@string/create_post_add_image_text"
+            app:drawableStartCompat="@drawable/ic_image"
+            app:drawableTint="@color/login_header_color"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:tint="@color/login_header_color" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <View
             android:id="@+id/view"
