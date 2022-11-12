@@ -25,5 +25,7 @@ class Constants {
         const val DOB = "dob"
         const val ADDRESS = "address"
 
+        //for intents
+        const val INTENT_IMAGE_URL = "imageUrl"
     }
 }

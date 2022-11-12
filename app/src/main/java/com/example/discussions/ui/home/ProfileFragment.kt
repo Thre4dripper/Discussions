@@ -15,6 +15,7 @@ import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.editDetails.EditDetailsActivity
 import com.example.discussions.ui.settings.SettingsActivity
+import com.example.discussions.ui.zoomImage.ZoomImageActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -33,6 +34,12 @@ class ProfileFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+
+        binding.profileIv.setOnClickListener {
+            val intent = Intent(requireContext(), ZoomImageActivity::class.java)
+            intent.putExtra(Constants.INTENT_IMAGE_URL, viewModel.profileDataModel.profileImage)
+            startActivity(intent)
+        }
 
         binding.editProfileBtn.setOnClickListener {
             val intent = Intent(requireContext(), EditDetailsActivity::class.java)
@@ -68,6 +75,7 @@ class ProfileFragment : Fragment() {
                 requireActivity().finish()
             }
             .show()
+        retryDialog.dismiss()
     }
 
     private fun getProfile() {

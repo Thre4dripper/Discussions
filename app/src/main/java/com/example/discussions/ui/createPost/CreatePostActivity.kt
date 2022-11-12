@@ -1,5 +1,6 @@
 package com.example.discussions.ui.createPost
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
@@ -17,6 +18,7 @@ import com.example.discussions.R
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.databinding.ActivityCreatePostBinding
 import com.example.discussions.databinding.LoadingDialogBinding
+import com.example.discussions.ui.zoomImage.ZoomImageActivity
 import com.example.discussions.viewModels.CreatePostViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yalantis.ucrop.UCrop
@@ -42,7 +44,11 @@ class CreatePostActivity : AppCompatActivity() {
         binding.createPostBtn.setOnClickListener {
             createPost()
         }
-
+        binding.createPostProfileIv.setOnClickListener {
+            val intent = Intent(this, ZoomImageActivity::class.java)
+            intent.putExtra(Constants.INTENT_IMAGE_URL, viewModel.profileImage)
+            startActivity(intent)
+        }
         binding.createPostAddImageBtn.setOnClickListener {
             photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
