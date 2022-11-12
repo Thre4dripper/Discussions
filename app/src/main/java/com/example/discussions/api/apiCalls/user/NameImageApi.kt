@@ -32,9 +32,10 @@ class NameImageApi {
         fun parseUsernameAndImageJson(json: String): Map<String, String> {
             val rootObject = JSONObject(json)
 
-            val username = rootObject.getString("username")
+            var username = rootObject.getString("username")
             val profileImage = rootObject.getString("user_image")
 
+            username = "@$username"
             return mapOf(
                 Constants.PROFILE_IMAGE to profileImage,
                 Constants.USERNAME to username

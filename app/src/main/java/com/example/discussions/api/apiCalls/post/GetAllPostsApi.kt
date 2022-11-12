@@ -1,6 +1,7 @@
 package com.example.discussions.api.apiCalls.post
 
 import android.content.Context
+import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
@@ -32,6 +33,12 @@ class GetAllPostsApi {
                 }
             }
 
+            request.retryPolicy = DefaultRetryPolicy(
+                15000,
+                0,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+            )
+
             queue.add(request)
         }
 
@@ -41,8 +48,10 @@ class GetAllPostsApi {
             for (i in 0 until rootObject.length()) {
                 val postObject = rootObject.getJSONObject(i)
                 val createdByObject = postObject.getJSONObject("created_by")
-                val username = createdByObject.getString("username")
+                var username = createdByObject.getString("username")
                 val userImage = createdByObject.getString("image")
+                username = "@$username"
+
                 postsList.add(
                     PostModel(
                         postObject.getString("id"),

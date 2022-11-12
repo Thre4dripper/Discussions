@@ -107,7 +107,7 @@ class CreatePostActivity : AppCompatActivity() {
                     //on completion of async call
                     .invokeOnCompletion {
                         //Crop activity with source and destination uri
-                        val uCrop = UCrop.of(pickedPhotoUri, uri!!).withAspectRatio(1f, 1f)
+                        val uCrop = UCrop.of(pickedPhotoUri, uri!!)
                             .withMaxResultSize(1080, 1080)
 
                         cropImageCallback.launch(uCrop.getIntent(this))
