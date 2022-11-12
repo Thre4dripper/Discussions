@@ -26,6 +26,6 @@ class Constants {
         const val ADDRESS = "address"
 
         //for intents
-        const val INTENT_IMAGE_URL = "imageUrl"
+        const val ZOOM_IMAGE_URL = "imageUrl"
     }
 }

@@ -37,7 +37,7 @@ class ProfileFragment : Fragment() {
 
         binding.profileIv.setOnClickListener {
             val intent = Intent(requireContext(), ZoomImageActivity::class.java)
-            intent.putExtra(Constants.INTENT_IMAGE_URL, viewModel.profileDataModel.profileImage)
+            intent.putExtra(Constants.ZOOM_IMAGE_URL, viewModel.profileDataModel.profileImage)
             startActivity(intent)
         }
 

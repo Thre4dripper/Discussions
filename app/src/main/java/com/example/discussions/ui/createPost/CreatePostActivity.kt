@@ -46,7 +46,7 @@ class CreatePostActivity : AppCompatActivity() {
         }
         binding.createPostProfileIv.setOnClickListener {
             val intent = Intent(this, ZoomImageActivity::class.java)
-            intent.putExtra(Constants.INTENT_IMAGE_URL, viewModel.profileImage)
+            intent.putExtra(Constants.ZOOM_IMAGE_URL, viewModel.profileImage)
             startActivity(intent)
         }
         binding.createPostAddImageBtn.setOnClickListener {
@@ -150,8 +150,8 @@ class CreatePostActivity : AppCompatActivity() {
     }
 
     private fun createPost() {
-        viewModel.postTitle = binding.createPostTitle.text.toString()
-        viewModel.postContent = binding.createPostContent.text.toString()
+        viewModel.postTitle = binding.createPostTitle.text.toString().trim()
+        viewModel.postContent = binding.createPostContent.text.toString().trim()
         viewModel.allowComments = binding.createPostCb.isChecked
 
         if (viewModel.postTitle.isEmpty() && viewModel.postContent.isEmpty() && viewModel.postImage == null) {

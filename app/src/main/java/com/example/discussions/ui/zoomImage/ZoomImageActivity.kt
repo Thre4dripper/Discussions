@@ -17,7 +17,7 @@ class ZoomImageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_zoom_image)
 
-        val imageUrl = intent.getStringExtra(Constants.INTENT_IMAGE_URL)
+        val imageUrl = intent.getStringExtra(Constants.ZOOM_IMAGE_URL)
         Log.d(TAG, "onCreate: $imageUrl")
         Glide.with(this).load(imageUrl).into(binding.zoomableIv)
     }
