@@ -73,4 +73,13 @@
     <string name="settings_faq_label">FAQ</string>
     <string name="settings_about_label">About</string>
     <string name="settings_logout_label">Logout</string>
+
+    //Post List Item
+    <string name="post_list_item_time">Time</string>
+    <string name="post_list_item_title">Title</string>
+    <string name="post_list_item_content">Content</string>
+    <string name="post_list_item_like_count">100</string>
+    <string name="post_list_item_comment_count">100</string>
+    <string name="post_list_item_like">Like</string>
+    <string name="post_list_item_comment">Comment</string>
 </resources>
