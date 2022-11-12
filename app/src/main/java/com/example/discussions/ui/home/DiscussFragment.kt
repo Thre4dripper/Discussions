@@ -32,7 +32,7 @@ class DiscussFragment : Fragment() {
             adapter = discussAdapter
         }
 
-        binding.swipeRefresh.setOnRefreshListener { getAllPosts() }
+        binding.swipeRefresh.setOnRefreshListener { homeViewModel.refreshPosts(requireContext()) }
         getAllPosts()
         return binding.root
     }

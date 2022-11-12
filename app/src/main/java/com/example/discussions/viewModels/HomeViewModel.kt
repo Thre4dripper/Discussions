@@ -37,8 +37,6 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getAllPosts(context: Context) {
-        postsList.value = null
-        _isApiFetched.value = null
         PostRepository.getAllPosts(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 postsList.postValue(PostRepository.postsList)
@@ -50,5 +48,11 @@ class HomeViewModel : ViewModel() {
                 postsList.value = mutableListOf()
             }
         })
+    }
+
+    fun refreshPosts(context: Context) {
+        postsList.value = null
+        _isApiFetched.value = null
+        getAllPosts(context)
     }
 }
