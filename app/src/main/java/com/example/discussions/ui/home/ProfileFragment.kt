@@ -53,6 +53,12 @@ class ProfileFragment : Fragment() {
         binding.lifecycleOwner = this
 
         initDialogs()
+
+        binding.profileSwipeLayout.setOnRefreshListener {
+            viewModel.refreshProfile()
+            getProfile()
+        }
+
         getProfile()
         return binding.root
     }
@@ -81,6 +87,7 @@ class ProfileFragment : Fragment() {
     private fun getProfile() {
         loadingDialog.show()
         viewModel.isApiFetched.observe(viewLifecycleOwner) {
+            binding.profileSwipeLayout.isRefreshing = false
             if (it != null) {
                 loadingDialog.dismiss()
                 if (it == Constants.API_SUCCESS) {

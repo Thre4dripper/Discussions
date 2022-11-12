@@ -17,13 +17,12 @@ class HomeViewModel : ViewModel() {
     lateinit var profileDataModel: ProfileDataModel
     var postsList = MutableLiveData<MutableList<PostModel>?>()
 
-    private val _isApiFetched = MutableLiveData<String?>(null)
+    private var _isApiFetched = MutableLiveData<String?>(null)
     val isApiFetched: LiveData<String?>
         get() = _isApiFetched
 
 
     fun getProfile(context: Context) {
-        _isApiFetched.value = null
         UserRepository.getProfile(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 profileDataModel = UserRepository.profileDataModel!!
@@ -34,6 +33,10 @@ class HomeViewModel : ViewModel() {
                 _isApiFetched.postValue(response)
             }
         })
+    }
+
+    fun refreshProfile() {
+        _isApiFetched = MutableLiveData<String?>(null)
     }
 
     fun getAllPosts(context: Context) {

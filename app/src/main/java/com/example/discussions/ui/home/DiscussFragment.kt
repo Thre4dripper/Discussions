@@ -32,18 +32,18 @@ class DiscussFragment : Fragment() {
             adapter = discussAdapter
         }
 
-        binding.swipeRefresh.setOnRefreshListener { homeViewModel.refreshPosts(requireContext()) }
+        binding.discussSwipeLayout.setOnRefreshListener { homeViewModel.refreshPosts(requireContext()) }
         getAllPosts()
         return binding.root
     }
 
     private fun getAllPosts() {
-        binding.swipeRefresh.isRefreshing = true
+        binding.discussSwipeLayout.isRefreshing = true
         binding.discussLottieNoData.visibility = View.GONE
         homeViewModel.postsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 discussAdapter.submitList(it)
-                binding.swipeRefresh.isRefreshing = false
+                binding.discussSwipeLayout.isRefreshing = false
                 if (it.isEmpty()) {
                     binding.discussLottieNoData.visibility = View.VISIBLE
                     if (homeViewModel.isApiFetched.value != Constants.API_SUCCESS) {
