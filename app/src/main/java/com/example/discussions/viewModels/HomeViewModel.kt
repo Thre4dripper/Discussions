@@ -37,15 +37,17 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getAllPosts(context: Context) {
+        postsList.value = null
         _isApiFetched.value = null
         PostRepository.getAllPosts(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 postsList.postValue(PostRepository.postsList)
-                _isApiFetched.postValue(Constants.API_SUCCESS)
+                _isApiFetched.value = Constants.API_SUCCESS
             }
 
             override fun onError(response: String) {
-                _isApiFetched.postValue(response)
+                _isApiFetched.value = response
+                postsList.value = mutableListOf()
             }
         })
     }

@@ -40,12 +40,16 @@ class GetAllPostsApi {
             val postsList = mutableListOf<PostModel>()
             for (i in 0 until rootObject.length()) {
                 val postObject = rootObject.getJSONObject(i)
+                val createdByObject = postObject.getJSONObject("created_by")
+                val username = createdByObject.getString("username")
+                val userImage = createdByObject.getString("image")
                 postsList.add(
                     PostModel(
                         postObject.getString("id"),
                         postObject.getString("title"),
                         postObject.getString("content"),
-                        postObject.getString("created_by"),
+                        username,
+                        userImage,
                         postObject.getString("created_at"),
                         postObject.getString("post_image"),
                         postObject.getInt("like_count"),

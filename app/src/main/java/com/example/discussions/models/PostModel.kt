@@ -1,10 +1,11 @@
 package com.example.discussions.models
 
 data class PostModel(
-    val id: String,
+    val postId: String,
     val title: String,
     val content: String,
-    val createdBy: String,
+    val username: String,
+    val userImage: String,
     val createdAt: String,
     val postImage: String,
     val likes: Int,

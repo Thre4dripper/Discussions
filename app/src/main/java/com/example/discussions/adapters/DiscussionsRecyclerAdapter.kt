@@ -35,7 +35,13 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
         }
 
         fun bind(postModel: PostModel) {
-            binding.itemPostUsername.text = postModel.createdBy
+            Glide.with(itemView.context)
+                .load(postModel.userImage)
+                .placeholder(R.drawable.ic_profile)
+                .circleCrop()
+                .into(binding.itemPostUserImage)
+
+            binding.itemPostUsername.text = postModel.username
 
             val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                 .parse(postModel.createdAt)
@@ -58,7 +64,7 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
 
     class DiscussionDiffCallback : DiffUtil.ItemCallback<PostModel>() {
         override fun areItemsTheSame(oldItem: PostModel, newItem: PostModel) =
-            oldItem.id == newItem.id
+            oldItem.postId == newItem.postId
 
         override fun areContentsTheSame(oldItem: PostModel, newItem: PostModel) =
             oldItem == newItem

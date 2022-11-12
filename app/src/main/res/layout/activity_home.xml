@@ -38,8 +38,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/login_header_color"
+            app:borderWidth="0dp"
             android:contentDescription="@string/desc_add"
             android:src="@drawable/ic_add"
+            app:fabSize="normal"
             app:layout_anchor="@id/bottomAppBar"
             app:tint="@color/white" />
 

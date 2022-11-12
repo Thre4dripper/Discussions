@@ -5,8 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.discussions.Constants
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.databinding.FragmentDiscussBinding
 import com.example.discussions.viewModels.HomeViewModel
@@ -30,13 +32,31 @@ class DiscussFragment : Fragment() {
             discussAdapter = DiscussionsRecyclerAdapter()
             adapter = discussAdapter
         }
+
+        binding.swipeRefresh.setOnRefreshListener { getAllPosts() }
         getAllPosts()
         return binding.root
     }
 
     private fun getAllPosts() {
+        binding.swipeRefresh.isRefreshing = true
+        binding.discussLottieNoData.visibility = View.GONE
         homeViewModel.postsList.observe(viewLifecycleOwner) {
-            discussAdapter.submitList(it)
+            if (it != null) {
+                discussAdapter.submitList(it)
+                binding.swipeRefresh.isRefreshing = false
+                if (it.isEmpty()) {
+                    binding.discussLottieNoData.visibility = View.VISIBLE
+                    if (homeViewModel.isApiFetched.value != Constants.API_SUCCESS) {
+                        Toast.makeText(
+                            requireContext(),
+                            homeViewModel.isApiFetched.value,
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                }
+            }
             Log.d(TAG, "getAllPosts: $it")
         }
 
