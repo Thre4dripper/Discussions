@@ -39,11 +39,11 @@ class DiscussFragment : Fragment() {
 
     private fun getAllPosts() {
         binding.discussSwipeLayout.isRefreshing = true
-        binding.discussLottieNoData.visibility = View.GONE
         homeViewModel.postsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 discussAdapter.submitList(it)
                 binding.discussSwipeLayout.isRefreshing = false
+                binding.discussLottieNoData.visibility = View.GONE
                 if (it.isEmpty()) {
                     binding.discussLottieNoData.visibility = View.VISIBLE
                     if (homeViewModel.isApiFetched.value != Constants.API_SUCCESS) {
