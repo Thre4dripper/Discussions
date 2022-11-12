@@ -25,6 +25,7 @@ class ProfileFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
 
     private lateinit var loadingDialog: AlertDialog
+    private lateinit var retryDialog: AlertDialog
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,16 +45,29 @@ class ProfileFragment : Fragment() {
 
         binding.lifecycleOwner = this
 
-        initLoadingDialog()
+        initDialogs()
         getProfile()
         return binding.root
     }
 
-    private fun initLoadingDialog() {
+    private fun initDialogs() {
         val dialogBinding = LoadingDialogBinding.inflate(layoutInflater)
         loadingDialog = MaterialAlertDialogBuilder(requireContext()).setView(dialogBinding.root)
             .setCancelable(false).show()
         loadingDialog.dismiss()
+
+        retryDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Oops!")
+            .setMessage("Error getting profile")
+            .setPositiveButton("Retry") { dialog, _ ->
+                dialog.dismiss()
+                getProfile()
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                requireActivity().setResult(Constants.RESULT_CLOSE)
+                requireActivity().finish()
+            }
+            .show()
     }
 
     private fun getProfile() {
@@ -69,16 +83,7 @@ class ProfileFragment : Fragment() {
 
                     binding.profile = viewModel.profileDataModel
                 } else {
-                    MaterialAlertDialogBuilder(requireContext())
-                        .setTitle("Error")
-                        .setMessage(it)
-                        .setPositiveButton("Retry") { _, _ ->
-                            getProfile()
-                        }
-                        .setNegativeButton("Cancel") { _, _ ->
-                            requireActivity().finish()
-                        }
-                        .show()
+                    retryDialog.show()
                 }
 
             }
