@@ -2,6 +2,7 @@ package com.example.discussions.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -99,7 +100,7 @@ class ProfileFragment : Fragment() {
 
     private fun getProfile() {
         loadingDialog.show()
-        viewModel.isApiFetched.observe(viewLifecycleOwner) {
+        viewModel.isProfileFetched.observe(viewLifecycleOwner) {
             binding.profileSwipeLayout.isRefreshing = false
             if (it != null) {
                 loadingDialog.dismiss()
@@ -124,6 +125,7 @@ class ProfileFragment : Fragment() {
 
     private fun getUserPosts() {
         binding.profilePostsProgressBar.visibility = View.VISIBLE
+        profileAdapter.submitList(mutableListOf())
         viewModel.userPostsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 profileAdapter.submitList(it)
@@ -131,10 +133,11 @@ class ProfileFragment : Fragment() {
                 binding.profilePostsLottieNoData.visibility = View.GONE
                 if (it.isEmpty()) {
                     binding.profilePostsLottieNoData.visibility = View.VISIBLE
-                    if (viewModel.isApiFetched.value != Constants.API_SUCCESS) {
+                    if (viewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
+                        Log.d(TAG, "getUserPosts: ${viewModel.isUserPostsFetched.value}")
                         Toast.makeText(
                             requireContext(),
-                            viewModel.isApiFetched.value,
+                            viewModel.isUserPostsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()

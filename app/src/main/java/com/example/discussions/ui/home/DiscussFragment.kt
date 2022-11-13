@@ -46,10 +46,10 @@ class DiscussFragment : Fragment() {
                 binding.discussLottieNoData.visibility = View.GONE
                 if (it.isEmpty()) {
                     binding.discussLottieNoData.visibility = View.VISIBLE
-                    if (homeViewModel.isApiFetched.value != Constants.API_SUCCESS) {
+                    if (homeViewModel.isPostsFetched.value != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
-                            homeViewModel.isApiFetched.value,
+                            homeViewModel.isPostsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()

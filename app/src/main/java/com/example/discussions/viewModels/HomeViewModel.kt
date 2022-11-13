@@ -18,20 +18,28 @@ class HomeViewModel : ViewModel() {
     var postsList = MutableLiveData<MutableList<PostModel>?>()
     var userPostsList = MutableLiveData<MutableList<PostModel>?>()
 
-    private var _isApiFetched = MutableLiveData<String?>(null)
-    val isApiFetched: LiveData<String?>
-        get() = _isApiFetched
+    private var _isPostsFetched = MutableLiveData<String?>(null)
+    val isPostsFetched: LiveData<String?>
+        get() = _isPostsFetched
+
+    private var _isProfileFetched = MutableLiveData<String?>(null)
+    val isProfileFetched: LiveData<String?>
+        get() = _isProfileFetched
+
+    private var _isUserPostsFetched = MutableLiveData<String?>(null)
+    val isUserPostsFetched: LiveData<String?>
+        get() = _isUserPostsFetched
 
 
     fun getProfile(context: Context) {
         UserRepository.getProfile(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 profileDataModel = UserRepository.profileDataModel!!
-                _isApiFetched.postValue(Constants.API_SUCCESS)
+                _isProfileFetched.postValue(Constants.API_SUCCESS)
             }
 
             override fun onError(response: String) {
-                _isApiFetched.postValue(response)
+                _isProfileFetched.postValue(response)
             }
         })
     }
@@ -39,19 +47,20 @@ class HomeViewModel : ViewModel() {
     fun getAllUserPosts(context: Context) {
         PostRepository.getAllUserPosts(context, profileDataModel.userId, object : ResponseCallback {
             override fun onSuccess(response: String) {
+                _isUserPostsFetched.value = Constants.API_SUCCESS
                 userPostsList.postValue(PostRepository.postsList)
-                _isApiFetched.value = Constants.API_SUCCESS
             }
 
             override fun onError(response: String) {
-                _isApiFetched.value = response
+                _isUserPostsFetched.value = response
                 userPostsList.value = mutableListOf()
             }
         })
     }
 
     fun refreshProfile(context: Context) {
-        _isApiFetched = MutableLiveData<String?>(null)
+        _isProfileFetched = MutableLiveData<String?>(null)
+        _isUserPostsFetched.value = null
         userPostsList.value = null
         getAllUserPosts(context)
     }
@@ -59,12 +68,12 @@ class HomeViewModel : ViewModel() {
     fun getAllPosts(context: Context) {
         PostRepository.getAllPosts(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
+                _isPostsFetched.value = Constants.API_SUCCESS
                 postsList.postValue(PostRepository.postsList)
-                _isApiFetched.value = Constants.API_SUCCESS
             }
 
             override fun onError(response: String) {
-                _isApiFetched.value = response
+                _isPostsFetched.value = response
                 postsList.value = mutableListOf()
             }
         })
@@ -72,7 +81,7 @@ class HomeViewModel : ViewModel() {
 
     fun refreshAllPosts(context: Context) {
         postsList.value = null
-        _isApiFetched.value = null
+        _isPostsFetched.value = null
         getAllPosts(context)
     }
 }
