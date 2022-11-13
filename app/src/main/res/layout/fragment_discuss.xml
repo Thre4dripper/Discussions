@@ -43,6 +43,18 @@
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
+        <ProgressBar
+            android:id="@+id/discussion_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/login_header_color"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/discuss_swipe_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/discuss_swipe_layout" />
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/discuss_lottie_no_data"
             android:layout_width="300dp"

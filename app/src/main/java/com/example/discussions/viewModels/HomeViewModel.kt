@@ -66,6 +66,13 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getAllPosts(context: Context) {
+        if (_isPostsFetched.value == Constants.API_SUCCESS)
+            return
+        else {
+            postsList.value = null
+            _isPostsFetched.value = null
+        }
+
         PostRepository.getAllPosts(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPostsFetched.value = Constants.API_SUCCESS
