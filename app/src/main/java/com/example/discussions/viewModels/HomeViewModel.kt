@@ -16,6 +16,7 @@ class HomeViewModel : ViewModel() {
 
     lateinit var profileDataModel: ProfileDataModel
     var postsList = MutableLiveData<MutableList<PostModel>?>()
+    var userPostsList = MutableLiveData<MutableList<PostModel>?>()
 
     private var _isApiFetched = MutableLiveData<String?>(null)
     val isApiFetched: LiveData<String?>
@@ -35,8 +36,24 @@ class HomeViewModel : ViewModel() {
         })
     }
 
-    fun refreshProfile() {
+    fun getAllUserPosts(context: Context) {
+        PostRepository.getAllUserPosts(context, profileDataModel.userId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                userPostsList.postValue(PostRepository.postsList)
+                _isApiFetched.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isApiFetched.value = response
+                userPostsList.value = mutableListOf()
+            }
+        })
+    }
+
+    fun refreshProfile(context: Context) {
         _isApiFetched = MutableLiveData<String?>(null)
+        userPostsList.value = null
+        getAllUserPosts(context)
     }
 
     fun getAllPosts(context: Context) {
@@ -53,7 +70,7 @@ class HomeViewModel : ViewModel() {
         })
     }
 
-    fun refreshPosts(context: Context) {
+    fun refreshAllPosts(context: Context) {
         postsList.value = null
         _isApiFetched.value = null
         getAllPosts(context)

@@ -219,16 +219,40 @@
                     android:id="@+id/profile_posts_rv"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:paddingTop="8dp"
+                    android:clipToPadding="false"
                     android:paddingStart="8dp"
+                    android:paddingTop="8dp"
                     android:paddingEnd="8dp"
                     android:paddingBottom="80dp"
-                    android:clipToPadding="false"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
+                <ProgressBar
+                    android:id="@+id/profile_posts_progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/login_header_color"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/profile_posts_rv"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/profile_posts_rv" />
+
+                <com.airbnb.lottie.LottieAnimationView
+                    android:id="@+id/profile_posts_lottie_no_data"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/profile_posts_rv"
+                    app:lottie_autoPlay="true"
+                    app:lottie_loop="true"
+                    app:lottie_rawRes="@raw/no_data" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

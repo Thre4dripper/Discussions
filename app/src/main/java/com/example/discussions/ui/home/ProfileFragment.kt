@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -58,8 +59,9 @@ class ProfileFragment : Fragment() {
         initDialogs()
         initPostsRecyclerView()
 
+        //swipe to refresh
         binding.profileSwipeLayout.setOnRefreshListener {
-            viewModel.refreshProfile()
+            viewModel.refreshProfile(requireContext())
             getProfile()
         }
 
@@ -108,6 +110,8 @@ class ProfileFragment : Fragment() {
                         .into(binding.profileIv)
 
                     binding.profile = viewModel.profileDataModel
+
+                    getUserPosts()
                 } else {
                     retryDialog.show()
                 }
@@ -116,6 +120,30 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.getProfile(requireContext())
+    }
+
+    private fun getUserPosts() {
+        binding.profilePostsProgressBar.visibility = View.VISIBLE
+        viewModel.userPostsList.observe(viewLifecycleOwner) {
+            if (it != null) {
+                profileAdapter.submitList(it)
+                binding.profilePostsProgressBar.visibility = View.GONE
+                binding.profilePostsLottieNoData.visibility = View.GONE
+                if (it.isEmpty()) {
+                    binding.profilePostsLottieNoData.visibility = View.VISIBLE
+                    if (viewModel.isApiFetched.value != Constants.API_SUCCESS) {
+                        Toast.makeText(
+                            requireContext(),
+                            viewModel.isApiFetched.value,
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                }
+            }
+        }
+
+        viewModel.getAllUserPosts(requireContext())
     }
 
     /**
