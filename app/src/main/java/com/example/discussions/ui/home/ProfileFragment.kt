@@ -9,8 +9,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
+import com.example.discussions.adapters.ProfileRecyclerAdapter
 import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.editDetails.EditDetailsActivity
@@ -27,6 +29,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var loadingDialog: AlertDialog
     private lateinit var retryDialog: AlertDialog
+    private lateinit var profileAdapter: ProfileRecyclerAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -53,6 +56,7 @@ class ProfileFragment : Fragment() {
         binding.lifecycleOwner = this
 
         initDialogs()
+        initPostsRecyclerView()
 
         binding.profileSwipeLayout.setOnRefreshListener {
             viewModel.refreshProfile()
@@ -82,6 +86,13 @@ class ProfileFragment : Fragment() {
             }
             .show()
         retryDialog.dismiss()
+    }
+
+    private fun initPostsRecyclerView() {
+        profileAdapter = ProfileRecyclerAdapter()
+        binding.profilePostsRv.adapter = profileAdapter
+        binding.profilePostsRv.layoutManager =
+            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     }
 
     private fun getProfile() {
