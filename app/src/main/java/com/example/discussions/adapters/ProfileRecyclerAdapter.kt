@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import com.example.discussions.R
 import com.example.discussions.databinding.ItemUserPostBinding
 import com.example.discussions.models.PostModel
@@ -25,37 +26,27 @@ class ProfileRecyclerAdapter :
 
     override fun onBindViewHolder(holder: ProfilePostsViewHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(post)
+        holder.bind(holder.binding, post)
     }
 
     class ProfilePostsViewHolder(itemView: View) : ViewHolder(itemView) {
 
-        var binding: ItemUserPostBinding
+        var binding = DataBindingUtil.bind<ItemUserPostBinding>(itemView)!!
 
-        init {
-            binding = DataBindingUtil.bind(itemView)!!
-        }
+        fun bind(binding: ItemUserPostBinding, postModel: PostModel) {
+            binding.itemUserPostTitle.text = postModel.title
+            binding.itemUserPostContent.text = postModel.content
 
-        fun bind(postModel: PostModel) {
-            //hiding post title if it is empty
-            val title = postModel.title
-            if (title.isNotEmpty()) {
-                binding.itemUserPostTitle.text = title
+            val image = postModel.postImage
+            if (image != "") {
+                binding.itemUserPostImage.visibility = View.VISIBLE
+                Glide.with(itemView.context)
+                    .load(image)
+                    .override(Target.SIZE_ORIGINAL)
+                    .into(binding.itemUserPostImage)
             } else {
-                binding.itemUserPostTitle.visibility = View.GONE
+                binding.itemUserPostImage.visibility = View.GONE
             }
-
-            //hiding post description if it is empty
-            val content = postModel.content
-            if (content.isNotEmpty()) {
-                binding.itemUserPostContent.text = content
-            } else {
-                binding.itemUserPostContent.visibility = View.GONE
-            }
-
-            Glide.with(itemView.context)
-                .load(postModel.postImage)
-                .into(binding.itemUserPostImage)
         }
     }
 

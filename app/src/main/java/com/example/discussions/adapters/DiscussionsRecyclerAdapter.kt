@@ -1,7 +1,6 @@
 package com.example.discussions.adapters
 
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,18 +29,13 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = getItem(position)
-        Log.d(TAG, "onBindViewHolder: $post")
-        (holder as PostViewHolder).bind(post)
+        (holder as PostViewHolder).bind(holder.binding, post)
     }
 
     class PostViewHolder(itemView: View) : ViewHolder(itemView) {
-        var binding: ItemDiscussionPostBinding
+        var binding = DataBindingUtil.bind<ItemDiscussionPostBinding>(itemView)!!
 
-        init {
-            binding = DataBindingUtil.bind(itemView)!!
-        }
-
-        fun bind(postModel: PostModel) {
+        fun bind(binding: ItemDiscussionPostBinding, postModel: PostModel) {
             Glide.with(itemView.context)
                 .load(postModel.userImage)
                 .placeholder(R.drawable.ic_profile)
@@ -65,24 +59,12 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
                     .format(it)
             }
 
-            //hiding post title if it is empty
-            val title = postModel.title
-            if (title.isNotEmpty()) {
-                binding.itemPostTitle.text = title
-            } else {
-                binding.itemPostTitle.visibility = View.GONE
-            }
-
-            //hiding post description if it is empty
-            val content = postModel.content
-            if (content.isNotEmpty()) {
-                binding.itemPostContent.text = content
-            } else {
-                binding.itemPostContent.visibility = View.GONE
-            }
+            binding.itemPostTitle.text = postModel.title
+            binding.itemPostContent.text = postModel.content
 
             val image = postModel.postImage
-            if (image.isNotEmpty()) {
+            if (image != "") {
+                binding.itemPostImage.visibility = View.VISIBLE
                 Glide.with(itemView.context)
                     .load(image)
                     .override(Target.SIZE_ORIGINAL)
