@@ -15,4 +15,5 @@
 
     <color name="text_color">#262A2E</color>
     <color name="bg_color">@color/white</color>
+    <color name="post_image_bg_color">#536068</color>
 </resources>

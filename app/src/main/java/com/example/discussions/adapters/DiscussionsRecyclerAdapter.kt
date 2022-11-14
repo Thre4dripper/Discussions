@@ -59,8 +59,12 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
                     .format(it)
             }
 
-            binding.itemPostTitle.text = postModel.title
-            binding.itemPostContent.text = postModel.content
+            binding.itemPostTitle.apply {
+                text = postModel.title
+            }
+            binding.itemPostContent.apply {
+                text = postModel.content
+            }
 
             val image = postModel.postImage
             if (image != "") {

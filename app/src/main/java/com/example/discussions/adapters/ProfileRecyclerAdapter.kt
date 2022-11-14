@@ -34,8 +34,14 @@ class ProfileRecyclerAdapter :
         var binding = DataBindingUtil.bind<ItemUserPostBinding>(itemView)!!
 
         fun bind(binding: ItemUserPostBinding, postModel: PostModel) {
-            binding.itemUserPostTitle.text = postModel.title
-            binding.itemUserPostContent.text = postModel.content
+            binding.itemUserPostTitle.apply {
+                text = postModel.title
+                visibility = if (postModel.title.isEmpty()) View.GONE else View.VISIBLE
+            }
+            binding.itemUserPostContent.apply {
+                text = postModel.content
+                visibility = if (postModel.content.isEmpty()) View.GONE else View.VISIBLE
+            }
 
             val image = postModel.postImage
             if (image != "") {
