@@ -153,8 +153,28 @@ class CreatePostActivity : AppCompatActivity() {
         viewModel.postContent = binding.createPostContent.text.toString().trim()
         viewModel.allowComments = binding.createPostCb.isChecked
 
-        if (viewModel.postTitle.isEmpty() && viewModel.postContent.isEmpty() && viewModel.postImage == null) {
-            Toast.makeText(this, "No content to post", Toast.LENGTH_SHORT).show()
+        //checking if all fields
+        if (viewModel.postTitle.isEmpty()) {
+            binding.createPostTitle.error = "Title cannot be empty"
+            binding.createPostTitle.requestFocus()
+            return
+        }
+
+        if (viewModel.postTitle.length < 10) {
+            binding.createPostTitle.error = "Title must be at least 5 characters long"
+            binding.createPostTitle.requestFocus()
+            return
+        }
+
+        if (viewModel.postContent.isEmpty()) {
+            binding.createPostContent.error = "Content cannot be empty"
+            binding.createPostContent.requestFocus()
+            return
+        }
+
+        if (viewModel.postContent.length < 20) {
+            binding.createPostContent.error = "Content must be at least 10 characters long"
+            binding.createPostContent.requestFocus()
             return
         }
 
