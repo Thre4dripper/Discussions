@@ -1,6 +1,7 @@
 package com.example.discussions.adapters
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ItemDiscussionPostBinding
@@ -18,6 +20,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(DiscussionDiffCallback()) {
+    private val TAG = "DiscussionsRecyclerAdap"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -27,6 +30,7 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = getItem(position)
+        Log.d(TAG, "onBindViewHolder: $post")
         (holder as PostViewHolder).bind(post)
     }
 
@@ -77,16 +81,20 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
                 binding.itemPostContent.visibility = View.GONE
             }
 
-            Glide.with(itemView.context)
-                .load(postModel.postImage)
-                .into(binding.itemPostImage)
-
-            //navigating to zoom image activity if post image is clicked
-            binding.itemPostImage.setOnClickListener {
-                val context = binding.itemPostUserImage.context
-                val intent = Intent(context, ZoomImageActivity::class.java)
-                intent.putExtra(Constants.ZOOM_IMAGE_URL, postModel.postImage)
-                context.startActivity(intent)
+            val image = postModel.postImage
+            if (image.isNotEmpty()) {
+                Glide.with(itemView.context)
+                    .load(image)
+                    .override(Target.SIZE_ORIGINAL)
+                    .into(binding.itemPostImage)
+                binding.itemPostImage.setOnClickListener {
+                    val context = binding.itemPostImage.context
+                    val intent = Intent(context, ZoomImageActivity::class.java)
+                    intent.putExtra(Constants.ZOOM_IMAGE_URL, image)
+                    context.startActivity(intent)
+                }
+            } else {
+                binding.itemPostImage.visibility = View.GONE
             }
 
             binding.itemPostLikes.text = postModel.likes.toString()

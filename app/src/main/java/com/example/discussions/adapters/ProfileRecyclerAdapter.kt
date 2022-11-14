@@ -3,10 +3,13 @@ package com.example.discussions.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.bumptech.glide.Glide
 import com.example.discussions.R
+import com.example.discussions.databinding.ItemUserPostBinding
 import com.example.discussions.models.PostModel
 
 class ProfileRecyclerAdapter :
@@ -26,8 +29,33 @@ class ProfileRecyclerAdapter :
     }
 
     class ProfilePostsViewHolder(itemView: View) : ViewHolder(itemView) {
-        fun bind(postModel: PostModel) {
 
+        var binding: ItemUserPostBinding
+
+        init {
+            binding = DataBindingUtil.bind(itemView)!!
+        }
+
+        fun bind(postModel: PostModel) {
+            //hiding post title if it is empty
+            val title = postModel.title
+            if (title.isNotEmpty()) {
+                binding.itemUserPostTitle.text = title
+            } else {
+                binding.itemUserPostTitle.visibility = View.GONE
+            }
+
+            //hiding post description if it is empty
+            val content = postModel.content
+            if (content.isNotEmpty()) {
+                binding.itemUserPostContent.text = content
+            } else {
+                binding.itemUserPostContent.visibility = View.GONE
+            }
+
+            Glide.with(itemView.context)
+                .load(postModel.postImage)
+                .into(binding.itemUserPostImage)
         }
     }
 

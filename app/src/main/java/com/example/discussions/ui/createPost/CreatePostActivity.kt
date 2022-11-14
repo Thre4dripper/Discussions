@@ -108,7 +108,6 @@ class CreatePostActivity : AppCompatActivity() {
                     .invokeOnCompletion {
                         //Crop activity with source and destination uri
                         val uCrop = UCrop.of(pickedPhotoUri, uri!!)
-                            .withMaxResultSize(1080, 1080)
 
                         cropImageCallback.launch(uCrop.getIntent(this))
                     }
