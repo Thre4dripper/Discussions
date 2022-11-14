@@ -20,8 +20,9 @@ class LoginViewModel : ViewModel() {
     var isRegistered = MutableLiveData<String?>(null)
 
     fun checkLoginStatus(context: Context) {
+        val loginStatus = LoginStore.getLoginStatus(context)
         val token = LoginStore.getJWTToken(context)
-        if (token != null) {
+        if (loginStatus && token != null) {
             isAuthenticated.postValue(Constants.API_SUCCESS)
         }
     }
@@ -36,8 +37,9 @@ class LoginViewModel : ViewModel() {
             override fun onSuccess(response: String) {
                 isAuthenticated.value = Constants.API_SUCCESS
                 //also logged session will be saved
+                LoginStore.saveJWTToken(context, response)
                 if (rememberMe) {
-                    LoginStore.saveJWTToken(context, response)
+                    LoginStore.saveLoginStatus(context, true)
                 }
             }
 

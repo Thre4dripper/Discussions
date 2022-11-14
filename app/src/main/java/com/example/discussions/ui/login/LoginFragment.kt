@@ -106,7 +106,8 @@ class LoginFragment : Fragment() {
     private var homeActivityCallback =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Constants.RESULT_LOGOUT) {
-                //delete jwt on logout
+                //delete jwt and clear login status on logout
+                LoginStore.saveLoginStatus(requireContext(), false)
                 LoginStore.saveJWTToken(requireContext(), null)
             } else if (it.resultCode == Constants.RESULT_CLOSE) {
                 requireActivity().finish()
