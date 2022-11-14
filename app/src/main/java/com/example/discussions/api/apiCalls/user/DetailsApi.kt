@@ -36,7 +36,7 @@ class DetailsApi {
         fun parseDetailsJson(json: String): Map<String, String> {
             val rootObject = JSONObject(json)
             val profileImage = rootObject.getString("image")
-            val username = rootObject.getString("username")
+            var username = rootObject.getString("username")
             val firstName = rootObject.getString("first_name")
             val lastName = rootObject.getString("last_name")
             val gender = if (rootObject.has("gender")) rootObject.getString("gender") else "M"
@@ -45,6 +45,7 @@ class DetailsApi {
             val dob = rootObject.getString("dob")
             val address = rootObject.getString("address")
 
+            username = "@$username"
             return mapOf(
                 Constants.PROFILE_IMAGE to profileImage,
                 Constants.USERNAME to username,
