@@ -32,7 +32,11 @@ class DiscussFragment : Fragment() {
             adapter = discussAdapter
         }
 
-        binding.discussSwipeLayout.setOnRefreshListener { homeViewModel.refreshAllPosts(requireContext()) }
+        binding.discussSwipeLayout.setOnRefreshListener {
+            homeViewModel.refreshAllPosts(
+                requireContext()
+            )
+        }
         getAllPosts()
         return binding.root
     }
@@ -47,13 +51,18 @@ class DiscussFragment : Fragment() {
                 binding.discussLottieNoData.visibility = View.GONE
                 if (it.isEmpty()) {
                     binding.discussLottieNoData.visibility = View.VISIBLE
-                    if (homeViewModel.isPostsFetched.value != Constants.API_SUCCESS) {
+                    val error = homeViewModel.isPostsFetched.value
+                    if (error != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
                             homeViewModel.isPostsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()
+                    }
+                    if (error == Constants.AUTH_FAILURE_ERROR) {
+                        requireActivity().setResult(Constants.RESULT_LOGOUT)
+                        requireActivity().finish()
                     }
                 }
             }

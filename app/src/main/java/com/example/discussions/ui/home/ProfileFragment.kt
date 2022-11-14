@@ -2,7 +2,6 @@ package com.example.discussions.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -113,6 +112,9 @@ class ProfileFragment : Fragment() {
                     binding.profile = viewModel.profileDataModel
 
                     getUserPosts()
+                } else if (it == Constants.AUTH_FAILURE_ERROR) {
+                    requireActivity().setResult(Constants.RESULT_LOGOUT)
+                    requireActivity().finish()
                 } else {
                     retryDialog.show()
                 }
@@ -133,14 +135,18 @@ class ProfileFragment : Fragment() {
                 binding.profilePostsLottieNoData.visibility = View.GONE
                 if (it.isEmpty()) {
                     binding.profilePostsLottieNoData.visibility = View.VISIBLE
+                    val error = viewModel.isUserPostsFetched.value
                     if (viewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
-                        Log.d(TAG, "getUserPosts: ${viewModel.isUserPostsFetched.value}")
                         Toast.makeText(
                             requireContext(),
                             viewModel.isUserPostsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()
+                    }
+                    if (error == Constants.AUTH_FAILURE_ERROR) {
+                        requireActivity().setResult(Constants.RESULT_LOGOUT)
+                        requireActivity().finish()
                     }
                 }
             }

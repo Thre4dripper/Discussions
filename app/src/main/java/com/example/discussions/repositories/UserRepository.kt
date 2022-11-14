@@ -1,6 +1,7 @@
 package com.example.discussions.repositories
 
 import android.content.Context
+import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.user.DetailsApi
 import com.example.discussions.api.apiCalls.user.NameImageApi
@@ -80,7 +81,7 @@ class UserRepository {
                         } else if (response.contains("com.android.volley.NoConnectionError")) {
                             callback.onError("Please check your internet connection")
                         } else if (response.contains("com.android.volley.AuthFailureError")) {
-                            callback.onError("Auth Error")
+                            callback.onError(Constants.AUTH_FAILURE_ERROR)
                         } else if (response.contains("com.android.volley.NetworkError")) {
                             callback.onError("Network Error")
                         } else if (response.contains("com.android.volley.ServerError")) {
