@@ -32,6 +32,12 @@ class HomeViewModel : ViewModel() {
 
 
     fun getProfile(context: Context) {
+        if (_isProfileFetched.value == Constants.API_SUCCESS)
+            return
+        else
+            _isProfileFetched.value = null
+
+
         UserRepository.getProfile(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 profileDataModel = UserRepository.profileDataModel!!
