@@ -10,7 +10,8 @@ import com.example.discussions.store.LoginStore
 
 class PostRepository {
     companion object {
-        var postsList = mutableListOf<PostModel>()
+        var allPostsList = mutableListOf<PostModel>()
+        var userPostsList = mutableListOf<PostModel>()
 
         fun createPost(
             context: Context,
@@ -66,7 +67,7 @@ class PostRepository {
                 token,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        postsList = GetAllPostsApi.parseAllPostsJson(response)
+                        allPostsList = GetAllPostsApi.parseAllPostsJson(response)
                         callback.onSuccess(response)
                     }
 
@@ -104,7 +105,7 @@ class PostRepository {
                 token,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        postsList = GetUserPostsApi.parseUserPostsJson(response)
+                        userPostsList = GetUserPostsApi.parseUserPostsJson(response)
                         callback.onSuccess(response)
                     }
 

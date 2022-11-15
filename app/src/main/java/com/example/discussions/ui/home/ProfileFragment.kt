@@ -18,7 +18,6 @@ import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.EditDetailsActivity
 import com.example.discussions.ui.SettingsActivity
-import com.example.discussions.ui.UserPostsActivity
 import com.example.discussions.ui.ZoomImageActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -56,11 +55,6 @@ class ProfileFragment : Fragment() {
         //for launching settings activity
         binding.profileSettingsBtn.setOnClickListener {
             settingsCallback.launch(Intent(requireContext(), SettingsActivity::class.java))
-        }
-
-        //for launching user posts activity
-        binding.profilePostsLabelCv.setOnClickListener {
-            userPostsCallback.launch(Intent(requireContext(), UserPostsActivity::class.java))
         }
 
         binding.lifecycleOwner = this
@@ -101,9 +95,10 @@ class ProfileFragment : Fragment() {
 
     private fun initPostsRecyclerView() {
         profileAdapter = ProfileRecyclerAdapter()
-        binding.profilePostsRv.adapter = profileAdapter
-        binding.profilePostsRv.layoutManager =
-            StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        binding.profilePostsRv.apply {
+            adapter = profileAdapter
+            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        }
     }
 
     private fun getProfile() {

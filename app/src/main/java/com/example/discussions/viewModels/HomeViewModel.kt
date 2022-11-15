@@ -54,7 +54,7 @@ class HomeViewModel : ViewModel() {
         PostRepository.getAllUserPosts(context, profileDataModel.userId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isUserPostsFetched.value = Constants.API_SUCCESS
-                userPostsList.postValue(PostRepository.postsList)
+                userPostsList.postValue(PostRepository.userPostsList)
             }
 
             override fun onError(response: String) {
@@ -82,7 +82,7 @@ class HomeViewModel : ViewModel() {
         PostRepository.getAllPosts(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPostsFetched.value = Constants.API_SUCCESS
-                postsList.postValue(PostRepository.postsList)
+                postsList.postValue(PostRepository.allPostsList)
             }
 
             override fun onError(response: String) {
