@@ -16,9 +16,9 @@ import com.example.discussions.Constants
 import com.example.discussions.adapters.ProfileRecyclerAdapter
 import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
-import com.example.discussions.ui.editDetails.EditDetailsActivity
-import com.example.discussions.ui.settings.SettingsActivity
-import com.example.discussions.ui.zoomImage.ZoomImageActivity
+import com.example.discussions.ui.EditDetailsActivity
+import com.example.discussions.ui.SettingsActivity
+import com.example.discussions.ui.ZoomImageActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 

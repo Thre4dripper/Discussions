@@ -14,7 +14,7 @@ import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ItemDiscussionPostBinding
 import com.example.discussions.models.PostModel
-import com.example.discussions.ui.zoomImage.ZoomImageActivity
+import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 

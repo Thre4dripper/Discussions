@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.databinding.PostsBsLayoutBinding
-import com.example.discussions.ui.createPost.CreatePostActivity
+import com.example.discussions.ui.CreatePostActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

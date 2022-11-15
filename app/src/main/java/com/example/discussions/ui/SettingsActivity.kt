@@ -1,4 +1,4 @@
-package com.example.discussions.ui.settings
+package com.example.discussions.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

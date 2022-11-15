@@ -1,4 +1,4 @@
-package com.example.discussions.ui.editDetails
+package com.example.discussions.ui
 
 import android.app.DatePickerDialog
 import android.net.Uri

@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#1B1E23"
-        tools:context=".ui.editDetails.EditDetailsActivity">
+        tools:context=".ui.EditDetailsActivity">
 
         <ImageView
             android:id="@+id/edit_details_back_btn"

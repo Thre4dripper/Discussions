@@ -1,4 +1,4 @@
-package com.example.discussions.ui.createPost
+package com.example.discussions.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -18,7 +18,6 @@ import com.example.discussions.R
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.databinding.ActivityCreatePostBinding
 import com.example.discussions.databinding.LoadingDialogBinding
-import com.example.discussions.ui.zoomImage.ZoomImageActivity
 import com.example.discussions.viewModels.CreatePostViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.yalantis.ucrop.UCrop
