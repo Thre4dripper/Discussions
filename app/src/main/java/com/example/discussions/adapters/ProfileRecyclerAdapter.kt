@@ -13,7 +13,7 @@ import com.example.discussions.R
 import com.example.discussions.databinding.ItemUserPostBinding
 import com.example.discussions.models.PostModel
 
-class ProfileRecyclerAdapter :
+class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickInterface) :
     ListAdapter<PostModel, ProfileRecyclerAdapter.ProfilePostsViewHolder>(ProfileDiffCallback()) {
 
 
@@ -26,14 +26,22 @@ class ProfileRecyclerAdapter :
 
     override fun onBindViewHolder(holder: ProfilePostsViewHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(holder.binding, post)
+        holder.bind(holder.binding, post, userPostClickInterface)
+    }
+
+    interface UserPostClickInterface {
+        fun onUserPostClick(index: Int)
     }
 
     class ProfilePostsViewHolder(itemView: View) : ViewHolder(itemView) {
 
         var binding = DataBindingUtil.bind<ItemUserPostBinding>(itemView)!!
 
-        fun bind(binding: ItemUserPostBinding, postModel: PostModel) {
+        fun bind(
+            binding: ItemUserPostBinding,
+            postModel: PostModel,
+            userPostClickInterface: UserPostClickInterface
+        ) {
             binding.itemUserPostTitle.apply {
                 text = postModel.title
                 visibility = if (postModel.title.isEmpty()) View.GONE else View.VISIBLE
@@ -52,6 +60,10 @@ class ProfileRecyclerAdapter :
                     .into(binding.itemUserPostImage)
             } else {
                 binding.itemUserPostImage.visibility = View.GONE
+            }
+
+            binding.itemUserPostCv.setOnClickListener {
+                userPostClickInterface.onUserPostClick(adapterPosition)
             }
         }
     }

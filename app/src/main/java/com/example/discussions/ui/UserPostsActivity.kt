@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.UserPostsRecyclerAdapter
 import com.example.discussions.databinding.ActivityUserPostsBinding
@@ -23,12 +24,25 @@ class UserPostsActivity : AppCompatActivity() {
             userPostsAdapter = UserPostsRecyclerAdapter()
             adapter = userPostsAdapter
         }
-        getUserPosts()
+
+        //getting user posts from view model
+        val username = intent.getStringExtra(Constants.USERNAME)
+        binding.userPostsHeaderTv.text = getString(R.string.user_post_label, username)
+
+        //getting post index from intent
+        val postIndex = intent.getIntExtra(Constants.USER_POST_INDEX, 0)
+
+        getUserPosts(postIndex)
     }
 
-    private fun getUserPosts() {
+    /**
+     * METHOD FOR GETTING USER POSTS FROM POST REPOSITORY AND POPULATING THE RECYCLER VIEW
+     */
+    private fun getUserPosts(postIndex: Int) {
         viewModel.userPosts.observe(this) {
-            userPostsAdapter.submitList(it)
+            userPostsAdapter.submitList(it) {
+                binding.userPostsRv.scrollToPosition(postIndex)
+            }
         }
         viewModel.getUserPosts()
     }

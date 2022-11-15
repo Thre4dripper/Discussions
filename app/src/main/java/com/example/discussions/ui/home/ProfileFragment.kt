@@ -2,6 +2,7 @@ package com.example.discussions.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,12 @@ import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.EditDetailsActivity
 import com.example.discussions.ui.SettingsActivity
+import com.example.discussions.ui.UserPostsActivity
 import com.example.discussions.ui.ZoomImageActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterface {
     private val TAG = "ProfileFragment"
 
     private lateinit var binding: FragmentProfileBinding
@@ -94,7 +96,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun initPostsRecyclerView() {
-        profileAdapter = ProfileRecyclerAdapter()
+        profileAdapter = ProfileRecyclerAdapter(this)
         binding.profilePostsRv.apply {
             adapter = profileAdapter
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -179,4 +181,12 @@ class ProfileFragment : Fragment() {
                 requireActivity().finish()
             }
         }
+
+    override fun onUserPostClick(index: Int) {
+        Log.d(TAG, "onUserPostClick: $index")
+        val intent = Intent(requireContext(), UserPostsActivity::class.java)
+        intent.putExtra(Constants.USER_POST_INDEX, index)
+        intent.putExtra(Constants.USERNAME, binding.profileUsernameTv.text.toString())
+        userPostsCallback.launch(intent)
+    }
 }

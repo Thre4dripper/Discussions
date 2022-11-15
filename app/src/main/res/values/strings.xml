@@ -82,4 +82,7 @@
     <string name="post_list_item_comment_count">100</string>
     <string name="post_list_item_like">Like</string>
     <string name="post_list_item_comment">Comment</string>
+
+    //User Post Activity
+    <string name="user_post_label">%s Posts</string>
 </resources>
