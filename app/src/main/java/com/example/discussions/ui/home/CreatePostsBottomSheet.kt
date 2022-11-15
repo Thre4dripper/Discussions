@@ -23,6 +23,7 @@ class CreatePostsBottomSheet : BottomSheetDialogFragment() {
         binding = PostsBsLayoutBinding.inflate(inflater, container, false)
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
+        //TODO update discussions post list in recycler view without refreshing the whole page
         binding.createPostBtn.setOnClickListener {
             startActivity(Intent(context, CreatePostActivity::class.java))
             dismiss()

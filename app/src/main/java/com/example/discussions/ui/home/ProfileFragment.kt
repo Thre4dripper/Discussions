@@ -18,6 +18,7 @@ import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.EditDetailsActivity
 import com.example.discussions.ui.SettingsActivity
+import com.example.discussions.ui.UserPostsActivity
 import com.example.discussions.ui.ZoomImageActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -39,19 +40,27 @@ class ProfileFragment : Fragment() {
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
+        //for launching profile image zoom activity
         binding.profileIv.setOnClickListener {
             val intent = Intent(requireContext(), ZoomImageActivity::class.java)
             intent.putExtra(Constants.ZOOM_IMAGE_URL, viewModel.profileDataModel.profileImage)
             startActivity(intent)
         }
 
+        //for launching edit details activity
         binding.editProfileBtn.setOnClickListener {
             val intent = Intent(requireContext(), EditDetailsActivity::class.java)
             startActivity(intent)
         }
 
+        //for launching settings activity
         binding.profileSettingsBtn.setOnClickListener {
             settingsCallback.launch(Intent(requireContext(), SettingsActivity::class.java))
+        }
+
+        //for launching user posts activity
+        binding.profilePostsLabelCv.setOnClickListener {
+            userPostsCallback.launch(Intent(requireContext(), UserPostsActivity::class.java))
         }
 
         binding.lifecycleOwner = this
@@ -103,20 +112,24 @@ class ProfileFragment : Fragment() {
             binding.profileSwipeLayout.isRefreshing = false
             if (it != null) {
                 loadingDialog.dismiss()
-                if (it == Constants.API_SUCCESS) {
+                when (it) {
+                    Constants.API_SUCCESS -> {
 
-                    Glide.with(this)
-                        .load(viewModel.profileDataModel.profileImage)
-                        .into(binding.profileIv)
+                        Glide.with(this)
+                            .load(viewModel.profileDataModel.profileImage)
+                            .into(binding.profileIv)
 
-                    binding.profile = viewModel.profileDataModel
+                        binding.profile = viewModel.profileDataModel
 
-                    getUserPosts()
-                } else if (it == Constants.AUTH_FAILURE_ERROR) {
-                    requireActivity().setResult(Constants.RESULT_LOGOUT)
-                    requireActivity().finish()
-                } else {
-                    retryDialog.show()
+                        getUserPosts()
+                    }
+                    Constants.AUTH_FAILURE_ERROR -> {
+                        requireActivity().setResult(Constants.RESULT_LOGOUT)
+                        requireActivity().finish()
+                    }
+                    else -> {
+                        retryDialog.show()
+                    }
                 }
 
             }
@@ -153,6 +166,12 @@ class ProfileFragment : Fragment() {
         }
 
         viewModel.getAllUserPosts(requireContext())
+    }
+
+    private val userPostsCallback = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        //TODO update user posts list in recycler view without refreshing the whole fragment
     }
 
     /**
