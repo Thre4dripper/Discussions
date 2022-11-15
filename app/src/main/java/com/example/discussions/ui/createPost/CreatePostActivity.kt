@@ -29,6 +29,7 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 class CreatePostActivity : AppCompatActivity() {
+    private val TAG = "CreatePostActivity"
     private lateinit var binding: ActivityCreatePostBinding
     private lateinit var viewModel: CreatePostViewModel
 
@@ -153,29 +154,33 @@ class CreatePostActivity : AppCompatActivity() {
         viewModel.postContent = binding.createPostContent.text.toString().trim()
         viewModel.allowComments = binding.createPostCb.isChecked
 
-        //checking if all fields
-        if (viewModel.postTitle.isEmpty()) {
-            binding.createPostTitle.error = "Title cannot be empty"
-            binding.createPostTitle.requestFocus()
-            return
-        }
+        //either title or content is necessary to create a post
+        //or Image is necessary to create a post
+        if (binding.createPostImage.drawable == null) {
+            Toast.makeText(this, "or Select an image", Toast.LENGTH_SHORT).show()
+            if (viewModel.postTitle.isEmpty()) {
+                binding.createPostTitle.error = "Title cannot be empty"
+                binding.createPostTitle.requestFocus()
+                return
+            }
 
-        if (viewModel.postTitle.length < 10) {
-            binding.createPostTitle.error = "Title must be at least 5 characters long"
-            binding.createPostTitle.requestFocus()
-            return
-        }
+            if (viewModel.postTitle.length < 10) {
+                binding.createPostTitle.error = "Title must be at least 5 characters long"
+                binding.createPostTitle.requestFocus()
+                return
+            }
 
-        if (viewModel.postContent.isEmpty()) {
-            binding.createPostContent.error = "Content cannot be empty"
-            binding.createPostContent.requestFocus()
-            return
-        }
+            if (viewModel.postContent.isEmpty()) {
+                binding.createPostContent.error = "Content cannot be empty"
+                binding.createPostContent.requestFocus()
+                return
+            }
 
-        if (viewModel.postContent.length < 20) {
-            binding.createPostContent.error = "Content must be at least 10 characters long"
-            binding.createPostContent.requestFocus()
-            return
+            if (viewModel.postContent.length < 20) {
+                binding.createPostContent.error = "Content must be at least 10 characters long"
+                binding.createPostContent.requestFocus()
+                return
+            }
         }
 
         loadingDialog.show()
