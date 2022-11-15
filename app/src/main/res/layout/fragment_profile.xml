@@ -32,7 +32,7 @@
                 android:contentDescription="@string/profile_settings_desc"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_profile_options"
+                android:src="@drawable/ic_more_options"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/white" />

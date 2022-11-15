@@ -11,6 +11,21 @@
         android:background="@color/white">
 
         <ImageView
+            android:id="@+id/posts_more_options"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="12dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/user_post_more_options"
+            android:focusable="true"
+            android:padding="4dp"
+            android:src="@drawable/ic_more_options"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
             android:id="@+id/item_post_user_image"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -24,27 +39,24 @@
 
         <TextView
             android:id="@+id/item_post_username"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/dark_gray"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/item_post_user_image"
             app:layout_constraintTop_toTopOf="@+id/item_post_user_image"
             tools:text="@string/username" />
 
         <TextView
             android:id="@+id/item_post_time"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="@+id/item_post_user_image"
-            app:layout_constraintEnd_toEndOf="@+id/item_post_username"
-            app:layout_constraintStart_toEndOf="@+id/item_post_user_image"
+            app:layout_constraintStart_toStartOf="@+id/item_post_username"
             app:layout_constraintTop_toBottomOf="@+id/item_post_username"
             tools:text="@string/post_list_item_time" />
 

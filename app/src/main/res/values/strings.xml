@@ -85,4 +85,7 @@
 
     //User Post Activity
     <string name="user_post_label">%s Posts</string>
+    <string name="user_post_more_options">More Options</string>
+    <string name="user_post_edit">Edit</string>
+    <string name="user_post_delete">Delete</string>
 </resources>

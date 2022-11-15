@@ -36,6 +36,11 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
         var binding = DataBindingUtil.bind<ItemDiscussionPostBinding>(itemView)!!
 
         fun bind(binding: ItemDiscussionPostBinding, postModel: PostModel) {
+
+            //hiding more options button on discussion posts
+            binding.postsMoreOptions.visibility = View.GONE
+
+            //setting the profile image of current post's user
             Glide.with(itemView.context)
                 .load(postModel.userImage)
                 .placeholder(R.drawable.ic_profile)

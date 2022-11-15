@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -38,6 +39,28 @@ class UserPostsRecyclerAdapter :
         val binding = DataBindingUtil.bind<ItemDiscussionPostBinding>(itemView)!!
 
         fun bind(binding: ItemDiscussionPostBinding, postModel: PostModel) {
+            //setting post popup menu
+            val popupMenu = PopupMenu(binding.root.context, binding.postsMoreOptions)
+            popupMenu.inflate(R.menu.post_options_menu)
+
+            binding.postsMoreOptions.setOnClickListener {
+                popupMenu.show()
+            }
+
+            //setting post menu options
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.post_options_menu_edit -> {
+                        true
+                    }
+                    R.id.post_options_menu_delete -> {
+                        true
+                    }
+                    else -> false
+                }
+            }
+
+            //setting the profile image of current post's user
             Glide.with(itemView.context)
                 .load(postModel.userImage)
                 .placeholder(R.drawable.ic_profile)
