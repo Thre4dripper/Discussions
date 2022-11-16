@@ -38,7 +38,8 @@ class Cloudinary {
             }
 
             MediaManager.get().upload(selectedImageUri)
-                .option("folder", "${folderName}/")
+                    //removing @ from folder name
+                .option("folder", "${folderName.substring(1)}/")
                 .callback(object : UploadCallback {
                     override fun onStart(requestId: String?) {}
                     override fun onProgress(requestId: String?, bytes: Long, totalBytes: Long) {}

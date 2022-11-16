@@ -28,19 +28,24 @@ class UserPostsViewModel : ViewModel() {
     fun deletePost(context: Context, postId: String) {
         _isPostDeleted.value = null
 
+        val deletedPost = _userPosts.value!!.find { it.postId == postId }!!
+        val postIndex = _userPosts.value!!.indexOf(deletedPost)
+        var newUserList = _userPosts.value!!.toMutableList()
+        newUserList.remove(deletedPost)
+        _userPosts.postValue(newUserList)
+
         PostRepository.deletePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPostDeleted.postValue(Constants.API_SUCCESS)
-
-                //re-adding post when error occurs
-                val newUserList = _userPosts.value!!.toMutableList()
-                val post = _userPosts.value!!.find { it.postId == postId }
-                newUserList.remove(post)
-                _userPosts.postValue(newUserList)
             }
 
             override fun onError(response: String) {
                 _isPostDeleted.postValue(Constants.API_FAILED)
+
+                //re-adding post when error occurs
+                newUserList = _userPosts.value!!.toMutableList()
+                newUserList.add(postIndex,deletedPost)
+                _userPosts.postValue(newUserList)
             }
         })
     }
