@@ -19,7 +19,7 @@ import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class UserPostsRecyclerAdapter :
+class UserPostsRecyclerAdapter(private var postOptionsInterface: PostOptionsInterface) :
     ListAdapter<PostModel, UserPostsRecyclerAdapter.UserPostsViewHolder>(UserPostsDiffCallback()) {
 
 
@@ -32,13 +32,22 @@ class UserPostsRecyclerAdapter :
 
     override fun onBindViewHolder(holder: UserPostsViewHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(holder.binding, post)
+        holder.bind(holder.binding, post, postOptionsInterface)
+    }
+
+    interface PostOptionsInterface {
+        fun onPostEdit(postId: String)
+        fun onPostDelete(postId: String)
     }
 
     class UserPostsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = DataBindingUtil.bind<ItemDiscussionPostBinding>(itemView)!!
 
-        fun bind(binding: ItemDiscussionPostBinding, postModel: PostModel) {
+        fun bind(
+            binding: ItemDiscussionPostBinding,
+            postModel: PostModel,
+            posInterface: PostOptionsInterface
+        ) {
             //setting post popup menu
             val popupMenu = PopupMenu(binding.root.context, binding.postsMoreOptions)
             popupMenu.inflate(R.menu.post_options_menu)
@@ -51,9 +60,11 @@ class UserPostsRecyclerAdapter :
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.post_options_menu_edit -> {
+                        posInterface.onPostEdit(postModel.postId)
                         true
                     }
                     R.id.post_options_menu_delete -> {
+                        posInterface.onPostDelete(postModel.postId)
                         true
                     }
                     else -> false

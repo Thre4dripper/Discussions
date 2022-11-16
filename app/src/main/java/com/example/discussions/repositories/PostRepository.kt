@@ -3,6 +3,7 @@ package com.example.discussions.repositories
 import android.content.Context
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.post.CreatePostApi
+import com.example.discussions.api.apiCalls.post.DeletePostApi
 import com.example.discussions.api.apiCalls.post.GetAllPostsApi
 import com.example.discussions.api.apiCalls.post.GetUserPostsApi
 import com.example.discussions.models.PostModel
@@ -102,6 +103,44 @@ class PostRepository {
             GetUserPostsApi.getUserPostsJson(
                 context,
                 userId,
+                token,
+                object : ResponseCallback {
+                    override fun onSuccess(response: String) {
+                        userPostsList = GetUserPostsApi.parseUserPostsJson(response)
+                        callback.onSuccess(response)
+                    }
+
+                    override fun onError(response: String) {
+                        if (response.contains("com.android.volley.TimeoutError")) {
+                            callback.onError("Time Out")
+                        } else if (response.contains("com.android.volley.NoConnectionError")) {
+                            callback.onError("Please check your internet connection")
+                        } else if (response.contains("com.android.volley.AuthFailureError")) {
+                            callback.onError("Auth Error")
+                        } else if (response.contains("com.android.volley.NetworkError")) {
+                            callback.onError("Network Error")
+                        } else if (response.contains("com.android.volley.ServerError")) {
+                            callback.onError("Server Error")
+                        } else if (response.contains("com.android.volley.ParseError")) {
+                            callback.onError("Parse Error")
+                        } else {
+                            callback.onError("Something went wrong")
+                        }
+                    }
+                }
+            )
+        }
+
+        fun deletePost(
+            context: Context,
+            postId:String,
+            callback: ResponseCallback
+        ) {
+            val token = LoginStore.getJWTToken(context)!!
+
+            DeletePostApi.deletePost(
+                context,
+                postId,
                 token,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {

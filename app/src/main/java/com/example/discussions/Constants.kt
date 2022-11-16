@@ -3,6 +3,7 @@ package com.example.discussions
 class Constants {
     companion object {
         const val API_SUCCESS = "success"
+        const val API_FAILED = "error"
         const val AUTH_FAILURE_ERROR = "Auth Error"
 
         //for activity results

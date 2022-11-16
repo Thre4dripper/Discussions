@@ -1,6 +1,8 @@
 package com.example.discussions.ui
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -9,8 +11,11 @@ import com.example.discussions.R
 import com.example.discussions.adapters.UserPostsRecyclerAdapter
 import com.example.discussions.databinding.ActivityUserPostsBinding
 import com.example.discussions.viewModels.UserPostsViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class UserPostsActivity : AppCompatActivity() {
+class UserPostsActivity : AppCompatActivity(), UserPostsRecyclerAdapter.PostOptionsInterface {
+    private val TAG = "UserPostsActivity"
+
     private lateinit var binding: ActivityUserPostsBinding
     private lateinit var viewModel: UserPostsViewModel
 
@@ -21,7 +26,7 @@ class UserPostsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[UserPostsViewModel::class.java]
 
         binding.userPostsRv.apply {
-            userPostsAdapter = UserPostsRecyclerAdapter()
+            userPostsAdapter = UserPostsRecyclerAdapter(this@UserPostsActivity)
             adapter = userPostsAdapter
         }
 
@@ -45,5 +50,43 @@ class UserPostsActivity : AppCompatActivity() {
             }
         }
         viewModel.getUserPosts()
+    }
+
+    override fun onPostEdit(postId: String) {
+        Log.d(TAG, "onPostEdit: $postId")
+    }
+
+    override fun onPostDelete(postId: String) {
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete")
+            .setMessage("Are you sure you want to delete this post?")
+            .setPositiveButton("Confirm") { dialog, _ ->
+                dialog.dismiss()
+                deletePost(postId)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    /**
+     * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
+     */
+    private fun deletePost(postId: String) {
+        //post delete api observer
+        viewModel.isPostDeleted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS)
+                    Toast.makeText(this, "Post Deleted", Toast.LENGTH_SHORT).show()
+                else if (it == Constants.API_FAILED)
+                    Toast.makeText(this, "Problem Deleting Post", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        //sending delete post request
+        Toast.makeText(this, "Deleting Post...", Toast.LENGTH_SHORT).show()
+        viewModel.deletePost(this, postId)
     }
 }
