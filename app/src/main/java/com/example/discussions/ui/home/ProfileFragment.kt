@@ -27,7 +27,7 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
     private val TAG = "ProfileFragment"
 
     private lateinit var binding: FragmentProfileBinding
-    private lateinit var viewModel: HomeViewModel
+    private lateinit var homeViewModel: HomeViewModel
 
     private lateinit var loadingDialog: AlertDialog
     private lateinit var retryDialog: AlertDialog
@@ -38,12 +38,12 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+        homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         //for launching profile image zoom activity
         binding.profileIv.setOnClickListener {
             val intent = Intent(requireContext(), ZoomImageActivity::class.java)
-            intent.putExtra(Constants.ZOOM_IMAGE_URL, viewModel.profileDataModel.profileImage)
+            intent.putExtra(Constants.ZOOM_IMAGE_URL, homeViewModel.profileDataModel.profileImage)
             startActivity(intent)
         }
 
@@ -65,7 +65,7 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
 
         //swipe to refresh
         binding.profileSwipeLayout.setOnRefreshListener {
-            viewModel.refreshProfile(requireContext())
+            homeViewModel.refreshProfile(requireContext())
             getProfile()
         }
 
@@ -104,7 +104,7 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
 
     private fun getProfile() {
         loadingDialog.show()
-        viewModel.isProfileFetched.observe(viewLifecycleOwner) {
+        homeViewModel.isProfileFetched.observe(viewLifecycleOwner) {
             binding.profileSwipeLayout.isRefreshing = false
             if (it != null) {
                 loadingDialog.dismiss()
@@ -112,10 +112,10 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
                     Constants.API_SUCCESS -> {
 
                         Glide.with(this)
-                            .load(viewModel.profileDataModel.profileImage)
+                            .load(homeViewModel.profileDataModel.profileImage)
                             .into(binding.profileIv)
 
-                        binding.profile = viewModel.profileDataModel
+                        binding.profile = homeViewModel.profileDataModel
 
                         getUserPosts()
                     }
@@ -131,24 +131,24 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
             }
         }
 
-        viewModel.getProfile(requireContext())
+        homeViewModel.getProfile(requireContext())
     }
 
     private fun getUserPosts() {
         binding.profilePostsProgressBar.visibility = View.VISIBLE
         profileAdapter.submitList(mutableListOf())
-        viewModel.userPostsList.observe(viewLifecycleOwner) {
+        homeViewModel.userPostsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 profileAdapter.submitList(it)
                 binding.profilePostsProgressBar.visibility = View.GONE
                 binding.profilePostsLottieNoData.visibility = View.GONE
                 if (it.isEmpty()) {
                     binding.profilePostsLottieNoData.visibility = View.VISIBLE
-                    val error = viewModel.isUserPostsFetched.value
-                    if (viewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
+                    val error = homeViewModel.isUserPostsFetched.value
+                    if (homeViewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
-                            viewModel.isUserPostsFetched.value,
+                            homeViewModel.isUserPostsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()
@@ -161,13 +161,13 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
             }
         }
 
-        viewModel.getAllUserPosts(requireContext())
+        homeViewModel.getAllUserPosts(requireContext())
     }
 
     private val userPostsCallback = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        //TODO update user posts list in recycler view without refreshing the whole fragment
+        profileAdapter.submitList(homeViewModel.userPostsList.value)
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.example.discussions.repositories
 
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.post.CreatePostApi
 import com.example.discussions.api.apiCalls.post.DeletePostApi
@@ -11,8 +12,10 @@ import com.example.discussions.store.LoginStore
 
 class PostRepository {
     companion object {
-        var allPostsList = mutableListOf<PostModel>()
-        var userPostsList = mutableListOf<PostModel>()
+        private const val TAG = "PostRepository"
+
+        var allPostsList = MutableLiveData<MutableList<PostModel>?>(null)
+        var userPostsList = MutableLiveData<MutableList<PostModel>?>(null)
 
         fun createPost(
             context: Context,
@@ -68,7 +71,7 @@ class PostRepository {
                 token,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        allPostsList = GetAllPostsApi.parseAllPostsJson(response)
+                        allPostsList.postValue(GetAllPostsApi.parseAllPostsJson(response))
                         callback.onSuccess(response)
                     }
 
@@ -95,7 +98,7 @@ class PostRepository {
 
         fun getAllUserPosts(
             context: Context,
-            userId:String,
+            userId: String,
             callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
@@ -106,7 +109,7 @@ class PostRepository {
                 token,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        userPostsList = GetUserPostsApi.parseUserPostsJson(response)
+                        userPostsList.postValue(GetUserPostsApi.parseUserPostsJson(response))
                         callback.onSuccess(response)
                     }
 
@@ -133,7 +136,7 @@ class PostRepository {
 
         fun deletePost(
             context: Context,
-            postId:String,
+            postId: String,
             callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!

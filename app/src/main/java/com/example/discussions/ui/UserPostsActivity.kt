@@ -49,7 +49,6 @@ class UserPostsActivity : AppCompatActivity(), UserPostsRecyclerAdapter.PostOpti
                 binding.userPostsRv.scrollToPosition(postIndex)
             }
         }
-        viewModel.getUserPosts()
     }
 
     override fun onPostEdit(postId: String) {

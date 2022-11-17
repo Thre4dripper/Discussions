@@ -13,13 +13,13 @@ class UserPostsViewModel : ViewModel() {
 
     private val TAG = "UserPostsViewModel"
 
-    private var _userPosts = MutableLiveData<List<PostModel>>()
-    val userPosts: LiveData<List<PostModel>>
+    //get user list directly from repository live data
+    private var _userPosts = PostRepository.userPostsList
+    val userPosts: LiveData<MutableList<PostModel>?>
         get() = _userPosts
 
-    fun getUserPosts() {
-        _userPosts.value = PostRepository.userPostsList
-    }
+    //all posts list from repository
+    private var _allPosts = PostRepository.allPostsList
 
     private var _isPostDeleted = MutableLiveData<String?>(null)
     val isPostDeleted: LiveData<String?>
@@ -28,11 +28,20 @@ class UserPostsViewModel : ViewModel() {
     fun deletePost(context: Context, postId: String) {
         _isPostDeleted.value = null
 
-        val deletedPost = _userPosts.value!!.find { it.postId == postId }!!
-        val postIndex = _userPosts.value!!.indexOf(deletedPost)
-        var newUserList = _userPosts.value!!.toMutableList()
-        newUserList.remove(deletedPost)
-        _userPosts.postValue(newUserList)
+        //deleting post from all posts list
+        val deletedPost = _allPosts.value!!.find { it.postId == postId }!!
+        val deletedPostIndex = _allPosts.value!!.indexOf(deletedPost)
+        var newPostsList = _allPosts.value!!.toMutableList()
+        newPostsList.removeAt(deletedPostIndex)
+        _allPosts.value = newPostsList
+
+        //deleting post from user posts list
+        val deletedUserPost = _userPosts.value!!.find { it.postId == postId }!!
+        val deletedUserPostIndex = _userPosts.value!!.indexOf(deletedUserPost)
+        var newUserPostsList = _userPosts.value!!.toMutableList()
+        newUserPostsList.removeAt(deletedUserPostIndex)
+        _userPosts.value = newUserPostsList
+
 
         PostRepository.deletePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -43,9 +52,13 @@ class UserPostsViewModel : ViewModel() {
                 _isPostDeleted.postValue(Constants.API_FAILED)
 
                 //re-adding post when error occurs
-                newUserList = _userPosts.value!!.toMutableList()
-                newUserList.add(postIndex,deletedPost)
-                _userPosts.postValue(newUserList)
+                newPostsList = _allPosts.value!!.toMutableList()
+                newPostsList.add(deletedPostIndex, deletedPost)
+                _allPosts.value = newPostsList
+
+                newUserPostsList = _userPosts.value!!.toMutableList()
+                newUserPostsList.add(deletedUserPostIndex, deletedUserPost)
+                _userPosts.value = newUserPostsList
             }
         })
     }

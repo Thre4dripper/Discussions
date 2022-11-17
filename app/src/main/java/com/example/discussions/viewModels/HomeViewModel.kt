@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.models.PostModel
 import com.example.discussions.models.ProfileDataModel
 import com.example.discussions.repositories.PostRepository
 import com.example.discussions.repositories.UserRepository
@@ -15,8 +14,12 @@ class HomeViewModel : ViewModel() {
     private val TAG = "HomeViewModel"
 
     lateinit var profileDataModel: ProfileDataModel
-    var postsList = MutableLiveData<MutableList<PostModel>?>()
-    var userPostsList = MutableLiveData<MutableList<PostModel>?>()
+
+    //get posts list directly from repository live data
+    var postsList = PostRepository.allPostsList
+
+    //get user posts list directly from repository live data
+    var userPostsList = PostRepository.userPostsList
 
     private var _isPostsFetched = MutableLiveData<String?>(null)
     val isPostsFetched: LiveData<String?>
@@ -54,7 +57,6 @@ class HomeViewModel : ViewModel() {
         PostRepository.getAllUserPosts(context, profileDataModel.userId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isUserPostsFetched.value = Constants.API_SUCCESS
-                userPostsList.postValue(PostRepository.userPostsList)
             }
 
             override fun onError(response: String) {
@@ -82,7 +84,6 @@ class HomeViewModel : ViewModel() {
         PostRepository.getAllPosts(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPostsFetched.value = Constants.API_SUCCESS
-                postsList.postValue(PostRepository.allPostsList)
             }
 
             override fun onError(response: String) {
