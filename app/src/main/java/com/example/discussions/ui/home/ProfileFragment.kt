@@ -139,12 +139,22 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
         profileAdapter.submitList(mutableListOf())
         homeViewModel.userPostsList.observe(viewLifecycleOwner) {
             if (it != null) {
+                //updating posts list recycler view
                 profileAdapter.submitList(it)
+                //updating posts count
+                binding.profilePostsCountTv.text = it.size.toString()
+
+                //hiding progress bar and lottie animation, when posts are loaded
                 binding.profilePostsProgressBar.visibility = View.GONE
                 binding.profilePostsLottieNoData.visibility = View.GONE
+
+                //when no posts are available
                 if (it.isEmpty()) {
+                    //showing lottie animation
                     binding.profilePostsLottieNoData.visibility = View.VISIBLE
                     val error = homeViewModel.isUserPostsFetched.value
+
+                    //when empty is due to network error, showing toast
                     if (homeViewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
@@ -166,8 +176,7 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
 
     private val userPostsCallback = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        profileAdapter.submitList(homeViewModel.userPostsList.value)
+    ) {
     }
 
     /**
