@@ -144,7 +144,6 @@ class PostRepository {
                 token,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        userPostsList = GetUserPostsApi.parseUserPostsJson(response)
                         callback.onSuccess(response)
                     }
 

@@ -2,7 +2,6 @@ package com.example.discussions.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -183,7 +182,6 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
         }
 
     override fun onUserPostClick(index: Int) {
-        Log.d(TAG, "onUserPostClick: $index")
         val intent = Intent(requireContext(), UserPostsActivity::class.java)
         intent.putExtra(Constants.USER_POST_INDEX, index)
         intent.putExtra(Constants.USERNAME, binding.profileUsernameTv.text.toString())

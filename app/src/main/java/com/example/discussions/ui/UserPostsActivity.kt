@@ -84,9 +84,6 @@ class UserPostsActivity : AppCompatActivity(), UserPostsRecyclerAdapter.PostOpti
                     Toast.makeText(this, "Problem Deleting Post", Toast.LENGTH_SHORT).show()
             }
         }
-
-        //sending delete post request
-        Toast.makeText(this, "Deleting Post...", Toast.LENGTH_SHORT).show()
         viewModel.deletePost(this, postId)
     }
 }

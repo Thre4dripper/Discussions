@@ -18,7 +18,7 @@ class DeletePostApi {
             callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
-            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.POST_DELETE_POST}$postId"
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.POST_DELETE_POST}$postId/"
 
             val request = object : JsonObjectRequest(Method.POST, url, null, { response ->
                 callback.onSuccess(response.toString())
