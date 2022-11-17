@@ -45,13 +45,21 @@ class DiscussFragment : Fragment() {
         binding.discussionProgressBar.visibility = View.VISIBLE
         homeViewModel.postsList.observe(viewLifecycleOwner) {
             if (it != null) {
-                discussAdapter.submitList(it)
+                discussAdapter.submitList(it) {
+                    //scroll to top after loading new data
+                    binding.discussionRv.scrollToPosition(0)
+                }
+                //hiding all loading
                 binding.discussSwipeLayout.isRefreshing = false
                 binding.discussionProgressBar.visibility = View.GONE
                 binding.discussLottieNoData.visibility = View.GONE
+
+                //when empty list is loaded
                 if (it.isEmpty()) {
                     binding.discussLottieNoData.visibility = View.VISIBLE
                     val error = homeViewModel.isPostsFetched.value
+
+                    //when empty list is due to network error
                     if (error != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
