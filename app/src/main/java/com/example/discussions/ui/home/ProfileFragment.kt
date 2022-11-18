@@ -174,11 +174,6 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
         homeViewModel.getAllUserPosts(requireContext())
     }
 
-    private val userPostsCallback = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) {
-    }
-
     /**
      * Settings Activity launch callback
      */
@@ -194,6 +189,6 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
         val intent = Intent(requireContext(), UserPostsActivity::class.java)
         intent.putExtra(Constants.USER_POST_INDEX, index)
         intent.putExtra(Constants.USERNAME, binding.profileUsernameTv.text.toString())
-        userPostsCallback.launch(intent)
+        startActivity(intent)
     }
 }

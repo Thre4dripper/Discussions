@@ -66,5 +66,50 @@ class CreateEditPostViewModel : ViewModel() {
     }
 
     fun editPost(context: Context, postId: String) {
+        _isPostCreatedOrUpdated.postValue(null)
+        PostRepository.updatePost(
+            context,
+            postId,
+            postTitle,
+            postContent,
+            postImage,
+            allowComments,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    _isPostCreatedOrUpdated.postValue(Constants.API_SUCCESS)
+
+                    //getting old post from all posts list and user posts list
+                    val oldPost = _allPosts.value?.find { it.postId == postId }!!
+                    val oldUserPost = _userPosts.value?.find { it.postId == postId }!!
+
+                    //creating copy of the post from all posts list
+                    val newPost = oldPost.copy(
+                        title = postTitle,
+                        content = postContent,
+                        postImage = postImage,
+                    )
+
+                    //creating copy of the post from user posts list
+                    val newUserPost = oldUserPost.copy(
+                        title = postTitle,
+                        content = postContent,
+                        postImage = postImage,
+                    )
+
+                    //updating the post in all posts list and user posts list for real time update in the UI
+                    val newAllPosts = _allPosts.value?.toMutableList()
+                    val newUserPosts = _userPosts.value?.toMutableList()
+
+                    newAllPosts?.set(newAllPosts.indexOf(oldPost), newPost)
+                    newUserPosts?.set(newUserPosts.indexOf(oldUserPost), newUserPost)
+
+                    _allPosts.postValue(newAllPosts)
+                    _userPosts.postValue(newUserPosts)
+                }
+
+                override fun onError(response: String) {
+                    _isPostCreatedOrUpdated.postValue(response)
+                }
+            })
     }
 }

@@ -94,7 +94,7 @@
             android:layout_height="400dp"
             android:layout_marginTop="16dp"
             android:background="@color/post_image_bg_color"
-            android:contentDescription="@string/create_post_post_image_desc"
+            android:contentDescription="@string/create_edit_post_image_desc"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toTopOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
