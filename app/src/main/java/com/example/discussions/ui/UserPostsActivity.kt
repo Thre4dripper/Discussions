@@ -1,5 +1,6 @@
 package com.example.discussions.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -52,7 +53,9 @@ class UserPostsActivity : AppCompatActivity(), UserPostsRecyclerAdapter.PostOpti
     }
 
     override fun onPostEdit(postId: String) {
-        Log.d(TAG, "onPostEdit: $postId")
+        val intent = Intent(this, EditPostActivity::class.java)
+//        intent.putExtra(Constants.POST_ID, postId)
+        startActivity(intent)
     }
 
     override fun onPostDelete(postId: String) {

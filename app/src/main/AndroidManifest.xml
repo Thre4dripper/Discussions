@@ -38,6 +38,13 @@
                 android:value="" />
         </activity>
         <activity
+            android:name=".ui.EditPostActivity"
+            android:exported="false" >
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".ui.SettingsActivity"
             android:exported="false" >
             <meta-data

@@ -16,7 +16,7 @@ import com.example.discussions.Cloudinary
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.databinding.ActivityCreatePostBinding
+import com.example.discussions.databinding.ActivityCreateEditPostBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.CreatePostViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -29,36 +29,46 @@ import java.io.File
 
 class CreatePostActivity : AppCompatActivity() {
     private val TAG = "CreatePostActivity"
-    private lateinit var binding: ActivityCreatePostBinding
+    private lateinit var binding: ActivityCreateEditPostBinding
     private lateinit var viewModel: CreatePostViewModel
 
     private lateinit var loadingDialog: AlertDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_post)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_edit_post)
         viewModel = ViewModelProvider(this)[CreatePostViewModel::class.java]
 
+        //initializing back button
         binding.createPostBackBtn.setOnClickListener {
             finish()
         }
+        //initializing post creation button
         binding.createPostBtn.setOnClickListener {
             createPost()
         }
+
+        //initializing user profile image click to zoom in button
         binding.createPostProfileIv.setOnClickListener {
             val intent = Intent(this, ZoomImageActivity::class.java)
             intent.putExtra(Constants.ZOOM_IMAGE_URL, viewModel.profileImage)
             startActivity(intent)
         }
+
+        //initializing image selection button
         binding.createPostAddImageBtn.setOnClickListener {
             photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
+        //initializing clear image button
         binding.createPostClearImageBtn.setOnClickListener { clearPostImage() }
 
         initLoadingDialog()
         initUsernameAndImage()
     }
 
+    /**
+     * METHOD FOR INITIALIZING LOADING DIALOG
+     */
     private fun initLoadingDialog() {
         val dialogBinding = LoadingDialogBinding.inflate(layoutInflater)
         loadingDialog = MaterialAlertDialogBuilder(this).setView(dialogBinding.root)
@@ -66,6 +76,9 @@ class CreatePostActivity : AppCompatActivity() {
         loadingDialog.dismiss()
     }
 
+    /**
+     * METHOD FOR INITIALIZING USERNAME AND PROFILE IMAGE
+     */
     private fun initUsernameAndImage() {
         loadingDialog.show()
         viewModel.isApiFetched.observe(this) {
@@ -88,7 +101,9 @@ class CreatePostActivity : AppCompatActivity() {
         viewModel.getUsernameAndImage(this)
     }
 
-    // Registers a photo picker activity launcher in single-select mode.
+    /**
+     * CALLBACK FOR PHOTO PICKER ACTIVITY
+     */
     private val photoPickerLauncher =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia())
         { pickedPhotoUri ->
@@ -133,6 +148,9 @@ class CreatePostActivity : AppCompatActivity() {
             }
         }
 
+    /**
+     * METHOD FOR CLEARING POST IMAGE
+     */
     private fun clearPostImage() {
         MaterialAlertDialogBuilder(this)
             .setTitle("Clear Image")
@@ -148,6 +166,9 @@ class CreatePostActivity : AppCompatActivity() {
             .show()
     }
 
+    /**
+     * METHOD FOR CREATING POST
+     */
     private fun createPost() {
         viewModel.postTitle = binding.createPostTitle.text.toString().trim()
         viewModel.postContent = binding.createPostContent.text.toString().trim()
@@ -163,7 +184,7 @@ class CreatePostActivity : AppCompatActivity() {
                 return
             }
 
-            if (viewModel.postTitle.length < 10) {
+            if (viewModel.postTitle.length < 5) {
                 binding.createPostTitle.error = "Title must be at least 5 characters long"
                 binding.createPostTitle.requestFocus()
                 return
@@ -175,13 +196,14 @@ class CreatePostActivity : AppCompatActivity() {
                 return
             }
 
-            if (viewModel.postContent.length < 20) {
+            if (viewModel.postContent.length < 10) {
                 binding.createPostContent.error = "Content must be at least 10 characters long"
                 binding.createPostContent.requestFocus()
                 return
             }
         }
 
+        /* AFTER ALL CHECKS PASSED */
         loadingDialog.show()
 
         viewModel.isPostCreated.observe(this) {
@@ -197,8 +219,11 @@ class CreatePostActivity : AppCompatActivity() {
             }
         }
 
-        //firstly, post image is uploaded to cloudinary after which post is created with the url of the image received from cloudinary
-        //if no image is selected, post is created directly with fallback image url
+        /*
+        FIRSTLY, POST IMAGE IS UPLOADED TO CLOUDINARY
+        AFTER WHICH POST IS CREATED WITH THE URL OF THE IMAGE RECEIVED FROM CLOUDINARY
+        IF NO IMAGE IS SELECTED, POST IS CREATED DIRECTLY WITH FALLBACK IMAGE URL
+         */
         Cloudinary.uploadImage(
             object : ResponseCallback {
                 override fun onSuccess(response: String) {
