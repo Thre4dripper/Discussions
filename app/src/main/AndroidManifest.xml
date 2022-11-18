@@ -31,14 +31,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".ui.CreatePostActivity"
-            android:exported="false" >
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".ui.EditPostActivity"
+            android:name=".ui.CreateEditPostActivity"
             android:exported="false" >
             <meta-data
                 android:name="android.app.lib_name"

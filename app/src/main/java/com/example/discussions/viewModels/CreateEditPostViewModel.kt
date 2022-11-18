@@ -9,12 +9,14 @@ import com.example.discussions.api.ResponseCallback
 import com.example.discussions.repositories.PostRepository
 import com.example.discussions.repositories.UserRepository
 
-class CreatePostViewModel : ViewModel() {
+class CreateEditPostViewModel : ViewModel() {
+    private val TAG = "CreateEditPostViewModel"
+
     var profileImage: String? = null
     var username: String = ""
     var postTitle: String = ""
     var postContent: String = ""
-    var postImage: String? = null
+    var postImage: String = ""
     var allowComments: Boolean = true
 
 
@@ -22,9 +24,13 @@ class CreatePostViewModel : ViewModel() {
     val isApiFetched: LiveData<String>
         get() = _isApiFetched
 
-    private var _isPostCreated = MutableLiveData<String?>(null)
-    val isPostCreated: LiveData<String?>
-        get() = _isPostCreated
+    private var _isPostCreatedOrUpdated = MutableLiveData<String?>(null)
+    val isPostCreatedOrUpdated: LiveData<String?>
+        get() = _isPostCreatedOrUpdated
+
+    private var _allPosts = PostRepository.allPostsList
+    private var _userPosts = PostRepository.userPostsList
+
 
     fun getUsernameAndImage(context: Context) {
         UserRepository.getUsernameAndImage(context, object : ResponseCallback {
@@ -41,7 +47,7 @@ class CreatePostViewModel : ViewModel() {
     }
 
     fun createPost(context: Context) {
-        _isPostCreated.postValue(null)
+        _isPostCreatedOrUpdated.postValue(null)
         PostRepository.createPost(
             context,
             postTitle,
@@ -50,12 +56,15 @@ class CreatePostViewModel : ViewModel() {
             allowComments,
             object : ResponseCallback {
                 override fun onSuccess(response: String) {
-                    _isPostCreated.postValue(Constants.API_SUCCESS)
+                    _isPostCreatedOrUpdated.postValue(Constants.API_SUCCESS)
                 }
 
                 override fun onError(response: String) {
-                    _isPostCreated.postValue(response)
+                    _isPostCreatedOrUpdated.postValue(response)
                 }
             })
+    }
+
+    fun editPost(context: Context, postId: String) {
     }
 }

@@ -23,8 +23,10 @@
     <string name="create_post_label">Create Post</string>
     <string name="create_poll_label">Create Poll</string>
 
-    //Create Post Activity
+    //Create/Edit Post Activity
     <string name="create_post_btn_text">Post</string>
+    <string name="edit_post_btn_text">Edit</string>
+    <string name="edit_post_label">Edit Post</string>
     <string name="create_post_profile_image_desc">Profile Image</string>
     <string name="create_post_user_name">@string/profile_username_text</string>
     <string name="create_post_hint_title">Title</string>

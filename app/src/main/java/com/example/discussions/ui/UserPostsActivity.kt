@@ -2,7 +2,6 @@ package com.example.discussions.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -53,8 +52,13 @@ class UserPostsActivity : AppCompatActivity(), UserPostsRecyclerAdapter.PostOpti
     }
 
     override fun onPostEdit(postId: String) {
-        val intent = Intent(this, EditPostActivity::class.java)
-//        intent.putExtra(Constants.POST_ID, postId)
+        val intent = Intent(this, CreateEditPostActivity::class.java)
+        intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
+        intent.putExtra(Constants.POST_ID, postId)
+        val post = viewModel.userPosts.value?.find { it.postId == postId }!!
+        intent.putExtra(Constants.POST_TITLE, post.title)
+        intent.putExtra(Constants.POST_CONTENT, post.content)
+        intent.putExtra(Constants.POST_IMAGE, post.postImage)
         startActivity(intent)
     }
 
