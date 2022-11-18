@@ -18,7 +18,7 @@ class GetUserPostsApi {
             callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
-            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.POST_GET_USER_POSTS}$userId"
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.POST_GET_USER_POSTS}$userId/"
 
             val request = object : JsonArrayRequest(Method.GET, url, null, { response ->
                 callback.onSuccess(response.toString())

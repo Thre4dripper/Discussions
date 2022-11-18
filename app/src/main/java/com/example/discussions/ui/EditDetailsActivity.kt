@@ -210,8 +210,8 @@ class EditDetailsActivity : AppCompatActivity() {
     /**
      * METHOD FOR SETTING GENDER RADIO BUTTONS ON PROFILE LOAD
      */
-    private fun setRadioButtons(radio: String = "M") {
-        if (radio == "M") {
+    private fun setRadioButtons(radio: String) {
+        if (radio == Constants.MALE) {
             binding.maleRadio.isChecked = true
             binding.maleRadioLayout.setBackgroundResource(R.drawable.radio_checked)
             binding.femaleRadioLayout.setBackgroundResource(R.drawable.radio_regular)
@@ -230,7 +230,7 @@ class EditDetailsActivity : AppCompatActivity() {
     private fun updateDetails() {
         val firstName = binding.profileFirstNameEt.text.toString().trim()
         val lastName = binding.profileLastNameEt.text.toString().trim()
-        val gender = if (binding.maleRadio.isChecked) "M" else "F"
+        val gender = if (binding.maleRadio.isChecked) Constants.MALE else Constants.FEMALE
         val email = binding.profileEmailEt.text.toString().trim()
         val mobileNo = binding.profileMobileNoEt.text.toString().trim()
         val dob = binding.dobEt.text.toString().trim()

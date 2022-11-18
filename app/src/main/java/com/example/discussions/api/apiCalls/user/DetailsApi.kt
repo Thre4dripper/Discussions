@@ -39,7 +39,7 @@ class DetailsApi {
             var username = rootObject.getString("username")
             val firstName = rootObject.getString("first_name")
             val lastName = rootObject.getString("last_name")
-            val gender = if (rootObject.has("gender")) rootObject.getString("gender") else "M"
+            val gender = if (rootObject.has("gender")) rootObject.getString("gender") else Constants.MALE
             val email = rootObject.getString("email")
             val mobileNo = rootObject.getString("mobile_no")
             val dob = rootObject.getString("dob")
