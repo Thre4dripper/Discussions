@@ -79,6 +79,20 @@
         <item name="lottie_autoPlay">true</item>
     </style>
 
+    //Create /Edit Poll Styles
+
+    <style name="CreateEditPollOptionsStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="endIconMode">custom</item>
+        <item name="endIconDrawable">@drawable/ic_poll</item>
+        <item name="endIconTint">@color/login_header_color</item>
+        <item name="android:visibility">gone</item>
+    </style>
 
     //Profile Fragment Styles
 

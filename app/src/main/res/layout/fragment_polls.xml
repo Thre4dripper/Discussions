@@ -26,7 +26,7 @@
             android:textColor="@color/login_header_color"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:text="Polls"
+            android:text="@string/poll_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </com.google.android.material.card.MaterialCardView>

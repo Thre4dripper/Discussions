@@ -32,12 +32,21 @@ class Constants {
         //for intents
         const val ZOOM_IMAGE_URL = "imageUrl"
         const val USER_POST_INDEX = "userPostIndex"
+
+        //for posts modes
         const val POST_MODE = "post_mode"
         const val MODE_CREATE_POST = "create_post"
         const val MODE_EDIT_POST = "edit_post"
+
+        //for passing post data
         const val POST_ID = "post_id"
         const val POST_TITLE = "post_title"
         const val POST_CONTENT = "post_content"
         const val POST_IMAGE = "post_image"
+
+        //for poll modes
+        const val POLL_MODE = "poll_mode"
+        const val MODE_CREATE_POLL = "create_poll"
+        const val MODE_EDIT_POLL = "edit_poll"
     }
 }
