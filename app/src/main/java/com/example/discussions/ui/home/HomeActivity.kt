@@ -47,7 +47,9 @@ class HomeActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_poll -> {
-                    //TODO: add poll fragment
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, PollsFragment(), Constants.TAG_POLLS_FRAGMENT)
+                        .commit()
                     true
                 }
                 R.id.navigation_notification -> {
