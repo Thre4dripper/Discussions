@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.databinding.PostsBsLayoutBinding
-import com.example.discussions.ui.CreateEditPollActivity
+import com.example.discussions.ui.CreatePollActivity
 import com.example.discussions.ui.CreateEditPostActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -33,7 +33,7 @@ class CreatePostsBottomSheet : BottomSheetDialogFragment() {
         }
 
         binding.createPollBtn.setOnClickListener {
-            val intent = Intent(context, CreateEditPollActivity::class.java)
+            val intent = Intent(context, CreatePollActivity::class.java)
             intent.putExtra(Constants.POLL_MODE, Constants.MODE_CREATE_POLL)
             startActivity(intent)
             dismiss()

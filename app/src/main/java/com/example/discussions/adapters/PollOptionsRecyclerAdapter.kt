@@ -11,7 +11,7 @@ import com.example.discussions.R
 import com.example.discussions.databinding.ItemPollOptionBinding
 import com.example.discussions.models.PollOptionModel
 
-class PollOptionsRecyclerAdapter :
+class PollOptionsRecyclerAdapter(private var pollOptionClickInterface: PollOptionClickInterface) :
     ListAdapter<PollOptionModel, PollOptionsRecyclerAdapter.PollOptionViewHolder>(PollOptionDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PollOptionViewHolder {
@@ -21,11 +21,28 @@ class PollOptionsRecyclerAdapter :
     }
 
     override fun onBindViewHolder(holder: PollOptionViewHolder, position: Int) {
-
+        holder.bind(getItem(position), pollOptionClickInterface)
     }
 
-    class PollOptionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    public interface PollOptionClickInterface {
+        fun onPollOptionDelete(position: Int)
+    }
+
+    class PollOptionViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
         private val binding = DataBindingUtil.bind<ItemPollOptionBinding>(itemView)!!
+
+        fun bind(
+            pollOptionModel: PollOptionModel,
+            pollOptionClickInterface: PollOptionClickInterface
+        ) {
+            binding.itemCreatePollOptionTil.hint = pollOptionModel.hint
+            binding.itemCreatePollOptionEt.setText(pollOptionModel.option)
+
+            binding.itemCreatePollOptionDeleteIv.setOnClickListener {
+                pollOptionClickInterface.onPollOptionDelete(adapterPosition)
+            }
+        }
     }
 
     class PollOptionDiffUtil : DiffUtil.ItemCallback<PollOptionModel>() {

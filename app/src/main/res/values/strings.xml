@@ -39,23 +39,16 @@
     <string name="create_edit_post_allow_comments_text">Allow Comments</string>
 
     //Create/Edit Poll Activity
-    <string name="create_edit_poll_profile_image_desc">@string/create_edit_post_image_desc</string>
-    <string name="create_edit_poll_user_name">@string/profile_username_text</string>
-    <string name="create_edit_poll_hint_title">@string/create_edit_post_hint_title</string>
-    <string name="create_edit_poll_hint_content">What do you want to ask?</string>
-    <string name="create_edit_poll_create_button_text">Create</string>
-    <string name="create_edit_poll_edit_button_text">Edit</string>
+    <string name="create_poll_profile_image_desc">@string/create_edit_post_image_desc</string>
+    <string name="create_poll_user_name">@string/profile_username_text</string>
+    <string name="create_poll_hint_title">@string/create_edit_post_hint_title</string>
+    <string name="create_poll_hint_content">What do you want to ask?</string>
+    <string name="create_poll_create_button_text">Create</string>
+    <string name="create_poll_edit_button_text">Edit</string>
 
-    <string name="create_edit_poll_option_1">Option 1</string>
-    <string name="create_edit_poll_option_2">Option 2</string>
-    <string name="create_edit_poll_option_3">Option 3</string>
-    <string name="create_edit_poll_option_4">Option 4</string>
-    <string name="create_edit_poll_option_5">Option 5</string>
-    <string name="create_edit_poll_option_6">Option 6</string>
-
-    <string name="create_edit_poll_add_option_text">Add Option</string>
-    <string name="create_edit_poll_remove_option_desc">Remove Option</string>
-    <string name="create_edit_poll_private_text">Private</string>
+    <string name="create_poll_add_option_text">Add Option</string>
+    <string name="create_poll_remove_option_desc">Remove Option</string>
+    <string name="create_poll_private_text">Private</string>
 
     //Profile Fragment
     <string name="profile_image_desc">Display Profile Image</string>

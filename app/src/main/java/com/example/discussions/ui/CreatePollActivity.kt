@@ -11,20 +11,21 @@ import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.PollOptionsRecyclerAdapter
-import com.example.discussions.databinding.ActivityCreateEditPollBinding
+import com.example.discussions.databinding.ActivityCreatePollBinding
 import com.example.discussions.databinding.LoadingDialogBinding
-import com.example.discussions.viewModels.CreateEditPollViewModel
+import com.example.discussions.viewModels.CreatePollViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class CreateEditPollActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityCreateEditPollBinding
-    private lateinit var viewModel: CreateEditPollViewModel
+class CreatePollActivity : AppCompatActivity(),
+    PollOptionsRecyclerAdapter.PollOptionClickInterface {
+    private lateinit var binding: ActivityCreatePollBinding
+    private lateinit var viewModel: CreatePollViewModel
 
     private lateinit var loadingDialog: AlertDialog
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_edit_poll)
-        viewModel = ViewModelProvider(this)[CreateEditPollViewModel::class.java]
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_create_poll)
+        viewModel = ViewModelProvider(this)[CreatePollViewModel::class.java]
 
         //initializing back button
         binding.createPollBackBtn.setOnClickListener {
@@ -43,7 +44,7 @@ class CreateEditPollActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.createEditPollAddOptionBtn.setOnClickListener {
+        binding.createPollAddOptionBtn.setOnClickListener {
             viewModel.addPollOption()
         }
 
@@ -88,15 +89,19 @@ class CreateEditPollActivity : AppCompatActivity() {
     }
 
     private fun initPollOptionsRv() {
-        val adapter = PollOptionsRecyclerAdapter()
-        binding.createEditPollOptionsRv.adapter = adapter
+        val adapter = PollOptionsRecyclerAdapter(this)
+        binding.createPollOptionsRv.adapter = adapter
 
         viewModel.pollOptions.observe(this) {
             adapter.submitList(it) {
-                binding.createEditPollOptionsRv.scrollToPosition(it.size - 1)
+                binding.createPollOptionsRv.scrollToPosition(it.size - 1)
             }
 
-            binding.createEditPollAddOptionBtn.isEnabled = it.size < 6
+            binding.createPollAddOptionBtn.isEnabled = it.size < 6
         }
+    }
+
+    override fun onPollOptionDelete(position: Int) {
+        viewModel.deletePollOption(position)
     }
 }

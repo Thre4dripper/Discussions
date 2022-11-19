@@ -9,7 +9,7 @@ import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PollOptionModel
 import com.example.discussions.repositories.UserRepository
 
-class CreateEditPollViewModel : ViewModel() {
+class CreatePollViewModel : ViewModel() {
 
     var profileImage: String? = null
     var username: String = ""
@@ -43,6 +43,12 @@ class CreateEditPollViewModel : ViewModel() {
         newPollOptionsList.add(
             PollOptionModel(pollOptions.value!!.size, "", "Option ${pollOptions.value!!.size + 1}")
         )
+        pollOptions.postValue(newPollOptionsList)
+    }
+
+    fun deletePollOption(position: Int) {
+        val newPollOptionsList = pollOptions.value!!.toMutableList()
+        newPollOptionsList.removeAt(position)
         pollOptions.postValue(newPollOptionsList)
     }
 }

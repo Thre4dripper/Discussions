@@ -17,7 +17,7 @@
         tools:replace="android:fullBackupContent"
         tools:targetApi="31">
         <activity
-            android:name=".ui.CreateEditPollActivity"
+            android:name=".ui.CreatePollActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

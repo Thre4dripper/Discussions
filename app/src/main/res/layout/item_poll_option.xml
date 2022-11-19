@@ -6,16 +6,20 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.google.android.material.textfield.TextInputLayout style="@style/CreateEditPollOptionsTilStyle">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/item_create_poll_option_til"
+            style="@style/CreatePollOptionsTilStyle">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/item_create_poll_option_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
-            style="@style/CreateEditPollRemoveOptionStyle"
-            android:contentDescription="@string/create_edit_poll_remove_option_desc" />
+            android:id="@+id/item_create_poll_option_delete_iv"
+            style="@style/CreatePollRemoveOptionStyle"
+            android:contentDescription="@string/create_poll_remove_option_desc" />
     </LinearLayout>
 </layout>
