@@ -15,5 +15,7 @@ class ApiRoutes {
         const val POST_GET_USER_POSTS = "/api/post/getUserPosts/"
         const val POST_DELETE_POST = "/api/post/delete/"
         const val POST_UPDATE_POST = "/api/post/update/"
+
+        const val DELETE_IMAGE = "/api/users/deleteimage/"
     }
 }

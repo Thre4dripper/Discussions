@@ -207,6 +207,10 @@ class CreateEditPostActivity : AppCompatActivity() {
                 viewModel.postImage = ""
                 binding.createPostIv.setImageDrawable(null)
                 binding.createPostClearImageBtn.visibility = View.GONE
+
+                //on clearing post image, delete it from cloudinary also
+                Cloudinary.deleteImage(this, postImageFallbackUri.toString())
+
                 postImageFallbackUri = Uri.EMPTY
             }
             .setNegativeButton("No") { dialog, _ ->
@@ -287,6 +291,7 @@ class CreateEditPostActivity : AppCompatActivity() {
         IF NO IMAGE IS SELECTED, POST IS CREATED DIRECTLY WITH FALLBACK IMAGE URL
          */
         Cloudinary.uploadImage(
+            this,
             object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     viewModel.postImage = response

@@ -2,10 +2,17 @@ package com.example.discussions
 
 import android.content.Context
 import android.net.Uri
+import android.util.Log
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.cloudinary.android.MediaManager
 import com.cloudinary.android.callback.ErrorInfo
 import com.cloudinary.android.callback.UploadCallback
+import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
+import org.json.JSONObject
+
 
 class Cloudinary {
     companion object {
@@ -26,6 +33,7 @@ class Cloudinary {
          * METHOD FOR UPLOADING IMAGE TO CLOUDINARY AND RETURNING THE URL
          */
         fun uploadImage(
+            context: Context,
             callback: ResponseCallback,
             selectedImageUri: Uri,
             fallbackImageUri: Uri,
@@ -37,8 +45,14 @@ class Cloudinary {
                 return
             }
 
+            //deleting previous image from cloudinary if new image is selected
+            //if fallbackImageUri is empty then it means that user is uploading a new image
+            if (fallbackImageUri.toString().isNotEmpty()) {
+                deleteImage(context, fallbackImageUri.toString())
+            }
+
             MediaManager.get().upload(selectedImageUri)
-                    //removing @ from folder name
+                //removing @ from folder name
                 .option("folder", "${folderName.substring(1)}/")
                 .callback(object : UploadCallback {
                     override fun onStart(requestId: String?) {}
@@ -60,6 +74,28 @@ class Cloudinary {
                     override fun onReschedule(requestId: String?, error: ErrorInfo?) {}
 
                 }).dispatch()
+        }
+
+        fun deleteImage(context: Context, imageUrl: String) {
+            val split = imageUrl.split("/")
+
+            val username = split[split.size - 2]
+            val fileName = split[split.size - 1].substring(0, split[split.size - 1].indexOf("."))
+
+            val publicId = "$username/$fileName"
+
+            Log.d("Cloudinary", "deleteImage: $publicId")
+
+            val queue = Volley.newRequestQueue(context)
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.DELETE_IMAGE}"
+
+            val body = "{\n" +
+                    "    \"public_id\": \"$publicId\"\n" +
+                    "}"
+
+            val request = JsonObjectRequest(Request.Method.POST, url, JSONObject(body), { }, { })
+
+            queue.add(request)
         }
     }
 }

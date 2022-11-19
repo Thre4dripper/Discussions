@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.discussions.Cloudinary
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PostModel
@@ -46,6 +47,9 @@ class UserPostsViewModel : ViewModel() {
         PostRepository.deletePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPostDeleted.postValue(Constants.API_SUCCESS)
+
+                val imageUrl = deletedPost.postImage
+                Cloudinary.deleteImage(context, imageUrl)
             }
 
             override fun onError(response: String) {

@@ -308,6 +308,7 @@ class EditDetailsActivity : AppCompatActivity() {
 
         //first image should be uploaded to server and then profile data
         Cloudinary.uploadImage(
+            this,
             object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     viewModel.updateDetails(
