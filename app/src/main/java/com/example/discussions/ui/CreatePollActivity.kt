@@ -2,6 +2,7 @@ package com.example.discussions.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -93,15 +94,20 @@ class CreatePollActivity : AppCompatActivity(),
         binding.createPollOptionsRv.adapter = adapter
 
         viewModel.pollOptions.observe(this) {
-            adapter.submitList(it) {
-                binding.createPollOptionsRv.scrollToPosition(it.size - 1)
-            }
+            adapter.submitList(it)
 
-            binding.createPollAddOptionBtn.isEnabled = it.size < 6
+            //at max 6 options can be added
+            binding.createPollAddOptionBtn.visibility =
+                if (it.size >= 6) View.GONE else View.VISIBLE
+
         }
     }
 
     override fun onPollOptionDelete(position: Int) {
         viewModel.deletePollOption(position)
+    }
+
+    override fun onPollTextChanged(position: Int, text: String) {
+        viewModel.updatePollOption(position, text)
     }
 }

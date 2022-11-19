@@ -8,8 +8,10 @@ import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PollOptionModel
 import com.example.discussions.repositories.UserRepository
+import java.util.*
 
 class CreatePollViewModel : ViewModel() {
+    private val TAG = "CreatePollViewModel"
 
     var profileImage: String? = null
     var username: String = ""
@@ -38,17 +40,52 @@ class CreatePollViewModel : ViewModel() {
         })
     }
 
+    /**
+     * METHOD FOR ADDING POLL OPTION WITH UNIQUE ID
+     */
     fun addPollOption() {
         val newPollOptionsList = pollOptions.value!!.toMutableList()
         newPollOptionsList.add(
-            PollOptionModel(pollOptions.value!!.size, "", "Option ${pollOptions.value!!.size + 1}")
+            PollOptionModel(
+                UUID.randomUUID().toString(),
+                "",
+                "Option ${pollOptions.value!!.size + 1}"
+            )
         )
         pollOptions.postValue(newPollOptionsList)
     }
 
+    /**
+     * METHOD FOR REMOVING POLL OPTION
+     */
     fun deletePollOption(position: Int) {
+        //new list of poll options
+        val newPollOptionsList = mutableListOf<PollOptionModel>()
+
+        var itr = 1
+        //adding all options except the one to be deleted
+        pollOptions.value!!.forEachIndexed { index, pollOptionModel ->
+            if (index != position) {
+                newPollOptionsList.add(
+                    PollOptionModel(
+                        pollOptionModel.id,
+                        pollOptionModel.option,
+                        //hint will be in sequence
+                        "Option ${itr++}"
+                    )
+                )
+            }
+        }
+
+        pollOptions.postValue(newPollOptionsList)
+    }
+
+    /**
+     * METHOD FOR SAVING POLL OPTION TEXT IN LIST
+     */
+    fun updatePollOption(position: Int, text: String) {
         val newPollOptionsList = pollOptions.value!!.toMutableList()
-        newPollOptionsList.removeAt(position)
+        newPollOptionsList[position].option = text
         pollOptions.postValue(newPollOptionsList)
     }
 }
