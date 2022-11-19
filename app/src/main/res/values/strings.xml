@@ -54,7 +54,7 @@
     <string name="create_edit_poll_option_6">Option 6</string>
 
     <string name="create_edit_poll_add_option_text">Add Option</string>
-    <string name="create_edit_poll_remove_option_text">Remove Option</string>
+    <string name="create_edit_poll_remove_option_desc">Remove Option</string>
     <string name="create_edit_poll_private_text">Private</string>
 
     //Profile Fragment

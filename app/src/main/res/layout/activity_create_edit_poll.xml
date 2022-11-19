@@ -114,79 +114,146 @@
                     android:textSize="20sp"
                     tools:ignore="LabelFor" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/create_edit_poll_option1_til"
-                    style="@style/CreateEditPollOptionsStyle"
-                    android:hint="@string/create_edit_poll_option_1">
+                <LinearLayout
+                    android:id="@+id/create_poll_option1_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/create_edit_poll_option1_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/CreateEditPollOptionsTilStyle"
+                        android:hint="@string/create_edit_poll_option_1">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/create_edit_poll_option2_til"
-                    style="@style/CreateEditPollOptionsStyle"
-                    android:hint="@string/create_edit_poll_option_2">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/create_edit_poll_option1_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/create_edit_poll_option2_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    <ImageView
+                        android:id="@+id/create_edit_poll_option1_delete_iv"
+                        style="@style/CreateEditPollRemoveOptionStyle"
+                        android:contentDescription="@string/create_edit_poll_remove_option_desc" />
+                </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/create_edit_poll_option3_til"
-                    style="@style/CreateEditPollOptionsStyle"
-                    android:hint="@string/create_edit_poll_option_3">
+                <LinearLayout
+                    android:id="@+id/create_poll_option2_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/create_edit_poll_option3_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/CreateEditPollOptionsTilStyle"
+                        android:hint="@string/create_edit_poll_option_2">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/create_edit_poll_option4_til"
-                    style="@style/CreateEditPollOptionsStyle"
-                    android:hint="@string/create_edit_poll_option_4">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/create_edit_poll_option2_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/create_edit_poll_option4_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    <ImageView
+                        android:id="@+id/create_edit_poll_option2_delete_iv"
+                        style="@style/CreateEditPollRemoveOptionStyle"
+                        android:contentDescription="@string/create_edit_poll_remove_option_desc" />
+                </LinearLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/create_edit_poll_option5_til"
-                    style="@style/CreateEditPollOptionsStyle"
-                    android:hint="@string/create_edit_poll_option_5">
+                <LinearLayout
+                    android:id="@+id/create_poll_option3_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/create_edit_poll_option5_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/CreateEditPollOptionsTilStyle"
+                        android:hint="@string/create_edit_poll_option_3">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/create_edit_poll_option6_til"
-                    style="@style/CreateEditPollOptionsStyle"
-                    android:hint="@string/create_edit_poll_option_6">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/create_edit_poll_option3_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/create_edit_poll_option6_et"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    <ImageView
+                        android:id="@+id/create_edit_poll_option3_delete_iv"
+                        style="@style/CreateEditPollRemoveOptionStyle"
+                        android:contentDescription="@string/create_edit_poll_remove_option_desc" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/create_poll_option4_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/CreateEditPollOptionsTilStyle"
+                        android:hint="@string/create_edit_poll_option_4">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/create_edit_poll_option4_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/create_edit_poll_option4_delete_iv"
+                        style="@style/CreateEditPollRemoveOptionStyle"
+                        android:contentDescription="@string/create_edit_poll_remove_option_desc" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/create_poll_option5_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/CreateEditPollOptionsTilStyle"
+                        android:hint="@string/create_edit_poll_option_5">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/create_edit_poll_option5_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/create_edit_poll_option5_delete_iv"
+                        style="@style/CreateEditPollRemoveOptionStyle"
+                        android:contentDescription="@string/create_edit_poll_remove_option_desc" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/create_poll_option6_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/CreateEditPollOptionsTilStyle"
+                        android:hint="@string/create_edit_poll_option_6">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/create_edit_poll_option6_et"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/create_edit_poll_option6_delete_iv"
+                        style="@style/CreateEditPollRemoveOptionStyle"
+                        android:contentDescription="@string/create_edit_poll_remove_option_desc" />
+                </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/create_edit_poll_add_option_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"

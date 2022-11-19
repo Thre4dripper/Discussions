@@ -44,6 +44,7 @@ class CreateEditPollActivity : AppCompatActivity() {
 
         initLoadingDialog()
         initUsernameAndImage()
+        initPollOptionsControl()
     }
 
     /**
@@ -79,5 +80,9 @@ class CreateEditPollActivity : AppCompatActivity() {
             }
         }
         viewModel.getUsernameAndImage(this)
+    }
+
+    private fun initPollOptionsControl() {
+
     }
 }

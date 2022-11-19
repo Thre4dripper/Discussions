@@ -79,19 +79,34 @@
         <item name="lottie_autoPlay">true</item>
     </style>
 
-    //Create /Edit Poll Styles
+    //Create / Edit Poll Styles
 
-    <style name="CreateEditPollOptionsStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:layout_width">match_parent</item>
+    <style name="CreateEditPollOptionsTilStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
         <item name="android:layout_marginTop">4dp</item>
         <item name="android:layout_marginBottom">4dp</item>
         <item name="endIconMode">custom</item>
         <item name="endIconDrawable">@drawable/ic_poll</item>
         <item name="endIconTint">@color/login_header_color</item>
-        <item name="android:visibility">gone</item>
+        <item name="android:layout_weight">5</item>
+    </style>
+
+
+    <style name="CreateEditPollRemoveOptionStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:src">@drawable/ic_delete</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginEnd">12dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="tint">@color/login_header_color</item>
     </style>
 
     //Profile Fragment Styles
