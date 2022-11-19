@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.models.PollOptionModel
 import com.example.discussions.repositories.UserRepository
 
 class CreateEditPollViewModel : ViewModel() {
@@ -15,6 +16,9 @@ class CreateEditPollViewModel : ViewModel() {
     var pollTitle: String = ""
     var pollContent: String = ""
     var isPrivate: Boolean = true
+
+    val pollOptions =
+        MutableLiveData<MutableList<PollOptionModel>>(mutableListOf()) //list of poll options
 
     private var _isApiFetched = MutableLiveData<String>(null)
     val isApiFetched: LiveData<String>
@@ -32,5 +36,13 @@ class CreateEditPollViewModel : ViewModel() {
                 _isApiFetched.postValue(response)
             }
         })
+    }
+
+    fun addPollOption() {
+        val newPollOptionsList = pollOptions.value!!.toMutableList()
+        newPollOptionsList.add(
+            PollOptionModel(pollOptions.value!!.size, "", "Option ${pollOptions.value!!.size + 1}")
+        )
+        pollOptions.postValue(newPollOptionsList)
     }
 }

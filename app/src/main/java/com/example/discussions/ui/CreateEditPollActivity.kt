@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.PollOptionsRecyclerAdapter
 import com.example.discussions.databinding.ActivityCreateEditPollBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.CreateEditPollViewModel
@@ -42,9 +43,13 @@ class CreateEditPollActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.createEditPollAddOptionBtn.setOnClickListener {
+            viewModel.addPollOption()
+        }
+
         initLoadingDialog()
         initUsernameAndImage()
-        initPollOptionsControl()
+        initPollOptionsRv()
     }
 
     /**
@@ -82,7 +87,16 @@ class CreateEditPollActivity : AppCompatActivity() {
         viewModel.getUsernameAndImage(this)
     }
 
-    private fun initPollOptionsControl() {
+    private fun initPollOptionsRv() {
+        val adapter = PollOptionsRecyclerAdapter()
+        binding.createEditPollOptionsRv.adapter = adapter
 
+        viewModel.pollOptions.observe(this) {
+            adapter.submitList(it) {
+                binding.createEditPollOptionsRv.scrollToPosition(it.size - 1)
+            }
+
+            binding.createEditPollAddOptionBtn.isEnabled = it.size < 6
+        }
     }
 }
