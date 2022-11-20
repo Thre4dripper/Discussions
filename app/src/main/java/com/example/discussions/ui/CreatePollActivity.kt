@@ -35,7 +35,7 @@ class CreatePollActivity : AppCompatActivity(),
 
         //initializing poll creation button
         binding.createPollBtn.setOnClickListener {
-
+            createPoll()
         }
 
         //initializing user profile image click to zoom in button
@@ -109,5 +109,80 @@ class CreatePollActivity : AppCompatActivity(),
 
     override fun onPollTextChanged(position: Int, text: String) {
         viewModel.updatePollOption(position, text)
+    }
+
+    /**
+     * METHOD FOR CREATING POLL
+     */
+    private fun createPoll() {
+        viewModel.pollTitle = binding.createPollTitle.text.toString().trim()
+        viewModel.pollContent = binding.createPollContent.text.toString().trim()
+        viewModel.isPrivate = binding.createPollPrivateCb.isChecked
+        viewModel.allowComments = binding.createPollAllowCommentsCb.isChecked
+
+        //poll title field checking
+        if (viewModel.pollTitle.isEmpty()) {
+            binding.createPollTitle.error = "Title cannot be empty"
+            binding.createPollTitle.requestFocus()
+            return
+        }
+
+        if (viewModel.pollTitle.length < 5) {
+            binding.createPollTitle.error = "Title must be at least 5 characters long"
+            binding.createPollTitle.requestFocus()
+            return
+        }
+
+        //poll content field checking
+        if (viewModel.pollContent.isEmpty()) {
+            binding.createPollContent.error = "Content cannot be empty"
+            binding.createPollContent.requestFocus()
+            return
+        }
+
+        if (viewModel.pollContent.length < 10) {
+            binding.createPollContent.error = "Content must be at least 10 characters long"
+            binding.createPollContent.requestFocus()
+            return
+        }
+
+        // checking number of poll options
+        if (viewModel.pollOptions.value!!.size < 2) {
+            Toast.makeText(this, "At least 2 options are required", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        //checking if all poll options are filled
+        viewModel.pollOptions.value!!.forEach {
+            if (it.option.isEmpty()) {
+                Toast.makeText(this, "Options cannot be empty", Toast.LENGTH_SHORT).show()
+                return
+            }
+        }
+
+        //checking if all poll options are unique
+        val uniqueOptions = viewModel.pollOptions.value!!.map { it.option.trim() }.distinct()
+        if (uniqueOptions.size < viewModel.pollOptions.value!!.size) {
+            Toast.makeText(this, "Duplicate options are not allowed", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        /* AFTER ALL CHECKS PASSED */
+        loadingDialog.show()
+
+        viewModel.isPollCreated.observe(this) {
+            if (it != null) {
+                loadingDialog.dismiss()
+
+                if (it == Constants.API_SUCCESS) {
+                    Toast.makeText(this, "Poll created successfully", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "Error creating poll", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        viewModel.createPoll(this)
     }
 }

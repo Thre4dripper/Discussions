@@ -225,7 +225,7 @@ class CreateEditPostActivity : AppCompatActivity() {
     private fun createPost() {
         viewModel.postTitle = binding.createPostTitle.text.toString().trim()
         viewModel.postContent = binding.createPostContent.text.toString().trim()
-        viewModel.allowComments = binding.createPostCb.isChecked
+        viewModel.allowComments = binding.createPostAllowCommentsCb.isChecked
 
         //either title or content is necessary to create a post
         //or Image is necessary to create a post

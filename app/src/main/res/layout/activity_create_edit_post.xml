@@ -73,7 +73,7 @@
         <ScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/create_post_cb"
+            app:layout_constraintBottom_toTopOf="@+id/create_post_allow_comments_cb"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/create_post_profile_iv">
@@ -188,7 +188,7 @@
             app:layout_constraintTop_toTopOf="@+id/create_post_add_image_btn" />
 
         <CheckBox
-            android:id="@+id/create_post_cb"
+            android:id="@+id/create_post_allow_comments_cb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

@@ -17,7 +17,8 @@ class CreatePollViewModel : ViewModel() {
     var username: String = ""
     var pollTitle: String = ""
     var pollContent: String = ""
-    var isPrivate: Boolean = true
+    var isPrivate: Boolean = false
+    var allowComments: Boolean = true
 
     val pollOptions =
         MutableLiveData<MutableList<PollOptionModel>>(mutableListOf()) //list of poll options
@@ -25,6 +26,10 @@ class CreatePollViewModel : ViewModel() {
     private var _isApiFetched = MutableLiveData<String>(null)
     val isApiFetched: LiveData<String>
         get() = _isApiFetched
+
+    private var _isPollCreated = MutableLiveData<String?>(null)
+    val isPollCreated: LiveData<String?>
+        get() = _isPollCreated
 
     fun getUsernameAndImage(context: Context) {
         UserRepository.getUsernameAndImage(context, object : ResponseCallback {
@@ -87,5 +92,9 @@ class CreatePollViewModel : ViewModel() {
         val newPollOptionsList = pollOptions.value!!.toMutableList()
         newPollOptionsList[position].option = text
         pollOptions.postValue(newPollOptionsList)
+    }
+
+    fun createPoll(context: Context) {
+
     }
 }
