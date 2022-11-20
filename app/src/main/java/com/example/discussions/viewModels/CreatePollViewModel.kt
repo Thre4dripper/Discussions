@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PollOptionModel
+import com.example.discussions.repositories.PollRepository
 import com.example.discussions.repositories.UserRepository
 import java.util.*
 
@@ -95,6 +96,22 @@ class CreatePollViewModel : ViewModel() {
     }
 
     fun createPoll(context: Context) {
+        _isPollCreated.postValue(null)
+        PollRepository.createPoll(
+            context,
+            pollTitle,
+            pollContent,
+            pollOptions.value!!,
+            isPrivate,
+            allowComments,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    _isPollCreated.postValue(Constants.API_SUCCESS)
+                }
 
+                override fun onError(response: String) {
+                    _isPollCreated.postValue(response)
+                }
+            })
     }
 }
