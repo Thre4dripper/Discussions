@@ -15,4 +15,5 @@
 
     <color name="text_color">#262A2E</color>
     <color name="bg_color">@color/white</color>
+    <color name="user_posts_bg_color">#F1F3FF</color>
 </resources>

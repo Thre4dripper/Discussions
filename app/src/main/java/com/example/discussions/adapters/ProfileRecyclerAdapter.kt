@@ -3,6 +3,7 @@ package com.example.discussions.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -54,6 +55,12 @@ class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickIn
             //blur on photos only shown on posts which have content
             if (postModel.title.isEmpty() && postModel.content.isEmpty()) {
                 binding.itemUserPostImage.foreground = null
+            }
+            else {
+                binding.itemUserPostImage.foreground = ContextCompat.getDrawable(
+                    binding.root.context,
+                    R.drawable.item_user_post_grad
+                )
             }
 
             val image = postModel.postImage

@@ -98,7 +98,7 @@ class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterfac
         profileAdapter = ProfileRecyclerAdapter(this)
         binding.profilePostsRv.apply {
             adapter = profileAdapter
-            layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
         }
     }
 
