@@ -51,6 +51,11 @@ class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickIn
                 visibility = if (postModel.content.isEmpty()) View.GONE else View.VISIBLE
             }
 
+            //blur on photos only shown on posts which have content
+            if (postModel.title.isEmpty() && postModel.content.isEmpty()) {
+                binding.itemUserPostImage.foreground = null
+            }
+
             val image = postModel.postImage
             if (image != "") {
                 binding.itemUserPostImage.visibility = View.VISIBLE
