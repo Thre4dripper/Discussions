@@ -109,6 +109,45 @@
         <item name="tint">@color/login_header_color</item>
     </style>
 
+    //Item Poll Styles
+
+    <style name="ItemPollOptionTvStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:focusable">true</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+
+    <style name="ItemPollVotesTvStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginEnd">4dp</item>
+        <item name="android:textColor">@color/dark_gray</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
+    <style name="ItemPollOptionProgress" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">8dp</item>
+        <item name="android:layout_weight">12</item>
+        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:max">30</item>
+        <item name="android:progressDrawable">@drawable/custom_progress_bar</item>
+        <item name="android:progressTint">@color/login_header_color</item>
+    </style>
+
     //Profile Fragment Styles
 
     <style name="ProfileDescTvStyle">

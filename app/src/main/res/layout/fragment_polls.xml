@@ -7,7 +7,7 @@
     tools:context=".ui.home.PollsFragment">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/user_polls_header_cv"
+        android:id="@+id/polls_header_cv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardElevation="16dp"
@@ -16,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/user_polls_header_tv"
+            android:id="@+id/polls_header_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -30,5 +30,52 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </com.google.android.material.card.MaterialCardView>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/polls_swipe_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/polls_header_cv">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/polls_rv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/light_gray"
+            android:clipToPadding="false"
+            android:paddingTop="8dp"
+            android:paddingBottom="60dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_discussion_poll" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/polls_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/login_header_color"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/polls_swipe_layout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/polls_swipe_layout" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/polls_lottie_no_data"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/no_data" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
