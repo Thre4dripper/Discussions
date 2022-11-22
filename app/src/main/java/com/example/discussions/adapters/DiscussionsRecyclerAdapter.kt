@@ -66,9 +66,11 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
 
             binding.itemPostTitle.apply {
                 text = postModel.title
+                visibility = if (postModel.title.isEmpty()) View.GONE else View.VISIBLE
             }
             binding.itemPostContent.apply {
                 text = postModel.content
+                visibility = if (postModel.content.isEmpty()) View.GONE else View.VISIBLE
             }
 
             val image = postModel.postImage

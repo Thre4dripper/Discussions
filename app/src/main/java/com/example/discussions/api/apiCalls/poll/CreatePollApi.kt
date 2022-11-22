@@ -36,6 +36,7 @@ class CreatePollApi {
                     "    \"title\": \"$pollTitle\",\n" +
                     "    \"content\": \"$pollContent\",\n" +
                     "    \"allow_comments\": $allowComments,\n" +
+                    "    \"private\": $isPrivate,\n" +
                     pollOptionsJson + "\n" +
                     "}"
 
