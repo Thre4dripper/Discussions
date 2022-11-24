@@ -38,7 +38,7 @@
     <string name="create_edit_post_add_image_text">Add Image</string>
     <string name="create_edit_post_allow_comments_text">Allow Comments</string>
 
-    //Create/Edit Poll Activity
+    //Create Poll Activity
     <string name="create_poll_profile_image_desc">@string/create_edit_post_image_desc</string>
     <string name="create_poll_user_name">@string/profile_username_text</string>
     <string name="create_poll_hint_title">@string/create_edit_post_hint_title</string>
@@ -91,8 +91,8 @@
     <string name="settings_logout_label">Logout</string>
 
     //Post List Item
-    <string name="post_list_item_time">Time</string>
     <string name="post_list_item_title">Title</string>
+    <string name="post_list_item_time">Time</string>
     <string name="post_list_item_content">Content</string>
     <string name="post_list_item_like_count">100</string>
     <string name="post_list_item_comment_count">100</string>
@@ -104,6 +104,15 @@
     <string name="user_post_more_options">More Options</string>
     <string name="user_post_edit">Edit</string>
     <string name="user_post_delete">Delete</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    //Poll List Item
+    <string name="poll_list_item_title">@string/post_list_item_title</string>
+    <string name="poll_list_item_time">@string/post_list_item_time</string>
+    <string name="poll_list_item_more_options">@string/user_post_more_options</string>
+    <string name="poll_list_item_content">@string/post_list_item_content</string>
+    <string name="poll_list_item_like_count">@string/post_list_item_like_count</string>
+    <string name="poll_list_item_comment_count">@string/post_list_item_comment_count</string>
+    <string name="poll_list_item_like">@string/post_list_item_like</string>
+    <string name="poll_list_item_comment">@string/post_list_item_comment</string>
+    <string name="poll_list_item_view_result">View Result</string>
 </resources>

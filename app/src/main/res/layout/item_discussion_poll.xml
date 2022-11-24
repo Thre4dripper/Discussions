@@ -11,14 +11,14 @@
         android:background="@color/white">
 
         <ImageView
-            android:id="@+id/posts_more_options"
+            android:id="@+id/polls_more_options"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="12dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
-            android:contentDescription="@string/user_post_more_options"
+            android:contentDescription="@string/poll_list_item_more_options"
             android:focusable="true"
             android:padding="4dp"
             android:src="@drawable/ic_more_options"
@@ -26,19 +26,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:id="@+id/item_post_user_image"
+            android:id="@+id/item_poll_user_image"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/profile_image_desc"
-            app:layout_constraintBottom_toTopOf="@+id/item_post_title"
+            app:layout_constraintBottom_toTopOf="@+id/item_poll_title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
         <TextView
-            android:id="@+id/item_post_username"
+            android:id="@+id/item_poll_username"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -46,48 +46,48 @@
             android:textColor="@color/dark_gray"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/posts_more_options"
-            app:layout_constraintStart_toEndOf="@+id/item_post_user_image"
-            app:layout_constraintTop_toTopOf="@+id/item_post_user_image"
+            app:layout_constraintEnd_toStartOf="@+id/polls_more_options"
+            app:layout_constraintStart_toEndOf="@+id/item_poll_user_image"
+            app:layout_constraintTop_toTopOf="@+id/item_poll_user_image"
             tools:text="@string/username" />
 
         <TextView
-            android:id="@+id/item_post_time"
+            android:id="@+id/item_poll_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/item_post_user_image"
-            app:layout_constraintEnd_toEndOf="@+id/item_post_username"
-            app:layout_constraintStart_toStartOf="@+id/item_post_username"
-            app:layout_constraintTop_toBottomOf="@+id/item_post_username"
-            tools:text="@string/post_list_item_time" />
+            app:layout_constraintBottom_toBottomOf="@+id/item_poll_user_image"
+            app:layout_constraintEnd_toEndOf="@+id/item_poll_username"
+            app:layout_constraintStart_toStartOf="@+id/item_poll_username"
+            app:layout_constraintTop_toBottomOf="@+id/item_poll_username"
+            tools:text="@string/poll_list_item_time" />
 
         <TextView
-            android:id="@+id/item_post_title"
+            android:id="@+id/item_poll_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/black"
             android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@+id/item_post_content"
+            app:layout_constraintBottom_toTopOf="@+id/item_poll_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/item_post_user_image"
-            app:layout_constraintTop_toBottomOf="@+id/item_post_user_image"
-            tools:text="@string/post_list_item_title" />
+            app:layout_constraintStart_toStartOf="@+id/item_poll_user_image"
+            app:layout_constraintTop_toBottomOf="@+id/item_poll_user_image"
+            tools:text="@string/poll_list_item_title" />
 
         <TextView
-            android:id="@+id/item_post_content"
+            android:id="@+id/item_poll_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:textColor="@color/dark_gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/item_poll_options_ll"
-            app:layout_constraintEnd_toEndOf="@+id/item_post_title"
-            app:layout_constraintStart_toStartOf="@+id/item_post_title"
-            app:layout_constraintTop_toBottomOf="@+id/item_post_title"
-            tools:text="@string/post_list_item_content" />
+            app:layout_constraintEnd_toEndOf="@+id/item_poll_title"
+            app:layout_constraintStart_toStartOf="@+id/item_poll_title"
+            app:layout_constraintTop_toBottomOf="@+id/item_poll_title"
+            tools:text="@string/poll_list_item_content" />
 
         <LinearLayout
             android:id="@+id/item_poll_options_ll"
@@ -95,18 +95,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@+id/item_poll_ll1"
+            app:layout_constraintBottom_toTopOf="@+id/item_poll_view_results_btn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_post_content">
+            app:layout_constraintTop_toBottomOf="@+id/item_poll_content">
 
             <TextView
-                android:id="@+id/item_poll_option1"
+                android:id="@+id/item_poll_option1_tv"
                 style="@style/ItemPollOptionTvStyle"
                 app:drawableStartCompat="@drawable/ic_circle_unchecked"
                 tools:text="Option 1" />
 
             <LinearLayout
+                android:id="@+id/item_poll_option1_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -126,12 +127,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/item_poll_option2"
+                android:id="@+id/item_poll_option2_tv"
                 style="@style/ItemPollOptionTvStyle"
                 app:drawableStartCompat="@drawable/ic_circle_unchecked"
                 tools:text="Option 2" />
 
             <LinearLayout
+                android:id="@+id/item_poll_option2_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -151,12 +153,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/item_poll_option3"
+                android:id="@+id/item_poll_option3_tv"
                 style="@style/ItemPollOptionTvStyle"
                 app:drawableStartCompat="@drawable/ic_circle_unchecked"
                 tools:text="Option 3" />
 
             <LinearLayout
+                android:id="@+id/item_poll_option3_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -176,12 +179,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/item_poll_option4"
+                android:id="@+id/item_poll_option4_tv"
                 style="@style/ItemPollOptionTvStyle"
                 app:drawableStartCompat="@drawable/ic_circle_unchecked"
                 tools:text="Option 4" />
 
             <LinearLayout
+                android:id="@+id/item_poll_option4_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -201,12 +205,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/item_poll_option5"
+                android:id="@+id/item_poll_option5_tv"
                 style="@style/ItemPollOptionTvStyle"
                 app:drawableStartCompat="@drawable/ic_circle_unchecked"
                 tools:text="Option 5" />
 
             <LinearLayout
+                android:id="@+id/item_poll_option5_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -226,12 +231,13 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/item_poll_option6"
+                android:id="@+id/item_poll_option6_tv"
                 style="@style/ItemPollOptionTvStyle"
                 app:drawableStartCompat="@drawable/ic_circle_unchecked"
                 tools:text="Option 6" />
 
             <LinearLayout
+                android:id="@+id/item_poll_option6_ll"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -251,22 +257,32 @@
             </LinearLayout>
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/item_poll_view_results_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:text="@string/poll_list_item_view_result"
+            app:cornerRadius="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/item_poll_ll1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_poll_options_ll" />
 
         <LinearLayout
             android:id="@+id/item_poll_ll1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toTopOf="@+id/item_poll_ll2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/item_poll_options_ll">
+            app:layout_constraintTop_toBottomOf="@+id/item_poll_view_results_btn">
 
             <TextView
-                android:id="@+id/item_post_likes"
+                android:id="@+id/item_poll_likes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -274,7 +290,7 @@
                 android:gravity="center"
                 android:textColor="@color/dark_gray"
                 android:textStyle="bold"
-                tools:text="@string/post_list_item_like_count" />
+                tools:text="@string/poll_list_item_like_count" />
 
             <View
                 android:layout_width="0dp"
@@ -282,7 +298,7 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/item_post_comments"
+                android:id="@+id/item_poll_comments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -290,7 +306,7 @@
                 android:gravity="center"
                 android:textColor="@color/dark_gray"
                 android:textStyle="bold"
-                tools:text="@string/post_list_item_comment_count" />
+                tools:text="@string/poll_list_item_comment_count" />
         </LinearLayout>
 
         <LinearLayout
@@ -310,7 +326,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:gravity="center"
-                android:text="@string/post_list_item_like"
+                android:text="@string/poll_list_item_like"
                 android:textColor="@color/dark_gray"
                 android:textStyle="bold"
                 app:drawableStartCompat="@drawable/ic_like" />
@@ -325,7 +341,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:gravity="center"
-                android:text="@string/post_list_item_comment"
+                android:text="@string/poll_list_item_comment"
                 android:textColor="@color/dark_gray"
                 android:textStyle="bold"
                 app:drawableStartCompat="@drawable/ic_comments" />
