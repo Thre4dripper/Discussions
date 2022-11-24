@@ -129,19 +129,19 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:layout_marginStart">20dp</item>
+        <item name="android:layout_marginStart">10dp</item>
         <item name="android:layout_marginEnd">4dp</item>
         <item name="android:textColor">@color/dark_gray</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
     </style>
 
 
     <style name="ItemPollOptionProgress" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">6dp</item>
-        <item name="android:layout_weight">12</item>
-        <item name="android:layout_marginStart">4dp</item>
+        <item name="android:layout_weight">8</item>
         <item name="android:layout_marginEnd">16dp</item>
         <item name="android:max">30</item>
         <item name="android:progressDrawable">@drawable/custom_progress_bar</item>

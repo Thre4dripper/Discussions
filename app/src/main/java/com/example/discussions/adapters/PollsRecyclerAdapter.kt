@@ -4,6 +4,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -32,42 +33,44 @@ class PollsRecyclerAdapter : ListAdapter<PollModel, ViewHolder>(PollsDiffCallbac
 
 
     class PollViewHolder(itemView: View) : ViewHolder(itemView) {
+        private val TAG = "PollsRecyclerAdapter"
+
         val binding = DataBindingUtil.bind<ItemDiscussionPollBinding>(itemView)!!
-        val pollOptionsTvList = mutableListOf(
+        private val pollOptionsTvList = mutableListOf(
             binding.itemPollOption1Tv,
             binding.itemPollOption2Tv,
             binding.itemPollOption3Tv,
             binding.itemPollOption4Tv,
             binding.itemPollOption5Tv,
             binding.itemPollOption6Tv,
-        ).toTypedArray()
+        )
 
-        val pollOptionsResultLayoutList = mutableListOf(
+        private val pollOptionsResultLayoutList = mutableListOf(
             binding.itemPollOption1Ll,
             binding.itemPollOption2Ll,
             binding.itemPollOption3Ll,
             binding.itemPollOption4Ll,
             binding.itemPollOption5Ll,
             binding.itemPollOption6Ll,
-        ).toTypedArray()
+        )
 
-        val pollOptionsVotesTvList = mutableListOf(
+        private val pollOptionsVotesTvList = mutableListOf(
             binding.itemPollOption1Votes,
             binding.itemPollOption2Votes,
             binding.itemPollOption3Votes,
             binding.itemPollOption4Votes,
             binding.itemPollOption5Votes,
             binding.itemPollOption6Votes,
-        ).toTypedArray()
+        )
 
-        val pollOptionsProgressList = mutableListOf(
+        private val pollOptionsProgressList = mutableListOf(
             binding.itemPollOption1Progress,
             binding.itemPollOption2Progress,
             binding.itemPollOption3Progress,
             binding.itemPollOption4Progress,
             binding.itemPollOption5Progress,
             binding.itemPollOption6Progress,
-        ).toTypedArray()
+        )
 
         fun bind(binding: ItemDiscussionPollBinding, pollModel: PollModel) {
             //hiding more options button on discussion polls
@@ -108,7 +111,65 @@ class PollsRecyclerAdapter : ListAdapter<PollModel, ViewHolder>(PollsDiffCallbac
 
             //setting the poll options
             val pollOptions = pollModel.pollOptions
+            val maxVotes = pollOptions.maxOf { it.votes }
 
+            for (i in pollOptions.indices) {
+                //username excluding @
+                val username = pollModel.username.substring(1)
+
+                //set poll option text
+                pollOptionsTvList[i].apply {
+                    text = pollOptions[i].content
+                    visibility = View.VISIBLE
+
+                    //setting start drawable in text view
+                    setCompoundDrawablesWithIntrinsicBounds(
+                        //checking if the current user has voted for this option
+                        //AND
+                        //checking if any votedBy list contains the current user's username
+                        if (pollModel.isVoted && pollOptions[i].votedBy.any { it.username == username }) {
+                            ResourcesCompat.getDrawable(
+                                resources,
+                                R.drawable.ic_circle_checked,
+                                null
+                            )
+                        } else {
+                            ResourcesCompat.getDrawable(
+                                resources,
+                                R.drawable.ic_circle_unchecked,
+                                null
+                            )
+                        },
+                        null, null, null
+                    )
+                }
+
+                //result layout visibility
+                pollOptionsResultLayoutList[i].visibility =
+                    if (pollModel.isVoted) View.VISIBLE else View.GONE
+
+                if (pollModel.isVoted) {
+                    //setting votes percentage
+                    pollOptionsVotesTvList[i].text =
+                        "${(pollOptions[i].votes * 100 / pollModel.totalVotes)}%"
+
+                    //setting votes progress
+                    pollOptionsProgressList[i].apply {
+                        max = maxVotes
+                        progress = pollOptions[i].votes
+                    }
+                }
+            }
+
+            //view results button
+            binding.itemPollViewResultsBtn.apply {
+                visibility = if (pollModel.isVoted) View.VISIBLE else View.GONE
+                setOnClickListener {
+                    //TODO open poll results activity
+                }
+            }
+
+            //setting the poll likes and comments
             binding.itemPollLikes.text = pollModel.likes.toString()
             binding.itemPollComments.text = pollModel.comments.toString()
         }
