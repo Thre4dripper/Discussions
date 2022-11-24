@@ -1,7 +1,6 @@
 package com.example.discussions.repositories
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.poll.CreatePollApi
@@ -73,7 +72,7 @@ class PollRepository {
                 token,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        Log.d(TAG, "onSuccess: $response")
+                        userPollsList.postValue(GetUserPollsApi.parseUserPollsJson(response))
                         callback.onSuccess(response)
                     }
 

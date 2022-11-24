@@ -1,6 +1,7 @@
 package com.example.discussions.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,8 @@ import com.example.discussions.databinding.FragmentPollsBinding
 import com.example.discussions.viewModels.HomeViewModel
 
 class PollsFragment : Fragment() {
+    private val TAG = "PollsFragment"
+
     private lateinit var binding: FragmentPollsBinding
     private lateinit var homeViewModel: HomeViewModel
 
@@ -28,6 +31,12 @@ class PollsFragment : Fragment() {
     }
 
     private fun getAllUserPolls() {
+        homeViewModel.userPollsList.observe(viewLifecycleOwner) {
+            if (it != null) {
+                Log.d(TAG, "getAllUserPolls: $it")
+            }
+        }
+
         homeViewModel.getAllUserPolls(requireContext())
     }
 }
