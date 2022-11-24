@@ -27,7 +27,7 @@ class CreatePollApi {
 
             var pollOptionsJson = ""
             pollOptions.forEachIndexed { index, pollOptionModel ->
-                pollOptionsJson += "    \"poll_option${index + 1}\": \"${pollOptionModel.option}\",\n"
+                pollOptionsJson += "    \"poll_option${index + 1}\": \"${pollOptionModel.content}\",\n"
             }
 
             pollOptionsJson = pollOptionsJson.dropLast(2)

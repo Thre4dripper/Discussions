@@ -75,7 +75,7 @@ class CreatePollViewModel : ViewModel() {
                 newPollOptionsList.add(
                     PollOptionModel(
                         pollOptionModel.id,
-                        pollOptionModel.option,
+                        pollOptionModel.content,
                         //hint will be in sequence
                         "Option ${itr++}"
                     )
@@ -91,7 +91,7 @@ class CreatePollViewModel : ViewModel() {
      */
     fun updatePollOption(position: Int, text: String) {
         val newPollOptionsList = pollOptions.value!!.toMutableList()
-        newPollOptionsList[position].option = text
+        newPollOptionsList[position].content = text
         pollOptions.postValue(newPollOptionsList)
     }
 

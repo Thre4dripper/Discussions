@@ -154,14 +154,14 @@ class CreatePollActivity : AppCompatActivity(),
 
         //checking if all poll options are filled
         viewModel.pollOptions.value!!.forEach {
-            if (it.option.isEmpty()) {
+            if (it.content.isEmpty()) {
                 Toast.makeText(this, "Options cannot be empty", Toast.LENGTH_SHORT).show()
                 return
             }
         }
 
         //checking if all poll options are unique
-        val uniqueOptions = viewModel.pollOptions.value!!.map { it.option.trim() }.distinct()
+        val uniqueOptions = viewModel.pollOptions.value!!.map { it.content.trim() }.distinct()
         if (uniqueOptions.size < viewModel.pollOptions.value!!.size) {
             Toast.makeText(this, "Duplicate options are not allowed", Toast.LENGTH_SHORT).show()
             return

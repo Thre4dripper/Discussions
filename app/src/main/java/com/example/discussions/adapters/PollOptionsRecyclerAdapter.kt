@@ -41,7 +41,7 @@ class PollOptionsRecyclerAdapter(private var pollOptionClickInterface: PollOptio
             pollOptionClickInterface: PollOptionClickInterface
         ) {
             binding.itemCreatePollOptionTil.hint = pollOptionModel.hint
-            binding.itemCreatePollOptionEt.setText(pollOptionModel.option)
+            binding.itemCreatePollOptionEt.setText(pollOptionModel.content)
 
             //for updating poll option list when text is changed
             binding.itemCreatePollOptionEt.addTextChangedListener {
