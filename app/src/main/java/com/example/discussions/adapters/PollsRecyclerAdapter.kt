@@ -1,6 +1,7 @@
 package com.example.discussions.adapters
 
 import android.content.Intent
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,10 +96,12 @@ class PollsRecyclerAdapter : ListAdapter<PollModel, ViewHolder>(PollsDiffCallbac
 
             val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                 .parse(pollModel.createdAt)
-            binding.itemPollTime.text = time?.let {
-                SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                    .format(it)
-            }
+
+            binding.itemPollTime.text = DateUtils.getRelativeTimeSpanString(
+                time!!.time,
+                System.currentTimeMillis(),
+                DateUtils.MINUTE_IN_MILLIS
+            )
 
             binding.itemPollTitle.apply {
                 text = pollModel.title
@@ -151,7 +154,10 @@ class PollsRecyclerAdapter : ListAdapter<PollModel, ViewHolder>(PollsDiffCallbac
                 if (pollModel.isVoted) {
                     //setting votes percentage
                     pollOptionsVotesTvList[i].text =
-                        "${(pollOptions[i].votes * 100 / pollModel.totalVotes)}%"
+                        String.format(
+                            "%d%%",
+                            (pollOptions[i].votes * 100) / pollModel.totalVotes
+                        )
 
                     //setting votes progress
                     pollOptionsProgressList[i].apply {

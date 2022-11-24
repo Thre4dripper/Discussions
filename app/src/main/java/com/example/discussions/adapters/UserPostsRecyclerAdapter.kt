@@ -1,6 +1,7 @@
 package com.example.discussions.adapters
 
 import android.content.Intent
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,10 +91,11 @@ class UserPostsRecyclerAdapter(private var postOptionsInterface: PostOptionsInte
 
             val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
                 .parse(postModel.createdAt)
-            binding.itemPostTime.text = time?.let {
-                SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                    .format(it)
-            }
+            binding.itemPostTime.text = DateUtils.getRelativeTimeSpanString(
+                time!!.time,
+                System.currentTimeMillis(),
+                DateUtils.SECOND_IN_MILLIS
+            )
 
             binding.itemPostTitle.apply {
                 text = postModel.title
