@@ -1,6 +1,8 @@
 package com.example.discussions.adapters
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -137,6 +139,10 @@ class PollsRecyclerAdapter(
                 visibility = if (pollModel.content.isEmpty()) View.GONE else View.VISIBLE
             }
 
+            //hiding loading progress bar and showing poll options
+            binding.itemPollLottieLoading.visibility = View.GONE
+            binding.itemPollOptionsLl.foreground = ColorDrawable(Color.TRANSPARENT)
+
             //setting the poll options
             val pollOptions = pollModel.pollOptions
             val maxVotes = pollOptions.maxOf { it.votes }
@@ -173,6 +179,11 @@ class PollsRecyclerAdapter(
 
 
                     setOnClickListener {
+                        //don't show loading progress bar if the current user has already voted
+                        if (!pollModel.isVoted) {
+                            binding.itemPollLottieLoading.visibility = View.VISIBLE
+                            binding.itemPollOptionsLl.foreground = ColorDrawable(Color.WHITE)
+                        }
                         pollVoteInterface.onPollVote(pollModel.pollId, pollOptions[i].id)
                     }
                 }
@@ -200,7 +211,7 @@ class PollsRecyclerAdapter(
             //view results button
             binding.itemPollViewResultsBtn.apply {
                 visibility =
-                    if (pollModel.pollOptions.any { it.votedBy.isNotEmpty() } && pollModel.isVoted) View.GONE else View.VISIBLE
+                    if (pollModel.pollOptions.any { it.votedBy.isNotEmpty() } && pollModel.isVoted) View.VISIBLE else View.GONE
                 setOnClickListener {
                     pollVoteInterface.onPollResult(pollModel.pollId)
                 }

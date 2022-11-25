@@ -13,4 +13,5 @@ data class PollModel(
     val likes: Int,
     val comments: Int,
     val pollOptions: List<PollOptionModel>,
+    val isVoting: Boolean = false,
 )
