@@ -30,11 +30,17 @@ class UserPostsViewModel : ViewModel() {
         _isPostDeleted.value = null
 
         //deleting post from all posts list
-        val deletedPost = _allPosts.value!!.find { it.postId == postId }!!
-        val deletedPostIndex = _allPosts.value!!.indexOf(deletedPost)
-        var newPostsList = _allPosts.value!!.toMutableList()
-        newPostsList.removeAt(deletedPostIndex)
-        _allPosts.value = newPostsList
+        val deletedPost = _allPosts.value!!.find { it.postId == postId }
+        var deletedPostIndex = -1
+        var newPostsList: MutableList<PostModel>
+
+        //when all posts list is not updated yet after inserting new post then deleted post can only be found in user posts list
+        if (deletedPost != null) {
+            deletedPostIndex = _allPosts.value!!.indexOf(deletedPost)
+            newPostsList = _allPosts.value!!.toMutableList()
+            newPostsList.removeAt(deletedPostIndex)
+            _allPosts.value = newPostsList
+        }
 
         //deleting post from user posts list
         val deletedUserPost = _userPosts.value!!.find { it.postId == postId }!!
@@ -48,17 +54,20 @@ class UserPostsViewModel : ViewModel() {
             override fun onSuccess(response: String) {
                 _isPostDeleted.postValue(Constants.API_SUCCESS)
 
-                val imageUrl = deletedPost.postImage
-                Cloudinary.deleteImage(context, imageUrl)
+                val imageUrl = deletedUserPost.postImage
+                if (imageUrl.isNotEmpty())
+                    Cloudinary.deleteImage(context, imageUrl)
             }
 
             override fun onError(response: String) {
                 _isPostDeleted.postValue(Constants.API_FAILED)
 
-                //re-adding post when error occurs
-                newPostsList = _allPosts.value!!.toMutableList()
-                newPostsList.add(deletedPostIndex, deletedPost)
-                _allPosts.value = newPostsList
+                if (deletedPost != null) {
+                    //re-adding post when error occurs
+                    newPostsList = _allPosts.value!!.toMutableList()
+                    newPostsList.add(deletedPostIndex, deletedPost)
+                    _allPosts.value = newPostsList
+                }
 
                 newUserPostsList = _userPosts.value!!.toMutableList()
                 newUserPostsList.add(deletedUserPostIndex, deletedUserPost)
