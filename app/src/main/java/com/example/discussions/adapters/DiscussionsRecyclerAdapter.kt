@@ -58,10 +58,12 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
 
             binding.itemPostUsername.text = postModel.username
 
-            val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                .parse(postModel.createdAt)
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val date = dateFormat.parse(postModel.createdAt)
+
             binding.itemPostTime.text = DateUtils.getRelativeTimeSpanString(
-                time!!.time,
+                date!!.time,
                 System.currentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS
             )

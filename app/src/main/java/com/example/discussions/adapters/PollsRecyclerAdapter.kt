@@ -104,11 +104,12 @@ class PollsRecyclerAdapter(private var pollDeleteInterface: PollDeleteInterface)
 
             binding.itemPollUsername.text = pollModel.username
 
-            val time = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-                .parse(pollModel.createdAt)
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val date = dateFormat.parse(pollModel.createdAt)
 
             binding.itemPollTime.text = DateUtils.getRelativeTimeSpanString(
-                time!!.time,
+                date!!.time,
                 System.currentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS
             )
