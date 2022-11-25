@@ -1,4 +1,4 @@
-package com.example.discussions.api.apiCalls.post
+package com.example.discussions.api.apiCalls.poll
 
 import android.content.Context
 import com.android.volley.toolbox.JsonObjectRequest
@@ -6,11 +6,10 @@ import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 
-class DeletePostApi {
+class DeletePollApi {
     companion object {
-        private const val TAG = "DeletePostApi"
 
-        fun deletePost(
+        fun deletePoll(
             context: Context,
             postId: String,
             token: String,
