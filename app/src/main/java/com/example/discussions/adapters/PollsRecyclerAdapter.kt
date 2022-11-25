@@ -19,7 +19,10 @@ import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PollsRecyclerAdapter(private var pollDeleteInterface: PollDeleteInterface) :
+class PollsRecyclerAdapter(
+    private var pollDeleteInterface: PollDeleteInterface,
+    private var pollVoteInterface: PollVoteInterface
+) :
     ListAdapter<PollModel, ViewHolder>(PollsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,11 +33,21 @@ class PollsRecyclerAdapter(private var pollDeleteInterface: PollDeleteInterface)
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val poll = getItem(position)
-        (holder as PollViewHolder).bind(holder.binding, poll, pollDeleteInterface)
+        (holder as PollViewHolder).bind(
+            holder.binding,
+            poll,
+            pollDeleteInterface,
+            pollVoteInterface
+        )
     }
 
     interface PollDeleteInterface {
         fun onPollDelete(pollId: String)
+    }
+
+    interface PollVoteInterface {
+        fun onPollVote(pollId: String, optionId: String)
+        fun onPollResult(pollId: String)
     }
 
     class PollViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -80,7 +93,8 @@ class PollsRecyclerAdapter(private var pollDeleteInterface: PollDeleteInterface)
         fun bind(
             binding: ItemDiscussionPollBinding,
             pollModel: PollModel,
-            pollDeleteInterface: PollDeleteInterface
+            pollDeleteInterface: PollDeleteInterface,
+            pollVoteInterface: PollVoteInterface
         ) {
             //poll delete button
             binding.itemPollDeleteBtn.setOnClickListener {
@@ -156,6 +170,11 @@ class PollsRecyclerAdapter(private var pollDeleteInterface: PollDeleteInterface)
                         },
                         null, null, null
                     )
+
+
+                    setOnClickListener {
+                        pollVoteInterface.onPollVote(pollModel.pollId, pollOptions[i].id)
+                    }
                 }
 
                 //result layout visibility
@@ -180,9 +199,10 @@ class PollsRecyclerAdapter(private var pollDeleteInterface: PollDeleteInterface)
 
             //view results button
             binding.itemPollViewResultsBtn.apply {
-                visibility = if (pollModel.isVoted) View.VISIBLE else View.GONE
+                visibility =
+                    if (pollModel.pollOptions.any { it.votedBy.isNotEmpty() } && pollModel.isVoted) View.GONE else View.VISIBLE
                 setOnClickListener {
-                    //TODO open poll results activity
+                    pollVoteInterface.onPollResult(pollModel.pollId)
                 }
             }
 

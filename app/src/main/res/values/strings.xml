@@ -114,5 +114,5 @@
     <string name="poll_list_item_comment_count">@string/post_list_item_comment_count</string>
     <string name="poll_list_item_like">@string/post_list_item_like</string>
     <string name="poll_list_item_comment">@string/post_list_item_comment</string>
-    <string name="poll_list_item_view_result">View Result</string>
+    <string name="poll_list_item_view_result">View Results</string>
 </resources>

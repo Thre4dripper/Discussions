@@ -22,6 +22,7 @@ class ApiRoutes {
         const val POLL_CREATE = "/api/poll/create/"
         const val POLL_GET_USER_POSTS = "/api/poll/getUserPolls/"
         const val POLL_DELETE_POLL = "/api/poll/deletePoll/"
+        const val POLL_VOTE = "/api/poll/vote/"
 
         const val DELETE_IMAGE = "/api/users/deleteimage/"
     }

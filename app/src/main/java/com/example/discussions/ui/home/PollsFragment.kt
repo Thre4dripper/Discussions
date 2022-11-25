@@ -1,6 +1,7 @@
 package com.example.discussions.ui.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,8 @@ import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.UserPollsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface {
+class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface,
+    PollsRecyclerAdapter.PollVoteInterface {
     private val TAG = "PollsFragment"
 
     private lateinit var binding: FragmentPollsBinding
@@ -31,7 +33,7 @@ class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface {
         viewModel = ViewModelProvider(requireActivity())[UserPollsViewModel::class.java]
 
         binding.pollsRv.apply {
-            pollsAdapter = PollsRecyclerAdapter(this@PollsFragment)
+            pollsAdapter = PollsRecyclerAdapter(this@PollsFragment, this@PollsFragment)
             adapter = pollsAdapter
         }
 
@@ -49,12 +51,8 @@ class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface {
         binding.pollsProgressBar.visibility = View.VISIBLE
         homeViewModel.userPollsList.observe(viewLifecycleOwner) {
             if (it != null) {
-                pollsAdapter.submitList(it) {
-                    //do not scroll to top on poll deletion
-                    if (viewModel.isPollDeleted.value != null)
-                    //scroll to top after loading new data
-                        binding.pollsRv.scrollToPosition(0)
-                }
+                pollsAdapter.submitList(it)
+                //TODO handle this scroll to top when new poll is added
                 //hiding all loading
                 binding.pollsSwipeLayout.isRefreshing = false
                 binding.pollsProgressBar.visibility = View.GONE
@@ -115,5 +113,22 @@ class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface {
             }
         }
         viewModel.deletePoll(requireContext(), pollId)
+    }
+
+    override fun onPollVote(pollId: String, optionId: String) {
+        homeViewModel.isPollVoted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_FAILED)
+                    Toast.makeText(requireContext(), "Problem Voting Poll", Toast.LENGTH_SHORT)
+                        .show()
+            }
+        }
+
+        Log.d(TAG, "onPollVote: $pollId $optionId")
+        homeViewModel.pollVote(requireContext(), pollId, optionId)
+    }
+
+    override fun onPollResult(pollId: String) {
+        //TODO open poll result activity
     }
 }

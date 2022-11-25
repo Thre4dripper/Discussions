@@ -41,6 +41,10 @@ class HomeViewModel : ViewModel() {
     val isUserPollsFetched: LiveData<String?>
         get() = _isUserPollsFetched
 
+    private var _isPollVoted = MutableLiveData<String?>(null)
+    val isPollVoted: LiveData<String?>
+        get() = _isPollVoted
+
 
     fun getProfile(context: Context) {
         if (_isProfileFetched.value == Constants.API_SUCCESS)
@@ -131,5 +135,18 @@ class HomeViewModel : ViewModel() {
         userPollsList.value = null
         _isUserPollsFetched.value = null
         getAllUserPolls(context)
+    }
+
+    fun pollVote(context: Context, pollId: String, optionId: String) {
+        _isPollVoted.value = null
+        PollRepository.pollVote(context, pollId, optionId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPollVoted.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isPollVoted.value = response
+            }
+        })
     }
 }
