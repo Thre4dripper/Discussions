@@ -108,8 +108,8 @@ class PollRepository {
 
             DeletePollApi.deletePoll(
                 context,
-                token,
                 pollId,
+                token,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
                         callback.onSuccess(response)

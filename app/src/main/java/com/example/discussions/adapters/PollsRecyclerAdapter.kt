@@ -19,7 +19,8 @@ import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PollsRecyclerAdapter : ListAdapter<PollModel, ViewHolder>(PollsDiffCallback()) {
+class PollsRecyclerAdapter(private var pollDeleteInterface: PollDeleteInterface) :
+    ListAdapter<PollModel, ViewHolder>(PollsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -29,9 +30,12 @@ class PollsRecyclerAdapter : ListAdapter<PollModel, ViewHolder>(PollsDiffCallbac
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val poll = getItem(position)
-        (holder as PollViewHolder).bind(holder.binding, poll)
+        (holder as PollViewHolder).bind(holder.binding, poll, pollDeleteInterface)
     }
 
+    interface PollDeleteInterface {
+        fun onPollDelete(pollId: String)
+    }
 
     class PollViewHolder(itemView: View) : ViewHolder(itemView) {
         private val TAG = "PollsRecyclerAdapter"
@@ -73,9 +77,15 @@ class PollsRecyclerAdapter : ListAdapter<PollModel, ViewHolder>(PollsDiffCallbac
             binding.itemPollOption6Progress,
         )
 
-        fun bind(binding: ItemDiscussionPollBinding, pollModel: PollModel) {
-            //hiding more options button on discussion polls
-            binding.pollsMoreOptions.visibility = View.GONE
+        fun bind(
+            binding: ItemDiscussionPollBinding,
+            pollModel: PollModel,
+            pollDeleteInterface: PollDeleteInterface
+        ) {
+            //poll delete button
+            binding.itemPollDeleteBtn.setOnClickListener {
+                pollDeleteInterface.onPollDelete(pollModel.pollId)
+            }
 
             //setting the profile image of current poll's user
             Glide.with(itemView.context)

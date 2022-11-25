@@ -8,15 +8,16 @@ import com.example.discussions.api.ResponseCallback
 
 class DeletePollApi {
     companion object {
+        private const val TAG = "DeletePollApi"
 
         fun deletePoll(
             context: Context,
-            postId: String,
+            pollId: String,
             token: String,
             callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
-            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.POST_DELETE_POST}$postId/"
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.POLL_DELETE_POLL}$pollId/"
 
             val request = object : JsonObjectRequest(Method.POST, url, null, { response ->
                 callback.onSuccess(response.toString())

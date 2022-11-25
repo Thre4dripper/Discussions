@@ -11,12 +11,15 @@ import com.example.discussions.Constants
 import com.example.discussions.adapters.PollsRecyclerAdapter
 import com.example.discussions.databinding.FragmentPollsBinding
 import com.example.discussions.viewModels.HomeViewModel
+import com.example.discussions.viewModels.UserPollsViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class PollsFragment : Fragment() {
+class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface {
     private val TAG = "PollsFragment"
 
     private lateinit var binding: FragmentPollsBinding
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var viewModel: UserPollsViewModel
 
     private lateinit var pollsAdapter: PollsRecyclerAdapter
     override fun onCreateView(
@@ -25,9 +28,10 @@ class PollsFragment : Fragment() {
     ): View {
         binding = FragmentPollsBinding.inflate(inflater, container, false)
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[UserPollsViewModel::class.java]
 
         binding.pollsRv.apply {
-            pollsAdapter = PollsRecyclerAdapter()
+            pollsAdapter = PollsRecyclerAdapter(this@PollsFragment)
             adapter = pollsAdapter
         }
 
@@ -46,8 +50,10 @@ class PollsFragment : Fragment() {
         homeViewModel.userPollsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 pollsAdapter.submitList(it) {
+                    //do not scroll to top on poll deletion
+                    if (viewModel.isPollDeleted.value != null)
                     //scroll to top after loading new data
-                    binding.pollsRv.scrollToPosition(0)
+                        binding.pollsRv.scrollToPosition(0)
                 }
                 //hiding all loading
                 binding.pollsSwipeLayout.isRefreshing = false
@@ -78,5 +84,36 @@ class PollsFragment : Fragment() {
         }
 
         homeViewModel.getAllUserPolls(requireContext())
+    }
+
+    override fun onPollDelete(pollId: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete")
+            .setMessage("Are you sure you want to delete this poll?")
+            .setPositiveButton("Confirm") { dialog, _ ->
+                dialog.dismiss()
+                deletePoll(pollId)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    /**
+     * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
+     */
+    private fun deletePoll(pollId: String) {
+        //post delete api observer
+        viewModel.isPollDeleted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS)
+                    Toast.makeText(requireContext(), "Poll Deleted", Toast.LENGTH_SHORT).show()
+                else if (it == Constants.API_FAILED)
+                    Toast.makeText(requireContext(), "Problem Deleting Poll", Toast.LENGTH_SHORT)
+                        .show()
+            }
+        }
+        viewModel.deletePoll(requireContext(), pollId)
     }
 }
