@@ -3,8 +3,11 @@ package com.example.discussions.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ActivityPollResultsBinding
+import com.example.discussions.viewModels.PollResultsViewModel
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -14,24 +17,29 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 
 class PollResultsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPollResultsBinding
+    private lateinit var viewModel: PollResultsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_poll_results)
+        viewModel = ViewModelProvider(this)[PollResultsViewModel::class.java]
 
+        setPollData()
+    }
+
+    private fun setPollData() {
+        val pollId = intent.getStringExtra(Constants.POLL_ID)
+        viewModel.getPollDetails(pollId!!)
+
+        binding.pollResultsQuestionTv.text = viewModel.pollQuestion
         setPieChart()
     }
 
     private fun setPieChart() {
         val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(21f, "18-25"))
-        entries.add(PieEntry(12f, "26-35"))
-        entries.add(PieEntry(13f, "36-45"))
-        entries.add(PieEntry(17f, "46-55"))
-        entries.add(PieEntry(9f, "56-65"))
-        entries.add(PieEntry(28f, "66+"))
-
-
+        for (option in viewModel.pollOptions) {
+            entries.add(PieEntry(option.votes.toFloat(), option.content))
+        }
 
         val dataSet = PieDataSet(entries, "")
         dataSet.colors = mutableListOf(
