@@ -24,12 +24,13 @@ class PollResultsActivity : AppCompatActivity() {
 
     private fun setPieChart() {
         val entries = ArrayList<PieEntry>()
-        entries.add(PieEntry(50f, "18-dutdtdkdtykdtkdutftdytdlufd25"))
-        entries.add(PieEntry(26.7f, "26-rynymydukukdukddukmdm35"))
-        entries.add(PieEntry(24.0f, "36-dtmtdmuddkdkdukutdu45"))
-        entries.add(PieEntry(30.8f, "46-tudjtdkdtuhdfhdfjfytjfyjfyhlhlhiiljfyjfyjukdukkdtukduk55"))
-        entries.add(PieEntry(30.8f, "56-tdkdtukdtukdtukdtukdtuk65"))
-        entries.add(PieEntry(30.8f, "66-tdkdtukdtukdtukdtukdtuk75"))
+        entries.add(PieEntry(21f, "18-25"))
+        entries.add(PieEntry(12f, "26-35"))
+        entries.add(PieEntry(13f, "36-45"))
+        entries.add(PieEntry(17f, "46-55"))
+        entries.add(PieEntry(9f, "56-65"))
+        entries.add(PieEntry(28f, "66+"))
+
 
 
         val dataSet = PieDataSet(entries, "")

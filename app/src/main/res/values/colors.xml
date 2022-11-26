@@ -18,10 +18,10 @@
     <color name="user_posts_bg_color">#F1F3FF</color>
 
     //pie chart colors
-    <color name="pie_chart_color_1">#D3AEFF</color>
+    <color name="pie_chart_color_1">#789FB8</color>
     <color name="pie_chart_color_2">#FE8D9B</color>
-    <color name="pie_chart_color_3">#C4FE8B</color>
+    <color name="pie_chart_color_3">#A8DADC</color>
     <color name="pie_chart_color_4">#8BEAFE</color>
     <color name="pie_chart_color_5">#FFAE94</color>
-    <color name="pie_chart_color_6">#FDF58A</color>
+    <color name="pie_chart_color_6">#A6ACE8</color>
 </resources>

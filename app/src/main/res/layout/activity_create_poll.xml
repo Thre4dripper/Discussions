@@ -71,7 +71,7 @@
             app:layout_constraintStart_toEndOf="@+id/create_poll_profile_iv"
             app:layout_constraintTop_toTopOf="@+id/create_poll_profile_iv" />
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/create_poll_private_cb"
@@ -118,6 +118,8 @@
                     android:id="@+id/create_poll_options_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:nestedScrollingEnabled="false"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:itemCount="4"
                     tools:listitem="@layout/item_poll_option" />
@@ -133,7 +135,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/create_post_label" />
             </LinearLayout>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
 
         <CheckBox
             android:id="@+id/create_poll_private_cb"

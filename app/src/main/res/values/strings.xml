@@ -115,4 +115,15 @@
     <string name="poll_list_item_like">@string/post_list_item_like</string>
     <string name="poll_list_item_comment">@string/post_list_item_comment</string>
     <string name="poll_list_item_view_result">View Results</string>
+
+    //Poll Result Activity
+    <string name="poll_result_label">Poll Results</string>
+    <string name="poll_result_question_text">Poll Question</string>
+    <string name="poll_result_option_text">Option</string>
+    <plurals name="poll_result_option_votes_text">
+        <item quantity="zero">%d Votes</item>
+        <item quantity="one">%d Vote</item>
+        <item quantity="other">%d Votes</item>
+    </plurals>
+    <string name="poll_result_option_votes_text">1 Vote</string>
 </resources>
