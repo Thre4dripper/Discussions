@@ -146,13 +146,21 @@ class HomeViewModel : ViewModel() {
         _isPollVoted.value = null
         pollsScrollToTop = false
 
+        //changing vote status to voting, this will trigger progress bar in recycler view
+        val newPollsList = userPollsList.value!!.toMutableList()
+        val pollIndex = newPollsList.indexOfFirst { it.pollId == pollId }
+
+        val votedPoll = newPollsList[pollIndex].copy(isVoting = true)
+        newPollsList[pollIndex] = votedPoll
+        userPollsList.value = newPollsList
+
         PollRepository.pollVote(context, pollId, optionId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPollVoted.value = Constants.API_SUCCESS
             }
 
             override fun onError(response: String) {
-                _isPollVoted.value = response
+                _isPollVoted.value = Constants.API_FAILED
             }
         })
     }

@@ -106,6 +106,7 @@ class PollRepository {
             callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
+            val newPollsList = userPollsList.value!!.toMutableList()
 
             PollVoteApi.pollVoteJson(
                 context,
@@ -115,16 +116,24 @@ class PollRepository {
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
                         val votedPoll = PollVoteApi.parseVoteJson(response)
-                        val newPollsList = userPollsList.value!!.toMutableList()
 
-                        val index = newPollsList.indexOfFirst { it.pollId == votedPoll.pollId }
-                        newPollsList[index] = votedPoll
+                        val pollIndex = newPollsList.indexOfFirst { it.pollId == votedPoll.pollId }
+
+                        newPollsList[pollIndex] = votedPoll
                         userPollsList.postValue(newPollsList)
 
                         callback.onSuccess(response)
                     }
 
                     override fun onError(response: String) {
+
+                        //on error simply return the old list by changing voting status to false
+                        val pollIndex = newPollsList.indexOfFirst { it.pollId == pollId }
+
+                        val votedPoll = newPollsList[pollIndex].copy(isVoting = false)
+                        newPollsList[pollIndex] = votedPoll
+                        userPollsList.postValue(newPollsList)
+
                         if (response.contains("com.android.volley.TimeoutError")) {
                             callback.onError("Time Out")
                         } else if (response.contains("com.android.volley.NoConnectionError")) {

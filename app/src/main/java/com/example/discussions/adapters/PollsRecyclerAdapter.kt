@@ -139,9 +139,13 @@ class PollsRecyclerAdapter(
                 visibility = if (pollModel.content.isEmpty()) View.GONE else View.VISIBLE
             }
 
+
             //hiding loading progress bar and showing poll options
-            binding.itemPollLottieLoading.visibility = View.GONE
-            binding.itemPollOptionsLl.foreground = ColorDrawable(Color.TRANSPARENT)
+            binding.itemPollLottieLoading.visibility =
+                if (pollModel.isVoting) View.VISIBLE else View.GONE
+            binding.itemPollOptionsLl.foreground =
+                if (pollModel.isVoting) ColorDrawable(Color.WHITE) else ColorDrawable(Color.TRANSPARENT)
+
 
             //setting the poll options
             val pollOptions = pollModel.pollOptions
@@ -179,12 +183,9 @@ class PollsRecyclerAdapter(
 
 
                     setOnClickListener {
-                        //don't show loading progress bar if the current user has already voted
-                        if (!pollModel.isVoted) {
-                            binding.itemPollLottieLoading.visibility = View.VISIBLE
-                            binding.itemPollOptionsLl.foreground = ColorDrawable(Color.WHITE)
-                        }
-                        pollVoteInterface.onPollVote(pollModel.pollId, pollOptions[i].id)
+                        //checking if the current user has already voted
+                        if (!pollModel.isVoted)
+                            pollVoteInterface.onPollVote(pollModel.pollId, pollOptions[i].id)
                     }
                 }
 
