@@ -6,7 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.models.PollModel
 import com.example.discussions.repositories.PollRepository
 
 class UserPollsViewModel : ViewModel() {
@@ -14,8 +13,6 @@ class UserPollsViewModel : ViewModel() {
 
     //get user list directly from repository live data
     private var _userPolls = PollRepository.userPollsList
-    val userPolls: LiveData<MutableList<PollModel>?>
-        get() = _userPolls
 
     //all polls list from repository
     //TODO remove polls from supreme list containing polls and posts
@@ -26,6 +23,7 @@ class UserPollsViewModel : ViewModel() {
 
     fun deletePoll(context: Context,pollId: String) {
         _isPollDeleted.value = null
+        HomeViewModel.pollsScrollToTop = false
 
         //deleting poll from user polls list
         val deletedUserPoll = _userPolls.value!!.find { it.pollId == pollId }!!

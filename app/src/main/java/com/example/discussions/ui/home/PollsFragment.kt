@@ -51,8 +51,10 @@ class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface,
         binding.pollsProgressBar.visibility = View.VISIBLE
         homeViewModel.userPollsList.observe(viewLifecycleOwner) {
             if (it != null) {
-                pollsAdapter.submitList(it)
-                //TODO handle this scroll to top when new poll is added
+                pollsAdapter.submitList(it) {
+                    if (HomeViewModel.pollsScrollToTop)
+                        binding.pollsRv.scrollToPosition(0)
+                }
                 //hiding all loading
                 binding.pollsSwipeLayout.isRefreshing = false
                 binding.pollsProgressBar.visibility = View.GONE

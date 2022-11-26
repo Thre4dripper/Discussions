@@ -45,6 +45,10 @@ class HomeViewModel : ViewModel() {
     val isPollVoted: LiveData<String?>
         get() = _isPollVoted
 
+    companion object {
+        var pollsScrollToTop = false
+    }
+
 
     fun getProfile(context: Context) {
         if (_isProfileFetched.value == Constants.API_SUCCESS)
@@ -118,6 +122,7 @@ class HomeViewModel : ViewModel() {
             userPollsList.value = null
             _isUserPollsFetched.value = null
         }
+        pollsScrollToTop = true
 
         PollRepository.getAllUserPolls(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -139,6 +144,8 @@ class HomeViewModel : ViewModel() {
 
     fun pollVote(context: Context, pollId: String, optionId: String) {
         _isPollVoted.value = null
+        pollsScrollToTop = false
+
         PollRepository.pollVote(context, pollId, optionId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPollVoted.value = Constants.API_SUCCESS
