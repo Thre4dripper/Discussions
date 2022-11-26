@@ -1,7 +1,7 @@
 package com.example.discussions.ui.home
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.adapters.PollsRecyclerAdapter
 import com.example.discussions.databinding.FragmentPollsBinding
+import com.example.discussions.ui.PollResultsActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.UserPollsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -126,11 +127,12 @@ class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface,
             }
         }
 
-        Log.d(TAG, "onPollVote: $pollId $optionId")
         homeViewModel.pollVote(requireContext(), pollId, optionId)
     }
 
     override fun onPollResult(pollId: String) {
-        //TODO open poll result activity
+        val intent = Intent(requireContext(), PollResultsActivity::class.java)
+        intent.putExtra(Constants.POLL_ID, pollId)
+        startActivity(intent)
     }
 }

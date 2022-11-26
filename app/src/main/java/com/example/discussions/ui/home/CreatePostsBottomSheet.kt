@@ -34,7 +34,6 @@ class CreatePostsBottomSheet : BottomSheetDialogFragment() {
 
         binding.createPollBtn.setOnClickListener {
             val intent = Intent(context, CreatePollActivity::class.java)
-            intent.putExtra(Constants.POLL_MODE, Constants.MODE_CREATE_POLL)
             startActivity(intent)
             dismiss()
         }

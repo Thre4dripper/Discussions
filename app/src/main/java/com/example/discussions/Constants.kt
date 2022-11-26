@@ -44,9 +44,7 @@ class Constants {
         const val POST_CONTENT = "post_content"
         const val POST_IMAGE = "post_image"
 
-        //for poll modes
-        const val POLL_MODE = "poll_mode"
-        const val MODE_CREATE_POLL = "create_poll"
-        const val MODE_EDIT_POLL = "edit_poll"
+        //for passing poll data
+        const val POLL_ID = "poll_id"
     }
 }
