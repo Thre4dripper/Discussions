@@ -10,6 +10,7 @@ data class PollModel(
     val username: String,
     val userImage: String,
     val createdAt: String,
+    val isLiked: Boolean,
     val likes: Int,
     val comments: Int,
     val pollOptions: List<PollOptionModel>,

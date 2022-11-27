@@ -218,6 +218,15 @@ class PollsRecyclerAdapter(
                 }
             }
 
+            binding.itemPollLike.setCompoundDrawablesWithIntrinsicBounds(
+                if (pollModel.isLiked) {
+                    R.drawable.ic_like_filled
+                } else R.drawable.ic_like,
+                0,
+                0,
+                0
+            )
+
             //setting the poll likes and comments
             binding.itemPollLikes.text = pollModel.likes.toString()
             binding.itemPollComments.text = pollModel.comments.toString()

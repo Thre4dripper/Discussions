@@ -72,7 +72,7 @@ class GetUserPollsApi {
                         votedByList.add(
                             PollVotedByModel(
                                 votedByObject.getString("id"),
-                                votedByObject.getString("username"),
+                                "@" + votedByObject.getString("username"),
                                 votedByObject.getString("image")
                             )
                         )
@@ -102,6 +102,7 @@ class GetUserPollsApi {
                         username,
                         userImage,
                         pollObject.getString("created_at"),
+                        pollObject.getBoolean("is_liked"),
                         pollObject.getInt("like_count"),
                         pollObject.getInt("comment_count"),
                         pollOptionsList

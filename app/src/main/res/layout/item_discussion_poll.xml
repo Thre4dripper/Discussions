@@ -328,6 +328,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal"
             android:padding="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -336,10 +337,13 @@
             app:layout_constraintTop_toBottomOf="@+id/item_poll_ll1">
 
             <TextView
+                android:id="@+id/item_poll_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
                 android:text="@string/poll_list_item_like"
                 android:textColor="@color/dark_gray"
                 android:textStyle="bold"
@@ -355,6 +359,8 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
                 android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
                 android:text="@string/poll_list_item_comment"
                 android:textColor="@color/dark_gray"
                 android:textStyle="bold"

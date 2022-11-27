@@ -94,6 +94,14 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
                 binding.itemPostImage.visibility = View.GONE
             }
 
+            binding.itemPostLike.setCompoundDrawablesWithIntrinsicBounds(
+                if (postModel.isLiked) {
+                    R.drawable.ic_like_filled
+                } else R.drawable.ic_like,
+                0,
+                0,
+                0
+            )
             binding.itemPostLikes.text = postModel.likes.toString()
             binding.itemPostComments.text = postModel.comments.toString()
         }
