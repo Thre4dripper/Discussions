@@ -10,14 +10,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.adapters.PollsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.FragmentPollsBinding
 import com.example.discussions.ui.PollResultsActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.UserPollsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface,
-    PollsRecyclerAdapter.PollVoteInterface {
+class PollsFragment : Fragment(), PollClickInterface {
     private val TAG = "PollsFragment"
 
     private lateinit var binding: FragmentPollsBinding
@@ -34,7 +34,7 @@ class PollsFragment : Fragment(), PollsRecyclerAdapter.PollDeleteInterface,
         viewModel = ViewModelProvider(requireActivity())[UserPollsViewModel::class.java]
 
         binding.pollsRv.apply {
-            pollsAdapter = PollsRecyclerAdapter(this@PollsFragment, this@PollsFragment)
+            pollsAdapter = PollsRecyclerAdapter(this@PollsFragment)
             adapter = pollsAdapter
         }
 

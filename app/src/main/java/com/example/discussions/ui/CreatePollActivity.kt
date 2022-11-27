@@ -12,13 +12,14 @@ import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.PollOptionsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.PollOptionInterface
 import com.example.discussions.databinding.ActivityCreatePollBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.viewModels.CreatePollViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class CreatePollActivity : AppCompatActivity(),
-    PollOptionsRecyclerAdapter.PollOptionClickInterface {
+    PollOptionInterface {
     private lateinit var binding: ActivityCreatePollBinding
     private lateinit var viewModel: CreatePollViewModel
 

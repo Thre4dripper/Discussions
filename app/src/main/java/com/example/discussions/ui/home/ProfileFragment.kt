@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.adapters.ProfileRecyclerAdapter
+import com.example.discussions.adapters.interfaces.UserPostClickInterface
 import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.EditDetailsActivity
@@ -23,7 +24,7 @@ import com.example.discussions.ui.ZoomImageActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class ProfileFragment : Fragment(), ProfileRecyclerAdapter.UserPostClickInterface {
+class ProfileFragment : Fragment(), UserPostClickInterface {
     private val TAG = "ProfileFragment"
 
     private lateinit var binding: FragmentProfileBinding

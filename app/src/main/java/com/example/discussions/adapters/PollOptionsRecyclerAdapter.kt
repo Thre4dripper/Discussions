@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.PollOptionInterface
 import com.example.discussions.databinding.ItemPollOptionBinding
 import com.example.discussions.models.PollOptionModel
 
-class PollOptionsRecyclerAdapter(private var pollOptionClickInterface: PollOptionClickInterface) :
+class PollOptionsRecyclerAdapter(private var pollOptionInterface: PollOptionInterface) :
     ListAdapter<PollOptionModel, PollOptionsRecyclerAdapter.PollOptionViewHolder>(PollOptionDiffUtil()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PollOptionViewHolder {
@@ -23,12 +24,7 @@ class PollOptionsRecyclerAdapter(private var pollOptionClickInterface: PollOptio
 
     override fun onBindViewHolder(holder: PollOptionViewHolder, position: Int) {
         val poll = getItem(position)
-        holder.bind(poll, holder.binding, pollOptionClickInterface)
-    }
-
-    interface PollOptionClickInterface {
-        fun onPollOptionDelete(position: Int)
-        fun onPollTextChanged(position: Int, text: String)
+        holder.bind(poll, holder.binding, pollOptionInterface)
     }
 
     class PollOptionViewHolder(itemView: View) :
@@ -38,19 +34,19 @@ class PollOptionsRecyclerAdapter(private var pollOptionClickInterface: PollOptio
         fun bind(
             pollOptionModel: PollOptionModel,
             binding: ItemPollOptionBinding,
-            pollOptionClickInterface: PollOptionClickInterface
+            pollOptionInterface: PollOptionInterface
         ) {
             binding.itemCreatePollOptionTil.hint = pollOptionModel.hint
             binding.itemCreatePollOptionEt.setText(pollOptionModel.content)
 
             //for updating poll option list when text is changed
             binding.itemCreatePollOptionEt.addTextChangedListener {
-                pollOptionClickInterface.onPollTextChanged(adapterPosition, it.toString())
+                pollOptionInterface.onPollTextChanged(adapterPosition, it.toString())
             }
 
             //for deleting poll option
             binding.itemCreatePollOptionDeleteIv.setOnClickListener {
-                pollOptionClickInterface.onPollOptionDelete(adapterPosition)
+                pollOptionInterface.onPollOptionDelete(adapterPosition)
             }
         }
     }

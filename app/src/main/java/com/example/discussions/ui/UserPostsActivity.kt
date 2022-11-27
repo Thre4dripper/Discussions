@@ -9,11 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.UserPostsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.PostMenuInterface
 import com.example.discussions.databinding.ActivityUserPostsBinding
 import com.example.discussions.viewModels.UserPostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class UserPostsActivity : AppCompatActivity(), UserPostsRecyclerAdapter.PostOptionsInterface {
+class UserPostsActivity : AppCompatActivity(), PostMenuInterface {
     private val TAG = "UserPostsActivity"
 
     private lateinit var binding: ActivityUserPostsBinding

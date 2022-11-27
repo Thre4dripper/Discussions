@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.UserPostClickInterface
 import com.example.discussions.databinding.ItemUserPostBinding
 import com.example.discussions.models.PostModel
 
@@ -28,10 +29,6 @@ class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickIn
     override fun onBindViewHolder(holder: ProfilePostsViewHolder, position: Int) {
         val post = getItem(position)
         holder.bind(holder.binding, post, userPostClickInterface)
-    }
-
-    interface UserPostClickInterface {
-        fun onUserPostClick(index: Int)
     }
 
     class ProfilePostsViewHolder(itemView: View) : ViewHolder(itemView) {

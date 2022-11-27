@@ -14,13 +14,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.PostMenuInterface
 import com.example.discussions.databinding.ItemDiscussionPostBinding
 import com.example.discussions.models.PostModel
 import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class UserPostsRecyclerAdapter(private var postOptionsInterface: PostOptionsInterface) :
+class UserPostsRecyclerAdapter(private var postMenuInterface: PostMenuInterface) :
     ListAdapter<PostModel, UserPostsRecyclerAdapter.UserPostsViewHolder>(UserPostsDiffCallback()) {
 
 
@@ -33,12 +34,7 @@ class UserPostsRecyclerAdapter(private var postOptionsInterface: PostOptionsInte
 
     override fun onBindViewHolder(holder: UserPostsViewHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(holder.binding, post, postOptionsInterface)
-    }
-
-    interface PostOptionsInterface {
-        fun onPostEdit(postId: String)
-        fun onPostDelete(postId: String)
+        holder.bind(holder.binding, post, postMenuInterface)
     }
 
     class UserPostsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -47,7 +43,7 @@ class UserPostsRecyclerAdapter(private var postOptionsInterface: PostOptionsInte
         fun bind(
             binding: ItemDiscussionPostBinding,
             postModel: PostModel,
-            posInterface: PostOptionsInterface
+            posInterface: PostMenuInterface
         ) {
             //setting post popup menu
             val popupMenu = PopupMenu(binding.root.context, binding.postsMoreOptions)

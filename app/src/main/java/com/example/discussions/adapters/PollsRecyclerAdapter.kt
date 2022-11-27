@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.ItemDiscussionPollBinding
 import com.example.discussions.models.PollModel
 import com.example.discussions.ui.ZoomImageActivity
@@ -22,8 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PollsRecyclerAdapter(
-    private var pollDeleteInterface: PollDeleteInterface,
-    private var pollVoteInterface: PollVoteInterface
+    private var pollClickInterface: PollClickInterface
 ) :
     ListAdapter<PollModel, ViewHolder>(PollsDiffCallback()) {
 
@@ -38,18 +38,8 @@ class PollsRecyclerAdapter(
         (holder as PollViewHolder).bind(
             holder.binding,
             poll,
-            pollDeleteInterface,
-            pollVoteInterface
+            pollClickInterface
         )
-    }
-
-    interface PollDeleteInterface {
-        fun onPollDelete(pollId: String)
-    }
-
-    interface PollVoteInterface {
-        fun onPollVote(pollId: String, optionId: String)
-        fun onPollResult(pollId: String)
     }
 
     class PollViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -95,12 +85,11 @@ class PollsRecyclerAdapter(
         fun bind(
             binding: ItemDiscussionPollBinding,
             pollModel: PollModel,
-            pollDeleteInterface: PollDeleteInterface,
-            pollVoteInterface: PollVoteInterface
+            pollClickInterface: PollClickInterface
         ) {
             //poll delete button
             binding.itemPollDeleteBtn.setOnClickListener {
-                pollDeleteInterface.onPollDelete(pollModel.pollId)
+                pollClickInterface.onPollDelete(pollModel.pollId)
             }
 
             //setting the profile image of current poll's user
@@ -185,7 +174,7 @@ class PollsRecyclerAdapter(
                     setOnClickListener {
                         //checking if the current user has already voted
                         if (!pollModel.isVoted)
-                            pollVoteInterface.onPollVote(pollModel.pollId, pollOptions[i].id)
+                            pollClickInterface.onPollVote(pollModel.pollId, pollOptions[i].id)
                     }
                 }
 
@@ -214,7 +203,7 @@ class PollsRecyclerAdapter(
                 visibility =
                     if (pollModel.pollOptions.any { it.votedBy.isNotEmpty() } && pollModel.isVoted) View.VISIBLE else View.GONE
                 setOnClickListener {
-                    pollVoteInterface.onPollResult(pollModel.pollId)
+                    pollClickInterface.onPollResult(pollModel.pollId)
                 }
             }
 
