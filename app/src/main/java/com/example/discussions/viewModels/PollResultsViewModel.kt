@@ -23,7 +23,7 @@ class PollResultsViewModel : ViewModel() {
         pollOptions = poll.pollOptions
     }
 
-    fun getVotedByList(optionId: String) {
-        _votedByList.value = pollOptions.find { it.id == optionId }!!.votedBy.toMutableList()
+    fun getVotedByList(optionIndex: Int) {
+        _votedByList.value = pollOptions[optionIndex].votedBy.toMutableList()
     }
 }

@@ -119,7 +119,7 @@
     //Poll Result Activity
     <string name="poll_result_label">Poll Results</string>
     <string name="poll_result_question_text">Poll Question</string>
-    <string name="poll_result_option_text">Option</string>
+    <string name="poll_result_option_text">Tap on Pie Chart</string>
     <plurals name="poll_result_option_votes_text">
         <item quantity="zero">%d Votes</item>
         <item quantity="one">%d Vote</item>
