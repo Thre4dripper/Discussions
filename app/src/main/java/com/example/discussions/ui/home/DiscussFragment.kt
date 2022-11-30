@@ -9,10 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
 import com.example.discussions.viewModels.HomeViewModel
 
-class DiscussFragment : Fragment() {
+class DiscussFragment : Fragment(), LikeCommentInterface {
     private val TAG = "DiscussFragment"
 
     private lateinit var binding: FragmentDiscussBinding
@@ -28,7 +29,7 @@ class DiscussFragment : Fragment() {
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         binding.discussionRv.apply {
-            discussAdapter = DiscussionsRecyclerAdapter()
+            discussAdapter = DiscussionsRecyclerAdapter(this@DiscussFragment)
             adapter = discussAdapter
         }
 
@@ -77,5 +78,25 @@ class DiscussFragment : Fragment() {
         }
 
         homeViewModel.getAllPosts(requireContext())
+    }
+
+    override fun onLike(postOrPollId: String) {
+        homeViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS) {
+                    Toast.makeText(requireContext(), "Liked", Toast.LENGTH_SHORT).show()
+                } else if (it == Constants.API_FAILED) {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                } else if (it == Constants.AUTH_FAILURE_ERROR) {
+                    requireActivity().setResult(Constants.RESULT_LOGOUT)
+                    requireActivity().finish()
+                }
+            }
+        }
+        homeViewModel.likePost(requireContext(), postOrPollId)
+    }
+
+    override fun onComment(postOrPollId: String) {
+
     }
 }

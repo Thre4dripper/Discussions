@@ -13,13 +13,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.databinding.ItemDiscussionPostBinding
 import com.example.discussions.models.PostModel
 import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(DiscussionDiffCallback()) {
+class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentInterface) :
+    ListAdapter<PostModel, ViewHolder>(DiscussionDiffCallback()) {
     private val TAG = "DiscussionsRecyclerAdap"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,13 +32,17 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = getItem(position)
-        (holder as PostViewHolder).bind(holder.binding, post)
+        (holder as PostViewHolder).bind(holder.binding, post, likeCommentInterface)
     }
 
     class PostViewHolder(itemView: View) : ViewHolder(itemView) {
         var binding = DataBindingUtil.bind<ItemDiscussionPostBinding>(itemView)!!
 
-        fun bind(binding: ItemDiscussionPostBinding, postModel: PostModel) {
+        fun bind(
+            binding: ItemDiscussionPostBinding,
+            postModel: PostModel,
+            likeCommentInterface: LikeCommentInterface
+        ) {
 
             //hiding more options button on discussion posts
             binding.postsMoreOptions.visibility = View.GONE
@@ -94,14 +100,19 @@ class DiscussionsRecyclerAdapter : ListAdapter<PostModel, ViewHolder>(Discussion
                 binding.itemPostImage.visibility = View.GONE
             }
 
-            binding.itemPostLike.setCompoundDrawablesWithIntrinsicBounds(
-                if (postModel.isLiked) {
-                    R.drawable.ic_like_filled
-                } else R.drawable.ic_like,
-                0,
-                0,
-                0
-            )
+            binding.itemPostLike.apply {
+                setOnClickListener {
+                    likeCommentInterface.onLike(postModel.postId)
+                }
+                setCompoundDrawablesWithIntrinsicBounds(
+                    if (postModel.isLiked) {
+                        R.drawable.ic_like_filled
+                    } else R.drawable.ic_like,
+                    0,
+                    0,
+                    0
+                )
+            }
             binding.itemPostLikes.text = postModel.likes.toString()
             binding.itemPostComments.text = postModel.comments.toString()
         }

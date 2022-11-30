@@ -45,6 +45,10 @@ class HomeViewModel : ViewModel() {
     val isPollVoted: LiveData<String?>
         get() = _isPollVoted
 
+    private var _isPostLikedChanged = MutableLiveData<String?>(null)
+    val isPostLikedChanged: LiveData<String?>
+        get() = _isPostLikedChanged
+
     companion object {
         var pollsScrollToTop = false
     }
@@ -161,6 +165,18 @@ class HomeViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isPollVoted.value = Constants.API_FAILED
+            }
+        })
+    }
+
+    fun likePost(context: Context, postId: String) {
+        PostRepository.likePost(context, postId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPostLikedChanged.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isPostLikedChanged.value = Constants.API_FAILED
             }
         })
     }
