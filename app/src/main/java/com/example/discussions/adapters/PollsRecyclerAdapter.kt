@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.ItemDiscussionPollBinding
 import com.example.discussions.models.PollModel
@@ -23,7 +24,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PollsRecyclerAdapter(
-    private var pollClickInterface: PollClickInterface
+    private var pollClickInterface: PollClickInterface,
+    private var likeCommentInterface: LikeCommentInterface
 ) :
     ListAdapter<PollModel, ViewHolder>(PollsDiffCallback()) {
 
@@ -38,7 +40,8 @@ class PollsRecyclerAdapter(
         (holder as PollViewHolder).bind(
             holder.binding,
             poll,
-            pollClickInterface
+            pollClickInterface,
+            likeCommentInterface
         )
     }
 
@@ -85,7 +88,8 @@ class PollsRecyclerAdapter(
         fun bind(
             binding: ItemDiscussionPollBinding,
             pollModel: PollModel,
-            pollClickInterface: PollClickInterface
+            pollClickInterface: PollClickInterface,
+            likeCommentInterface: LikeCommentInterface
         ) {
             //poll delete button
             binding.itemPollDeleteBtn.setOnClickListener {
@@ -207,14 +211,19 @@ class PollsRecyclerAdapter(
                 }
             }
 
-            binding.itemPollLike.setCompoundDrawablesWithIntrinsicBounds(
-                if (pollModel.isLiked) {
-                    R.drawable.ic_like_filled
-                } else R.drawable.ic_like,
-                0,
-                0,
-                0
-            )
+            binding.itemPollLike.apply {
+                setOnClickListener {
+                    likeCommentInterface.onLike(pollModel.pollId)
+                }
+                setCompoundDrawablesWithIntrinsicBounds(
+                    if (pollModel.isLiked) {
+                        R.drawable.ic_like_filled
+                    } else R.drawable.ic_like,
+                    0,
+                    0,
+                    0
+                )
+            }
 
             //setting the poll likes and comments
             binding.itemPollLikes.text = pollModel.likes.toString()

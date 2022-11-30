@@ -49,6 +49,10 @@ class HomeViewModel : ViewModel() {
     val isPostLikedChanged: LiveData<String?>
         get() = _isPostLikedChanged
 
+    private var _isPollLikedChanged = MutableLiveData<String?>(null)
+    val isPollLikedChanged: LiveData<String?>
+        get() = _isPollLikedChanged
+
     companion object {
         var pollsScrollToTop = false
     }
@@ -200,6 +204,41 @@ class HomeViewModel : ViewModel() {
                 )
                 newPostsList[postIndex] = post
                 postsList.value = newPostsList
+            }
+        })
+    }
+
+    fun likePoll(context: Context, pollId: String) {
+        _isPollLikedChanged.value = null
+        pollsScrollToTop = false
+
+        //changing like status to liking, this will trigger refresh in recycler view
+        var newPollsList = userPollsList.value!!.toMutableList()
+        var pollIndex = newPollsList.indexOfFirst { it.pollId == pollId }
+        var poll = newPollsList[pollIndex].copy(
+            isLiked = !newPollsList[pollIndex].isLiked,
+            likes = newPollsList[pollIndex].likes + if (!newPollsList[pollIndex].isLiked) 1 else -1
+        )
+        newPollsList[pollIndex] = poll
+        userPollsList.value = newPollsList
+
+        PollRepository.likePoll(context, pollId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPollLikedChanged.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isPollLikedChanged.value = Constants.API_FAILED
+
+                //reverting back to previous state
+                newPollsList = userPollsList.value!!.toMutableList()
+                pollIndex = newPollsList.indexOfFirst { it.pollId == pollId }
+                poll = newPollsList[pollIndex].copy(
+                    isLiked = !newPollsList[pollIndex].isLiked,
+                    likes = newPollsList[pollIndex].likes + if (!newPollsList[pollIndex].isLiked) 1 else -1
+                )
+                newPollsList[pollIndex] = poll
+                userPollsList.value = newPollsList
             }
         })
     }

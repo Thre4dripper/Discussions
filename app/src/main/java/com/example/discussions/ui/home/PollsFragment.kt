@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.adapters.PollsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.FragmentPollsBinding
 import com.example.discussions.ui.PollResultsActivity
@@ -17,7 +18,7 @@ import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.UserPollsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class PollsFragment : Fragment(), PollClickInterface {
+class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
     private val TAG = "PollsFragment"
 
     private lateinit var binding: FragmentPollsBinding
@@ -34,7 +35,7 @@ class PollsFragment : Fragment(), PollClickInterface {
         viewModel = ViewModelProvider(requireActivity())[UserPollsViewModel::class.java]
 
         binding.pollsRv.apply {
-            pollsAdapter = PollsRecyclerAdapter(this@PollsFragment)
+            pollsAdapter = PollsRecyclerAdapter(this@PollsFragment, this@PollsFragment)
             adapter = pollsAdapter
         }
 
@@ -134,5 +135,23 @@ class PollsFragment : Fragment(), PollClickInterface {
         val intent = Intent(requireContext(), PollResultsActivity::class.java)
         intent.putExtra(Constants.POLL_ID, pollId)
         startActivity(intent)
+    }
+
+    override fun onLike(postOrPollId: String) {
+        homeViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_FAILED) {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                } else if (it == Constants.AUTH_FAILURE_ERROR) {
+                    requireActivity().setResult(Constants.RESULT_LOGOUT)
+                    requireActivity().finish()
+                }
+            }
+        }
+        homeViewModel.likePoll(requireContext(), postOrPollId)
+    }
+
+    override fun onComment(postOrPollId: String) {
+
     }
 }
