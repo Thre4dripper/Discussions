@@ -47,8 +47,8 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
         homeViewModel.postsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 discussAdapter.submitList(it) {
-                    //scroll to top after loading new data
-                    binding.discussionRv.scrollToPosition(0)
+                    if (HomeViewModel.pollsScrollToTop)
+                        binding.discussionRv.scrollToPosition(0)
                 }
                 //hiding all loading
                 binding.discussSwipeLayout.isRefreshing = false
@@ -83,9 +83,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
     override fun onLike(postOrPollId: String) {
         homeViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
-                if (it == Constants.API_SUCCESS) {
-                    Toast.makeText(requireContext(), "Liked", Toast.LENGTH_SHORT).show()
-                } else if (it == Constants.API_FAILED) {
+                if (it == Constants.API_FAILED) {
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                 } else if (it == Constants.AUTH_FAILURE_ERROR) {
                     requireActivity().setResult(Constants.RESULT_LOGOUT)
