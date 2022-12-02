@@ -100,10 +100,16 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
                 binding.itemPostImage.visibility = View.GONE
             }
 
-            binding.itemPostLike.apply {
+            //setting the post likes and comments count
+            binding.itemPostLikesCount.text = postModel.likes.toString()
+            binding.itemPostCommentsCount.text = postModel.comments.toString()
+
+            //setting like and comment button click listeners
+            binding.itemPostLikeBtn.apply {
                 setOnClickListener {
                     likeCommentInterface.onLike(postModel.postId)
                 }
+                //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(
                     if (postModel.isLiked) {
                         R.drawable.ic_like_filled
@@ -113,15 +119,14 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
                     0
                 )
             }
-            binding.itemPostLikes.text = postModel.likes.toString()
 
-            binding.itemPostComment.apply {
+            binding.itemPostCommentBtn.apply {
                 setOnClickListener {
                     likeCommentInterface.onComment(postModel.postId)
                 }
                 visibility = if (postModel.allowComments) View.VISIBLE else View.GONE
             }
-            binding.itemPostComments.text = postModel.comments.toString()
+
         }
     }
 

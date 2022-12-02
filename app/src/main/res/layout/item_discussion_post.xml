@@ -124,7 +124,7 @@
             app:layout_constraintTop_toBottomOf="@+id/item_post_image">
 
             <TextView
-                android:id="@+id/item_post_likes"
+                android:id="@+id/item_post_likes_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -140,7 +140,7 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/item_post_comments"
+                android:id="@+id/item_post_comments_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -165,7 +165,7 @@
             app:layout_constraintTop_toBottomOf="@+id/item_post_ll1">
 
             <TextView
-                android:id="@+id/item_post_like"
+                android:id="@+id/item_post_like_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"
@@ -183,7 +183,7 @@
                 android:layout_weight="1" />
 
             <TextView
-                android:id="@+id/item_post_comment"
+                android:id="@+id/item_post_comment_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"

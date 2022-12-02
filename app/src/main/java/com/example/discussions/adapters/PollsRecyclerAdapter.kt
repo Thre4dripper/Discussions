@@ -209,10 +209,16 @@ class PollsRecyclerAdapter(
                 }
             }
 
-            binding.itemPollLike.apply {
+            //setting the poll likes and comments count
+            binding.itemPollLikesCount.text = pollModel.likes.toString()
+            binding.itemPollCommentsCount.text = pollModel.comments.toString()
+
+            //setting like and comment button click listeners
+            binding.itemPollLikeBtn.apply {
                 setOnClickListener {
                     likeCommentInterface.onLike(pollModel.pollId)
                 }
+                //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(
                     if (pollModel.isLiked) {
                         R.drawable.ic_like_filled
@@ -223,16 +229,13 @@ class PollsRecyclerAdapter(
                 )
             }
 
-            //setting the poll likes and comments
-            binding.itemPollLikes.text = pollModel.likes.toString()
-
-            binding.itemPollComment.apply {
+            binding.itemPollCommentBtn.apply {
                 setOnClickListener {
                     likeCommentInterface.onComment(pollModel.pollId)
                 }
                 visibility = if (pollModel.allowComments) View.VISIBLE else View.GONE
             }
-            binding.itemPollComments.text = pollModel.comments.toString()
+
         }
     }
 
