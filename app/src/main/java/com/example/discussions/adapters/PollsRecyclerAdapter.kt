@@ -145,8 +145,6 @@ class PollsRecyclerAdapter(
             val maxVotes = pollOptions.maxOf { it.votes }
 
             for (i in pollOptions.indices) {
-                //username excluding @
-                val username = pollModel.username.substring(1)
 
                 //set poll option text
                 pollOptionsTvList[i].apply {
@@ -158,7 +156,7 @@ class PollsRecyclerAdapter(
                         //checking if the current user has voted for this option
                         //AND
                         //checking if any votedBy list contains the current user's username
-                        if (pollModel.isVoted && pollOptions[i].votedBy.any { it.username == username }) {
+                        if (pollModel.isVoted && pollOptions[i].votedBy.any { it.username == pollModel.username }) {
                             ResourcesCompat.getDrawable(
                                 resources,
                                 R.drawable.ic_circle_checked,
