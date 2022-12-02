@@ -63,6 +63,7 @@ class GetAllPostsApi {
                         postObject.getString("post_image"),
                         postObject.getBoolean("is_liked"),
                         postObject.getInt("like_count"),
+                        postObject.getBoolean("allow_comments"),
                         postObject.getInt("comment_count")
                     )
                 )

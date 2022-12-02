@@ -104,6 +104,7 @@ class GetUserPollsApi {
                         pollObject.getString("created_at"),
                         pollObject.getBoolean("is_liked"),
                         pollObject.getInt("like_count"),
+                        pollObject.getBoolean("allow_comments"),
                         pollObject.getInt("comment_count"),
                         pollOptionsList
                     )

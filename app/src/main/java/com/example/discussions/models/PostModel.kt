@@ -10,5 +10,6 @@ data class PostModel(
     val postImage: String,
     val isLiked: Boolean,
     val likes: Int,
+    val allowComments: Boolean,
     val comments: Int
 )

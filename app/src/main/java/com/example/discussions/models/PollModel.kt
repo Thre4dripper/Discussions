@@ -12,6 +12,7 @@ data class PollModel(
     val createdAt: String,
     val isLiked: Boolean,
     val likes: Int,
+    val allowComments: Boolean,
     val comments: Int,
     val pollOptions: List<PollOptionModel>,
     val isVoting: Boolean = false,

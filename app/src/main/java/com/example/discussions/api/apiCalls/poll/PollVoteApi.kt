@@ -101,6 +101,7 @@ class PollVoteApi {
                 rootObject.getString("created_at"),
                 rootObject.getBoolean("is_liked"),
                 rootObject.getInt("like_count"),
+                rootObject.getBoolean("allow_comments"),
                 rootObject.getInt("comment_count"),
                 pollOptionsList
             )

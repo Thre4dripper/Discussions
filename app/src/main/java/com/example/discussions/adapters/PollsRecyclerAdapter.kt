@@ -225,6 +225,13 @@ class PollsRecyclerAdapter(
 
             //setting the poll likes and comments
             binding.itemPollLikes.text = pollModel.likes.toString()
+
+            binding.itemPollComment.apply {
+                setOnClickListener {
+                    likeCommentInterface.onComment(pollModel.pollId)
+                }
+                visibility = if (pollModel.allowComments) View.VISIBLE else View.GONE
+            }
             binding.itemPollComments.text = pollModel.comments.toString()
         }
     }

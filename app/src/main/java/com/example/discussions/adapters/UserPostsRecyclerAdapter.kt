@@ -138,6 +138,13 @@ class UserPostsRecyclerAdapter(
                 )
             }
             binding.itemPostLikes.text = postModel.likes.toString()
+
+            binding.itemPostComment.apply {
+                setOnClickListener {
+                    likeCommentInterface.onComment(postModel.postId)
+                }
+                visibility = if (postModel.allowComments) View.VISIBLE else View.GONE
+            }
             binding.itemPostComments.text = postModel.comments.toString()
         }
     }
