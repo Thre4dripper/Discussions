@@ -54,7 +54,7 @@ class HomeViewModel : ViewModel() {
         get() = _isPollLikedChanged
 
     companion object {
-        var pollsScrollToTop = false
+        var postsOrPollsScrollToTop = false
     }
 
 
@@ -130,7 +130,7 @@ class HomeViewModel : ViewModel() {
             userPollsList.value = null
             _isUserPollsFetched.value = null
         }
-        pollsScrollToTop = true
+        postsOrPollsScrollToTop = true
 
         PollRepository.getAllUserPolls(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -152,7 +152,7 @@ class HomeViewModel : ViewModel() {
 
     fun pollVote(context: Context, pollId: String, optionId: String) {
         _isPollVoted.value = null
-        pollsScrollToTop = false
+        postsOrPollsScrollToTop = false
 
         //changing vote status to voting, this will trigger progress bar in recycler view
         val newPollsList = userPollsList.value!!.toMutableList()
@@ -175,7 +175,7 @@ class HomeViewModel : ViewModel() {
 
     fun likePost(context: Context, postId: String) {
         _isPostLikedChanged.value = null
-        pollsScrollToTop = false
+        postsOrPollsScrollToTop = false
 
         //changing like status to liking, this will trigger refresh in recycler view
         var newPostsList = postsList.value!!.toMutableList()
@@ -210,7 +210,7 @@ class HomeViewModel : ViewModel() {
 
     fun likePoll(context: Context, pollId: String) {
         _isPollLikedChanged.value = null
-        pollsScrollToTop = false
+        postsOrPollsScrollToTop = false
 
         //changing like status to liking, this will trigger refresh in recycler view
         var newPollsList = userPollsList.value!!.toMutableList()

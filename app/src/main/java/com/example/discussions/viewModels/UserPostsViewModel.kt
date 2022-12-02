@@ -26,6 +26,14 @@ class UserPostsViewModel : ViewModel() {
     val isPostDeleted: LiveData<String?>
         get() = _isPostDeleted
 
+    private var _isPostLikedChanged = MutableLiveData<String?>(null)
+    val isPostLikedChanged: LiveData<String?>
+        get() = _isPostLikedChanged
+
+    companion object {
+        var userPostsScrollToIndex = false
+    }
+
     fun deletePost(context: Context, postId: String) {
         _isPostDeleted.value = null
 
@@ -71,6 +79,60 @@ class UserPostsViewModel : ViewModel() {
 
                 newUserPostsList = _userPosts.value!!.toMutableList()
                 newUserPostsList.add(deletedUserPostIndex, deletedUserPost)
+                _userPosts.value = newUserPostsList
+            }
+        })
+    }
+
+    fun likePost(context: Context, postId: String) {
+        _isPostLikedChanged.value = null
+        userPostsScrollToIndex = false
+
+        //liking post from all posts list
+        val likedPost = _allPosts.value!!.find { it.postId == postId }
+        var likedPostIndex = -1
+        var newPostsList: MutableList<PostModel>
+
+        //when all posts list is not updated yet after inserting new post then liked post can only be found in user posts list
+        if (likedPost != null) {
+            likedPostIndex = _allPosts.value!!.indexOf(likedPost)
+            newPostsList = _allPosts.value!!.toMutableList()
+            val post = likedPost.copy(
+                isLiked = !likedPost.isLiked,
+                likes = likedPost.likes + if (!likedPost.isLiked) 1 else -1
+            )
+            newPostsList[likedPostIndex] = post
+            _allPosts.value = newPostsList
+        }
+
+        //liking post from user posts list
+        val likedUserPost = _userPosts.value!!.find { it.postId == postId }!!
+        val likedUserPostIndex = _userPosts.value!!.indexOf(likedUserPost)
+        var newUserPostsList = _userPosts.value!!.toMutableList()
+        val userPost = likedUserPost.copy(
+            isLiked = !likedUserPost.isLiked,
+            likes = likedUserPost.likes + if (!likedUserPost.isLiked) 1 else -1
+        )
+        newUserPostsList[likedUserPostIndex] = userPost
+        _userPosts.value = newUserPostsList
+
+        PostRepository.likePost(context, postId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPostLikedChanged.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isPostLikedChanged.value = Constants.API_FAILED
+
+                //reverting back to previous state
+                if (likedPost != null) {
+                    newPostsList = _allPosts.value!!.toMutableList()
+                    newPostsList[likedPostIndex] = likedPost
+                    _allPosts.value = newPostsList
+                }
+
+                newUserPostsList = _userPosts.value!!.toMutableList()
+                newUserPostsList[likedUserPostIndex] = likedUserPost
                 _userPosts.value = newUserPostsList
             }
         })

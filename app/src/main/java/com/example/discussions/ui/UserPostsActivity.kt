@@ -9,12 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.UserPostsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PostMenuInterface
 import com.example.discussions.databinding.ActivityUserPostsBinding
 import com.example.discussions.viewModels.UserPostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class UserPostsActivity : AppCompatActivity(), PostMenuInterface {
+class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInterface {
     private val TAG = "UserPostsActivity"
 
     private lateinit var binding: ActivityUserPostsBinding
@@ -27,7 +28,8 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface {
         viewModel = ViewModelProvider(this)[UserPostsViewModel::class.java]
 
         binding.userPostsRv.apply {
-            userPostsAdapter = UserPostsRecyclerAdapter(this@UserPostsActivity)
+            userPostsAdapter =
+                UserPostsRecyclerAdapter(this@UserPostsActivity, this@UserPostsActivity)
             adapter = userPostsAdapter
         }
 
@@ -37,6 +39,7 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface {
 
         //getting post index from intent
         val postIndex = intent.getIntExtra(Constants.USER_POST_INDEX, 0)
+        UserPostsViewModel.userPostsScrollToIndex = true
 
         getUserPosts(postIndex)
     }
@@ -47,7 +50,8 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface {
     private fun getUserPosts(postIndex: Int) {
         viewModel.userPosts.observe(this) {
             userPostsAdapter.submitList(it) {
-                binding.userPostsRv.scrollToPosition(postIndex)
+                if (UserPostsViewModel.userPostsScrollToIndex)
+                    binding.userPostsRv.scrollToPosition(postIndex)
             }
         }
     }
@@ -92,5 +96,23 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface {
             }
         }
         viewModel.deletePost(this, postId)
+    }
+
+    override fun onLike(postOrPollId: String) {
+        viewModel.isPostLikedChanged.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_FAILED) {
+                    Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                } else if (it == Constants.AUTH_FAILURE_ERROR) {
+                    setResult(Constants.RESULT_LOGOUT)
+                    finish()
+                }
+            }
+        }
+        viewModel.likePost(this, postOrPollId)
+    }
+
+    override fun onComment(postOrPollId: String) {
+
     }
 }

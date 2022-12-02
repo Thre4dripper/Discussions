@@ -47,7 +47,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
         homeViewModel.postsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 discussAdapter.submitList(it) {
-                    if (HomeViewModel.pollsScrollToTop)
+                    if (HomeViewModel.postsOrPollsScrollToTop)
                         binding.discussionRv.scrollToPosition(0)
                 }
                 //hiding all loading

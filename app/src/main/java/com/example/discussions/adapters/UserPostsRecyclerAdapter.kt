@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PostMenuInterface
 import com.example.discussions.databinding.ItemDiscussionPostBinding
 import com.example.discussions.models.PostModel
@@ -21,7 +22,10 @@ import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class UserPostsRecyclerAdapter(private var postMenuInterface: PostMenuInterface) :
+class UserPostsRecyclerAdapter(
+    private var postMenuInterface: PostMenuInterface,
+    private var likeCommentInterface: LikeCommentInterface
+) :
     ListAdapter<PostModel, UserPostsRecyclerAdapter.UserPostsViewHolder>(UserPostsDiffCallback()) {
 
 
@@ -34,7 +38,7 @@ class UserPostsRecyclerAdapter(private var postMenuInterface: PostMenuInterface)
 
     override fun onBindViewHolder(holder: UserPostsViewHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(holder.binding, post, postMenuInterface)
+        holder.bind(holder.binding, post, postMenuInterface, likeCommentInterface)
     }
 
     class UserPostsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -43,7 +47,8 @@ class UserPostsRecyclerAdapter(private var postMenuInterface: PostMenuInterface)
         fun bind(
             binding: ItemDiscussionPostBinding,
             postModel: PostModel,
-            posInterface: PostMenuInterface
+            posInterface: PostMenuInterface,
+            likeCommentInterface: LikeCommentInterface
         ) {
             //setting post popup menu
             val popupMenu = PopupMenu(binding.root.context, binding.postsMoreOptions)
@@ -119,6 +124,19 @@ class UserPostsRecyclerAdapter(private var postMenuInterface: PostMenuInterface)
                 binding.itemPostImage.visibility = View.GONE
             }
 
+            binding.itemPostLike.apply {
+                setOnClickListener {
+                    likeCommentInterface.onLike(postModel.postId)
+                }
+                setCompoundDrawablesWithIntrinsicBounds(
+                    if (postModel.isLiked) {
+                        R.drawable.ic_like_filled
+                    } else R.drawable.ic_like,
+                    0,
+                    0,
+                    0
+                )
+            }
             binding.itemPostLikes.text = postModel.likes.toString()
             binding.itemPostComments.text = postModel.comments.toString()
         }
