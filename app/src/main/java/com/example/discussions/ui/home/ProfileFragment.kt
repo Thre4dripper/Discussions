@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -33,6 +34,8 @@ class ProfileFragment : Fragment(), UserPostClickInterface {
     private lateinit var loadingDialog: AlertDialog
     private lateinit var retryDialog: AlertDialog
     private lateinit var profileAdapter: ProfileRecyclerAdapter
+
+    private lateinit var settingsCallback: ActivityResultLauncher<Intent>
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -63,6 +66,7 @@ class ProfileFragment : Fragment(), UserPostClickInterface {
 
         initDialogs()
         initPostsRecyclerView()
+        initSettingsCallback()
 
         //swipe to refresh
         binding.profileSwipeLayout.setOnRefreshListener {
@@ -178,13 +182,15 @@ class ProfileFragment : Fragment(), UserPostClickInterface {
     /**
      * Settings Activity launch callback
      */
-    private val settingsCallback =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Constants.RESULT_LOGOUT) {
-                requireActivity().setResult(Constants.RESULT_LOGOUT)
-                requireActivity().finish()
+    private fun initSettingsCallback() {
+        settingsCallback =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Constants.RESULT_LOGOUT) {
+                    requireActivity().setResult(Constants.RESULT_LOGOUT)
+                    requireActivity().finish()
+                }
             }
-        }
+    }
 
     override fun onUserPostClick(index: Int) {
         val intent = Intent(requireContext(), UserPostsActivity::class.java)
