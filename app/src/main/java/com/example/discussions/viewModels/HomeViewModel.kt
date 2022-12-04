@@ -93,7 +93,6 @@ class HomeViewModel : ViewModel() {
     fun refreshProfile(context: Context) {
         _isProfileFetched = MutableLiveData<String?>(null)
         _isUserPostsFetched.value = null
-        userPostsList.value = null
         getAllUserPosts(context)
     }
 
@@ -101,7 +100,6 @@ class HomeViewModel : ViewModel() {
         if (_isPostsFetched.value == Constants.API_SUCCESS)
             return
         else {
-            postsList.value = null
             _isPostsFetched.value = null
         }
 
@@ -118,7 +116,6 @@ class HomeViewModel : ViewModel() {
     }
 
     fun refreshAllPosts(context: Context) {
-        postsList.value = null
         _isPostsFetched.value = null
         getAllPosts(context)
     }
@@ -127,7 +124,6 @@ class HomeViewModel : ViewModel() {
         if (_isUserPollsFetched.value == Constants.API_SUCCESS)
             return
         else {
-            userPollsList.value = null
             _isUserPollsFetched.value = null
         }
         postsOrPollsScrollToTop = true
@@ -145,7 +141,6 @@ class HomeViewModel : ViewModel() {
     }
 
     fun refreshAllUserPolls(context: Context) {
-        userPollsList.value = null
         _isUserPollsFetched.value = null
         getAllUserPolls(context)
     }
