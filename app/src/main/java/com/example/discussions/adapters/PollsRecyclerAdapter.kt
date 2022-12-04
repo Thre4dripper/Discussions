@@ -7,6 +7,9 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
@@ -39,6 +42,10 @@ class PollsRecyclerAdapter(
         val poll = getItem(position)
         (holder as PollViewHolder).bind(
             holder.binding,
+            holder.pollOptionsTvList,
+            holder.pollOptionsResultLayoutList,
+            holder.pollOptionsVotesTvList,
+            holder.pollOptionsProgressList,
             poll,
             pollClickInterface,
             likeCommentInterface
@@ -49,7 +56,7 @@ class PollsRecyclerAdapter(
         private val TAG = "PollsRecyclerAdapter"
 
         val binding = DataBindingUtil.bind<ItemDiscussionPollBinding>(itemView)!!
-        private val pollOptionsTvList = mutableListOf(
+        val pollOptionsTvList = mutableListOf(
             binding.itemPollOption1Tv,
             binding.itemPollOption2Tv,
             binding.itemPollOption3Tv,
@@ -58,7 +65,7 @@ class PollsRecyclerAdapter(
             binding.itemPollOption6Tv,
         )
 
-        private val pollOptionsResultLayoutList = mutableListOf(
+        val pollOptionsResultLayoutList = mutableListOf(
             binding.itemPollOption1Ll,
             binding.itemPollOption2Ll,
             binding.itemPollOption3Ll,
@@ -67,7 +74,7 @@ class PollsRecyclerAdapter(
             binding.itemPollOption6Ll,
         )
 
-        private val pollOptionsVotesTvList = mutableListOf(
+        val pollOptionsVotesTvList = mutableListOf(
             binding.itemPollOption1Votes,
             binding.itemPollOption2Votes,
             binding.itemPollOption3Votes,
@@ -76,7 +83,7 @@ class PollsRecyclerAdapter(
             binding.itemPollOption6Votes,
         )
 
-        private val pollOptionsProgressList = mutableListOf(
+        val pollOptionsProgressList = mutableListOf(
             binding.itemPollOption1Progress,
             binding.itemPollOption2Progress,
             binding.itemPollOption3Progress,
@@ -87,6 +94,10 @@ class PollsRecyclerAdapter(
 
         fun bind(
             binding: ItemDiscussionPollBinding,
+            pollOptionsTvList: List<TextView>,
+            pollOptionsResultLayoutList: List<LinearLayout>,
+            pollOptionsVotesTvList: List<TextView>,
+            pollOptionsProgressList: List<ProgressBar>,
             pollModel: PollModel,
             pollClickInterface: PollClickInterface,
             likeCommentInterface: LikeCommentInterface
@@ -143,6 +154,12 @@ class PollsRecyclerAdapter(
             //setting the poll options
             val pollOptions = pollModel.pollOptions
             val maxVotes = pollOptions.maxOf { it.votes }
+
+            //hiding all the poll options first
+            for (i in 0 until 6) {
+                pollOptionsTvList[i].visibility = View.GONE
+                pollOptionsResultLayoutList[i].visibility = View.GONE
+            }
 
             for (i in pollOptions.indices) {
 

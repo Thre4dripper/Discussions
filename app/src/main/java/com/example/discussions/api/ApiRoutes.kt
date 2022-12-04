@@ -2,8 +2,7 @@ package com.example.discussions.api
 
 class ApiRoutes {
     companion object {
-        const val BASE_URL = "http://10.183.61.226:8000"
-//        const val BASE_URL = "https://discussnexusapp.onrender.com"
+        const val BASE_URL = "https://nexusdiscuss.up.railway.app"
 
         const val LOGIN = "/api/users/login/"
         const val REGISTER = "/api/users/register/"
