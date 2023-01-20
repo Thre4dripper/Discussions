@@ -1,13 +1,16 @@
 package com.example.discussions.viewModels
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.discussions.models.CommentsModel
+import com.example.discussions.Constants
+import com.example.discussions.api.ResponseCallback
+import com.example.discussions.repositories.CommentsRepository
 
 class CommentsViewModel : ViewModel() {
-    private var _commentsList = MutableLiveData<MutableList<CommentsModel>>()
-    val commentsList: MutableLiveData<MutableList<CommentsModel>>
-        get() = _commentsList
+    private val TAG = "CommentsViewModel"
+
+    var commentsList = CommentsRepository.commentsList
 
     private var _isCommentsFetched = MutableLiveData<String>(null)
     val isCommentsFetched: MutableLiveData<String>
@@ -24,4 +27,16 @@ class CommentsViewModel : ViewModel() {
     private var _isCommentDeleted = MutableLiveData<String>(null)
     val isCommentDeleted: MutableLiveData<String>
         get() = _isCommentDeleted
+
+    fun getComments(context: Context, postId: Int?, pollId: Int?) {
+        CommentsRepository.getAllComments(context, postId, pollId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isCommentsFetched.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isCommentsFetched.value = response
+            }
+        })
+    }
 }

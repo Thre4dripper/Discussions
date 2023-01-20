@@ -27,5 +27,8 @@ class ApiRoutes {
         const val POLL_LIKE = "/api/post/like/"
 
         const val DELETE_IMAGE = "/api/users/deleteimage/"
+
+        //COMMENTS
+        const val COMMENTS_GET_COMMENTS = "/api/comment/get/"
     }
 }
