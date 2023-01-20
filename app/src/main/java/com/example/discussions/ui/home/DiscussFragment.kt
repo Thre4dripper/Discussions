@@ -11,6 +11,7 @@ import com.example.discussions.Constants
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
+import com.example.discussions.ui.CommentBottomSheet
 import com.example.discussions.viewModels.HomeViewModel
 
 class DiscussFragment : Fragment(), LikeCommentInterface {
@@ -95,6 +96,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
     }
 
     override fun onComment(postOrPollId: String) {
-
+        val commentBottomSheet = CommentBottomSheet()
+        commentBottomSheet.show(requireActivity().supportFragmentManager, commentBottomSheet.tag)
     }
 }

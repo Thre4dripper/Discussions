@@ -126,4 +126,7 @@
         <item quantity="other">%d Votes</item>
     </plurals>
     <string name="poll_result_option_votes_text">1 Vote</string>
+
+    //Comments Bottom Sheet
+    <string name="comment_hint">Write a comment…</string>
 </resources>
