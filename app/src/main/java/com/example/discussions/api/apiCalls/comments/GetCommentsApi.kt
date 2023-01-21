@@ -1,7 +1,6 @@
 package com.example.discussions.api.apiCalls.comments
 
 import android.content.Context
-import android.util.Log
 import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
@@ -30,10 +29,8 @@ class GetCommentsApi {
 
             val request = object : CustomRequest(Method.POST, url, body, { response ->
                 callback.onSuccess(response.toString())
-                Log.d(TAG, "getComments: $response")
             }, { err ->
                 callback.onError(err.toString())
-                Log.d(TAG, "getComments: $err")
             }) {
                 override fun getHeaders(): MutableMap<String, String> {
                     val headers = HashMap<String, String>()

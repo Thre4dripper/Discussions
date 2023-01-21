@@ -2,16 +2,22 @@ package com.example.discussions.ui
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.example.discussions.Constants
 import com.example.discussions.databinding.CommentBsLayoutBinding
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class CommentBottomSheet : BottomSheetDialogFragment() {
+
+    private val TAG = "CommentBottomSheet"
+
     private lateinit var binding: CommentBsLayoutBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
@@ -32,6 +38,49 @@ class CommentBottomSheet : BottomSheetDialogFragment() {
 
         binding.commentsCl.layoutParams.height =
             Resources.getSystem().displayMetrics.heightPixels - 200
+
+        binding.commentsSwipeLayout.setOnRefreshListener {
+            viewModel.refreshComments(requireContext(), 21, null)
+        }
+        getAllComments()
+    }
+
+    private fun getAllComments() {
+        binding.commentsProgressBar.visibility = View.VISIBLE
+        viewModel.commentsList.observe(viewLifecycleOwner) {
+            if (it != null) {
+//                discussAdapter.submitList(it) {
+//                    if (HomeViewModel.postsOrPollsScrollToTop)
+//                        binding.commentsRv.scrollToPosition(0)
+//                }
+                //hiding all loading
+                binding.commentsSwipeLayout.isRefreshing = false
+                binding.commentsProgressBar.visibility = View.GONE
+//                binding.discussLottieNoData.visibility = View.GONE
+
+                Log.d(TAG, "getAllComments: $it")
+
+                //when empty list is loaded
+                if (it.isEmpty()) {
+//                    binding.discussLottieNoData.visibility = View.VISIBLE
+                    val error = viewModel.isCommentsFetched.value
+
+                    //when empty list is due to network error
+                    if (error != Constants.API_SUCCESS) {
+                        Toast.makeText(
+                            requireContext(),
+                            viewModel.isCommentsFetched.value,
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                    if (error == Constants.AUTH_FAILURE_ERROR) {
+                        requireActivity().setResult(Constants.RESULT_LOGOUT)
+                        requireActivity().finish()
+                    }
+                }
+            }
+        }
 
         viewModel.getComments(requireContext(), 21, null)
     }
