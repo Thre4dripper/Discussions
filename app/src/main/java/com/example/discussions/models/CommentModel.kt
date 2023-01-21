@@ -1,6 +1,6 @@
 package com.example.discussions.models
 
-data class CommentsModel(
+data class CommentModel(
     val commentId: String,
     val comment: String,
     val username: String,

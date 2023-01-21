@@ -4,7 +4,7 @@ import android.content.Context
 import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.models.CommentsModel
+import com.example.discussions.models.CommentModel
 import com.example.discussions.models.ReplyCommentModel
 import org.json.JSONArray
 import org.json.JSONObject
@@ -45,9 +45,9 @@ class GetCommentsApi {
             queue.add(request)
         }
 
-        fun parseCommentsJson(response: String): MutableList<CommentsModel> {
+        fun parseCommentsJson(response: String): MutableList<CommentModel> {
             val rootObject = JSONArray(response)
-            val commentsList = mutableListOf<CommentsModel>()
+            val commentsList = mutableListOf<CommentModel>()
 
             for (i in 0 until rootObject.length()) {
                 val commentObject = rootObject.getJSONObject(i)
@@ -88,7 +88,7 @@ class GetCommentsApi {
                 }
 
                 //adding comment to list
-                val commentModel = CommentsModel(
+                val commentModel = CommentModel(
                     commentId,
                     comment,
                     username,

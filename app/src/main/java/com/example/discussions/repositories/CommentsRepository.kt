@@ -4,12 +4,12 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.comments.GetCommentsApi
-import com.example.discussions.models.CommentsModel
+import com.example.discussions.models.CommentModel
 import com.example.discussions.store.LoginStore
 
 class CommentsRepository {
     companion object {
-        val commentsList = MutableLiveData<MutableList<CommentsModel>?>(null)
+        val commentsList = MutableLiveData<MutableList<CommentModel>?>(null)
 
         fun getAllComments(
             context: Context, postId: Int?, pollId: Int?, callback: ResponseCallback
