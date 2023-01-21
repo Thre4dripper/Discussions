@@ -1,5 +1,6 @@
-package com.example.discussions.adapters.commentAdapters
+package com.example.discussions.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,8 +16,7 @@ import com.example.discussions.models.CommentModel
 class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_comment, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
         return CommentViewHolder(view)
     }
 
@@ -30,19 +30,29 @@ class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDi
 
         fun bind(commentModel: CommentModel) {
 
-            Glide.with(itemView.context)
-                .load(commentModel.userImage)
-                .placeholder(R.drawable.ic_profile)
-                .circleCrop()
-                .into(binding.itemCommentUserImage)
+            Glide.with(itemView.context).load(commentModel.userImage)
+                .placeholder(R.drawable.ic_profile).circleCrop().into(binding.itemCommentUserImage)
+
+            val avatarSize = if (commentModel.parentCommentId == null)
+                dpToFloat(itemView.context, 50f)
+            else
+                dpToFloat(itemView.context, 30f)
+
+
+            binding.itemCommentUserImage.layoutParams.width = avatarSize
+            binding.itemCommentUserImage.layoutParams.height = avatarSize
 
             binding.itemCommentUserName.text = commentModel.username
             binding.itemCommentContent.text = commentModel.comment
 
             binding.itemCommentRepliesRv.apply {
-                adapter = ReplyRecyclerAdapter()
-                (adapter as ReplyRecyclerAdapter).submitList(commentModel.replies)
+                adapter = CommentsRecyclerAdapter()
+                (adapter as CommentsRecyclerAdapter).submitList(commentModel.replies)
             }
+        }
+
+        private fun dpToFloat(context: Context, dp: Float): Int {
+            return (dp * context.resources.displayMetrics.density).toInt()
         }
     }
 

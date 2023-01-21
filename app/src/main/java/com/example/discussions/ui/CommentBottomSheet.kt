@@ -10,7 +10,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
-import com.example.discussions.adapters.commentAdapters.CommentsRecyclerAdapter
+import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.databinding.CommentBsLayoutBinding
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior

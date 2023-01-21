@@ -5,7 +5,6 @@ import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.CommentModel
-import com.example.discussions.models.ReplyCommentModel
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -61,7 +60,7 @@ class GetCommentsApi {
                 val createdAt = commentObject.getString("created_at")
 
                 val repliesArray = commentObject.getJSONArray("reply")
-                val repliesList = mutableListOf<ReplyCommentModel>()
+                val repliesList = mutableListOf<CommentModel>()
 
                 // Parse replies
                 for (j in 0 until repliesArray.length()) {
@@ -76,13 +75,14 @@ class GetCommentsApi {
                     val replyCreatedAt = replyObject.getString("created_at")
 
                     //adding replies to list
-                    val replyCommentModel = ReplyCommentModel(
-                        commentId,
+                    val replyCommentModel = CommentModel(
                         replyId,
+                        commentId,
                         reply,
                         replyUsername,
                         replyUserImage,
-                        replyCreatedAt
+                        replyCreatedAt,
+                        null
                     )
                     repliesList.add(replyCommentModel)
                 }
@@ -90,6 +90,7 @@ class GetCommentsApi {
                 //adding comment to list
                 val commentModel = CommentModel(
                     commentId,
+                    null,
                     comment,
                     username,
                     userImage,

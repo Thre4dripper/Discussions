@@ -80,8 +80,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/comment_container"
-            app:layout_constraintTop_toBottomOf="@+id/comment_container"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_comment_reply" />
+            app:layout_constraintTop_toBottomOf="@+id/comment_container" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
