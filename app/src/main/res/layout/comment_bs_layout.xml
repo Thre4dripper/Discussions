@@ -75,8 +75,11 @@
                     android:id="@+id/comments_rv"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
+                    android:clipToPadding="false"
+                    android:paddingBottom="100dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_comment" />
+
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <ProgressBar
@@ -98,6 +101,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <View
