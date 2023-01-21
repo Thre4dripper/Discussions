@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
+import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.databinding.CommentBsLayoutBinding
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,6 +23,7 @@ class CommentBottomSheet : BottomSheetDialogFragment() {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private lateinit var viewModel: CommentsViewModel
+    private lateinit var commentsAdapter: CommentsRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -36,6 +38,11 @@ class CommentBottomSheet : BottomSheetDialogFragment() {
         bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
+        binding.commentsRv.apply {
+            commentsAdapter = CommentsRecyclerAdapter()
+            adapter = commentsAdapter
+        }
+
         binding.commentsCl.layoutParams.height =
             Resources.getSystem().displayMetrics.heightPixels - 200
 
@@ -49,10 +56,10 @@ class CommentBottomSheet : BottomSheetDialogFragment() {
         binding.commentsProgressBar.visibility = View.VISIBLE
         viewModel.commentsList.observe(viewLifecycleOwner) {
             if (it != null) {
-//                discussAdapter.submitList(it) {
-//                    if (HomeViewModel.postsOrPollsScrollToTop)
+                commentsAdapter.submitList(it) {
+//                    if (viewModel.postsOrPollsScrollToTop)
 //                        binding.commentsRv.scrollToPosition(0)
-//                }
+                }
                 //hiding all loading
                 binding.commentsSwipeLayout.isRefreshing = false
                 binding.commentsProgressBar.visibility = View.GONE
