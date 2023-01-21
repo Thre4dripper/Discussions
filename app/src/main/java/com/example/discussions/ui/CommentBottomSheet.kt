@@ -4,10 +4,13 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
 import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.databinding.CommentBsLayoutBinding
@@ -41,6 +44,14 @@ class CommentBottomSheet : BottomSheetDialogFragment() {
         binding.commentsRv.apply {
             commentsAdapter = CommentsRecyclerAdapter()
             adapter = commentsAdapter
+
+            //this is to disable dragging of bottom sheet when recycler view is scrolled
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    bottomSheetBehavior.isDraggable = newState == RecyclerView.SCROLL_STATE_IDLE
+                }
+            })
         }
 
         binding.commentsCl.layoutParams.height =
@@ -75,11 +86,8 @@ class CommentBottomSheet : BottomSheetDialogFragment() {
                     //when empty list is due to network error
                     if (error != Constants.API_SUCCESS) {
                         Toast.makeText(
-                            requireContext(),
-                            viewModel.isCommentsFetched.value,
-                            Toast.LENGTH_SHORT
-                        )
-                            .show()
+                            requireContext(), viewModel.isCommentsFetched.value, Toast.LENGTH_SHORT
+                        ).show()
                     }
                     if (error == Constants.AUTH_FAILURE_ERROR) {
                         requireActivity().setResult(Constants.RESULT_LOGOUT)

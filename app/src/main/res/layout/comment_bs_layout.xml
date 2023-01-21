@@ -13,7 +13,7 @@
             android:layout_height="match_parent">
 
             <View
-                android:id="@+id/view2"
+                android:id="@+id/comments_bs_control"
                 android:layout_width="70dp"
                 android:layout_height="2dp"
                 android:layout_margin="16dp"
@@ -46,7 +46,7 @@
                 android:focusable="true"
                 android:src="@drawable/ic_right_arrow"
                 app:layout_constraintStart_toEndOf="@+id/textView"
-                app:layout_constraintTop_toBottomOf="@+id/view2" />
+                app:layout_constraintTop_toBottomOf="@+id/comments_bs_control" />
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -76,7 +76,7 @@
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:clipToPadding="false"
-                    android:paddingBottom="100dp"
+                    android:paddingBottom="80dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_comment" />
 
