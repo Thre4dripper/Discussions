@@ -1,7 +1,6 @@
 package com.example.discussions.viewModels
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,7 +33,6 @@ class CommentsViewModel : ViewModel() {
         _isCommentsFetched.value = null
         CommentsRepository.getAllComments(context, postId, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                Log.d(TAG, "onSuccess: $response")
                 _isCommentsFetched.value = Constants.API_SUCCESS
             }
 
