@@ -9,8 +9,8 @@
 
         <ImageView
             android:id="@+id/item_comment_user_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/item_comment_avatar_desc"
@@ -24,9 +24,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
-            app:layout_constraintBottom_toTopOf="@+id/item_comment_replies_rv"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/item_comment_user_image"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -70,18 +70,5 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/item_comment_replies_rv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="@+id/comment_container"
-            app:layout_constraintTop_toBottomOf="@+id/comment_container"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_comment_reply" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

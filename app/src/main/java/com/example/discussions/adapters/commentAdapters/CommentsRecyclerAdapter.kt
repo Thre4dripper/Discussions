@@ -1,4 +1,4 @@
-package com.example.discussions.adapters
+package com.example.discussions.adapters.commentAdapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -38,6 +38,11 @@ class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDi
 
             binding.itemCommentUserName.text = commentModel.username
             binding.itemCommentContent.text = commentModel.comment
+
+            binding.itemCommentRepliesRv.apply {
+                adapter = ReplyRecyclerAdapter()
+                (adapter as ReplyRecyclerAdapter).submitList(commentModel.replies)
+            }
         }
     }
 

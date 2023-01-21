@@ -4,15 +4,13 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
-import com.example.discussions.adapters.CommentsRecyclerAdapter
+import com.example.discussions.adapters.commentAdapters.CommentsRecyclerAdapter
 import com.example.discussions.databinding.CommentBsLayoutBinding
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
