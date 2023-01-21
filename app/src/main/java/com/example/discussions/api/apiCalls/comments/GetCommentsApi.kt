@@ -82,7 +82,7 @@ class GetCommentsApi {
                         replyUsername,
                         replyUserImage,
                         replyCreatedAt,
-                        null
+                        mutableListOf()
                     )
                     repliesList.add(replyCommentModel)
                 }

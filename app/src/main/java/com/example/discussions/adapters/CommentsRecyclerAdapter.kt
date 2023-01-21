@@ -22,13 +22,14 @@ class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comment = getItem(position)
-        (holder as CommentViewHolder).bind(comment)
+        (holder as CommentViewHolder).bind(comment, itemCount)
     }
 
     class CommentViewHolder(itemView: View) : ViewHolder(itemView) {
+        private val TAG = "CommentsRecyclerAdapter"
         val binding = DataBindingUtil.bind<ItemCommentBinding>(itemView)!!
 
-        fun bind(commentModel: CommentModel) {
+        fun bind(commentModel: CommentModel, listSize: Int) {
 
             Glide.with(itemView.context).load(commentModel.userImage)
                 .placeholder(R.drawable.ic_profile).circleCrop().into(binding.itemCommentUserImage)
@@ -38,6 +39,14 @@ class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDi
             else
                 dpToFloat(itemView.context, 30f)
 
+            binding.horizontalLine.visibility =
+                if (commentModel.parentCommentId != null) View.VISIBLE else View.GONE
+            binding.verticalLine1.visibility =
+                if (commentModel.parentCommentId != null) View.VISIBLE else View.GONE
+            binding.verticalLine2.visibility =
+                if (commentModel.parentCommentId != null && adapterPosition < listSize - 1) View.VISIBLE else View.GONE
+            binding.verticalLine3.visibility =
+                if (commentModel.replies.isNotEmpty()) View.VISIBLE else View.GONE
 
             binding.itemCommentUserImage.layoutParams.width = avatarSize
             binding.itemCommentUserImage.layoutParams.height = avatarSize
