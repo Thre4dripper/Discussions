@@ -2,7 +2,8 @@ package com.example.discussions.ui
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -66,6 +67,8 @@ class CommentBottomSheet(
         binding.commentsSwipeLayout.setOnRefreshListener { getAllComments() }
         binding.commentsProgressBar.visibility = View.VISIBLE
         getAllComments()
+
+        addCommentHandler()
     }
 
     private fun getAllComments() {
@@ -105,16 +108,48 @@ class CommentBottomSheet(
             viewModel.getComments(requireContext(), null, id)
     }
 
-    fun createComment() {
+    private fun addCommentHandler() {
+        binding.addCommentBtn.apply {
+            isEnabled = false
+            drawable.alpha = 100
+            setOnClickListener(onAddCommentListener)
+        }
+
+        binding.addCommentEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (s.isNullOrEmpty()) {
+                    binding.addCommentBtn.apply {
+                        isEnabled = false
+                        drawable.alpha = 100
+                    }
+                } else {
+                    binding.addCommentBtn.apply {
+                        isEnabled = true
+                        drawable.alpha = 255
+                    }
+                }
+            }
+
+        })
+    }
+
+    private var onAddCommentListener = View.OnClickListener {
+        createComment(binding.addCommentEt.text.toString())
+        binding.addCommentEt.text.clear()
+    }
+
+    private fun createComment(content: String) {
         if (type == Constants.COMMENT_TYPE_POST)
             viewModel.createComment(
                 requireContext(),
                 id,
                 null,
-                commentId,
-                "first comment from phone"
+                null,
+                content
             )
-        else
-            viewModel.createComment(requireContext(), null, id, commentId, "")
+        else if(type == Constants.COMMENT_TYPE_POLL)
+            viewModel.createComment(requireContext(), null, id, null, content)
     }
 }

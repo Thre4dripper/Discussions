@@ -129,7 +129,7 @@
 
     //Comments Bottom Sheet
     <string name="comment_hint">Write a comment…</string>
-    <string name="comment_send">Send</string>
+    <string name="comment_send">Add Comment</string>
 
     //Item Comment
     <string name="item_comment_avatar_desc">User Avatar</string>
