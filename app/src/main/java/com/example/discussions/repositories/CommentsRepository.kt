@@ -10,6 +10,7 @@ import com.example.discussions.store.LoginStore
 
 class CommentsRepository {
     companion object {
+        private const val TAG = "CommentsRepository"
         val commentsList = MutableLiveData<MutableList<CommentModel>?>(null)
 
         fun getAllComments(
@@ -72,9 +73,26 @@ class CommentsRepository {
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
                         val comment = CreateCommentApi.parseCreateCommentJson(response)
-                        val newCommentsList = commentsList.value?.toMutableList()
-                        newCommentsList?.add(0, comment)
-                        commentsList.postValue(newCommentsList)
+
+                        fun addComment(
+                            comments: MutableList<CommentModel>?, comment: CommentModel
+                        ): MutableList<CommentModel>? {
+                            if (comment.parentCommentId == null) {
+                                comments?.add(0, comment)
+                                return comments
+                            }
+                            for (c in comments!!) {
+                                if (c.commentId == comment.parentCommentId) {
+                                    c.replies.add(0, comment)
+                                    return comments
+                                } else addComment(c.replies, comment)
+                            }
+                            return comments
+                        }
+
+                        val updatedCommentsList = addComment(commentsList.value, comment)
+                        commentsList.value = null
+                        commentsList.value = updatedCommentsList
                         callback.onSuccess(response)
                     }
 

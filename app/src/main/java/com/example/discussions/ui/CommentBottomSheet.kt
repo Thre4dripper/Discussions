@@ -167,7 +167,7 @@ class CommentBottomSheet(
         when (commentType) {
             Constants.COMMENT_TYPE_POST -> viewModel.createComment(
                 requireContext(),
-                id,
+                postId = id,
                 null,
                 null,
                 content
@@ -175,7 +175,7 @@ class CommentBottomSheet(
             Constants.COMMENT_TYPE_POLL -> viewModel.createComment(
                 requireContext(),
                 null,
-                id,
+                pollId = id,
                 null,
                 content
             )
@@ -183,7 +183,7 @@ class CommentBottomSheet(
                 requireContext(),
                 null,
                 null,
-                commentId,
+                commentId = commentId,
                 content
             )
         }
