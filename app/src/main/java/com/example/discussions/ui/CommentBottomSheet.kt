@@ -109,12 +109,31 @@ class CommentBottomSheet(
     }
 
     private fun addCommentHandler() {
+        //setting add comment observer only once
+        viewModel.isCommentAdded.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS) {
+                    Toast.makeText(requireContext(), "Comment added", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Error Adding Comment", Toast.LENGTH_SHORT)
+                        .show()
+                }
+                binding.commentAddProgressBar.visibility = View.GONE
+                binding.addCommentBtn.visibility = View.VISIBLE
+            }
+        }
+
+        //preconfiguring add comment button
         binding.addCommentBtn.apply {
             isEnabled = false
             drawable.alpha = 100
-            setOnClickListener(onAddCommentListener)
+            setOnClickListener {
+                createComment(binding.addCommentEt.text.toString())
+                binding.addCommentEt.text.clear()
+            }
         }
 
+        //controlling add comment button based on text
         binding.addCommentEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -135,12 +154,10 @@ class CommentBottomSheet(
         })
     }
 
-    private var onAddCommentListener = View.OnClickListener {
-        createComment(binding.addCommentEt.text.toString())
-        binding.addCommentEt.text.clear()
-    }
-
     private fun createComment(content: String) {
+        binding.commentAddProgressBar.visibility = View.VISIBLE
+        binding.addCommentBtn.visibility = View.GONE
+
         if (type == Constants.COMMENT_TYPE_POST)
             viewModel.createComment(
                 requireContext(),
