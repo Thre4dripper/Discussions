@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
 import com.example.discussions.adapters.CommentsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.CommentBsLayoutBinding
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -22,7 +24,7 @@ class CommentBottomSheet(
     var type: String,
     private var commentCount: Int,
 ) :
-    BottomSheetDialogFragment() {
+    BottomSheetDialogFragment(), CommentInterface {
 
     private val TAG = "CommentBottomSheet"
 
@@ -52,7 +54,7 @@ class CommentBottomSheet(
             Resources.getSystem().displayMetrics.heightPixels / 2 + 400
 
         binding.commentsRv.apply {
-            commentsAdapter = CommentsRecyclerAdapter()
+            commentsAdapter = CommentsRecyclerAdapter(this@CommentBottomSheet)
             adapter = commentsAdapter
 
             //this is to disable dragging of bottom sheet when recycler view is scrolled
@@ -158,15 +160,43 @@ class CommentBottomSheet(
         binding.commentAddProgressBar.visibility = View.VISIBLE
         binding.addCommentBtn.visibility = View.GONE
 
-        if (type == Constants.COMMENT_TYPE_POST)
-            viewModel.createComment(
+        when (type) {
+            Constants.COMMENT_TYPE_POST -> viewModel.createComment(
                 requireContext(),
                 id,
                 null,
                 null,
                 content
             )
-        else if (type == Constants.COMMENT_TYPE_POLL)
-            viewModel.createComment(requireContext(), null, id, null, content)
+            Constants.COMMENT_TYPE_POLL -> viewModel.createComment(
+                requireContext(),
+                null,
+                id,
+                null,
+                content
+            )
+            Constants.COMMENT_TYPE_NESTED -> viewModel.createComment(
+                requireContext(),
+                null,
+                null,
+                commentId,
+                content
+            )
+        }
+    }
+
+    override fun onCommentLikeChanged(commentId: String, isLiked: Boolean) {
+
+    }
+
+    override fun onCommentDeleted(commentId: String) {
+    }
+
+    override fun onCommentReply(commentId: String) {
+        this.commentId = commentId
+        Log.d(TAG, "onCommentReply: $commentId")
+    }
+
+    override fun onCommentEdit(commentId: String, content: String) {
     }
 }

@@ -11,12 +11,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.ItemCommentBinding
 import com.example.discussions.models.CommentModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDiffCallback()) {
+class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
+    ListAdapter<CommentModel, ViewHolder>(CommentsDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
@@ -25,14 +27,14 @@ class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comment = getItem(position)
-        (holder as CommentViewHolder).bind(comment, itemCount)
+        (holder as CommentViewHolder).bind(comment, itemCount, commentInterface)
     }
 
     class CommentViewHolder(itemView: View) : ViewHolder(itemView) {
         private val TAG = "CommentsRecyclerAdapter"
         val binding = DataBindingUtil.bind<ItemCommentBinding>(itemView)!!
 
-        fun bind(commentModel: CommentModel, listSize: Int) {
+        fun bind(commentModel: CommentModel, listSize: Int, commentInterface: CommentInterface) {
 
             Glide.with(itemView.context).load(commentModel.userImage)
                 .placeholder(R.drawable.ic_profile).circleCrop().into(binding.itemCommentUserImage)
@@ -67,8 +69,12 @@ class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDi
                 DateUtils.MINUTE_IN_MILLIS
             )
 
+            binding.itemCommentReplyTv.setOnClickListener {
+                commentInterface.onCommentReply(commentModel.commentId)
+            }
+
             binding.itemCommentRepliesRv.apply {
-                adapter = CommentsRecyclerAdapter()
+                adapter = CommentsRecyclerAdapter(commentInterface)
                 (adapter as CommentsRecyclerAdapter).submitList(commentModel.replies)
             }
         }
