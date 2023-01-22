@@ -106,11 +106,63 @@
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="8dp"
             android:background="@color/light_gray"
-            app:layout_constraintBottom_toTopOf="@+id/add_comment_et"
+            app:layout_constraintBottom_toTopOf="@+id/comment_reply_cv"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/comment_reply_cv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/comment_bg_color"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/add_comment_et"
+            app:layout_constraintStart_toStartOf="@+id/add_comment_et">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/item_comment_reply"
+                    android:textColor="@color/dark_gray"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/comment_reply_username_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/comment_reply_username"
+                    android:textColor="@color/login_header_color"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/comment_reply_cancel_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:contentDescription="@string/comment_reply_cancel_desc"
+                    android:focusable="true"
+                    android:src="@drawable/ic_cancel"
+                    app:tint="@color/login_header_color" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
         <EditText
             android:id="@+id/add_comment_et"
@@ -133,10 +185,11 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/add_comment_et"
-            app:layout_constraintTop_toBottomOf="@+id/view">
+            app:layout_constraintTop_toBottomOf="@+id/comment_reply_cv">
 
             <ImageView
                 android:id="@+id/add_comment_btn"

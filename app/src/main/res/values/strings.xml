@@ -128,6 +128,9 @@
     <string name="poll_result_option_votes_text">1 Vote</string>
 
     //Comments Bottom Sheet
+    <string name="comment_reply_label">Reply:</string>
+    <string name="comment_reply_username">@string/username</string>
+    <string name="comment_reply_cancel_desc">Cancel Reply</string>
     <string name="comment_hint">Write a comment…</string>
     <string name="comment_send">Add Comment</string>
 

@@ -4,7 +4,6 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +33,7 @@ class CommentBottomSheet(
     private lateinit var viewModel: CommentsViewModel
     private lateinit var commentsAdapter: CommentsRecyclerAdapter
 
+    private var commentType = type
     private var commentId: String? = null
 
     override fun onCreateView(
@@ -104,7 +104,7 @@ class CommentBottomSheet(
             }
         }
 
-        if (type == Constants.COMMENT_TYPE_POST)
+        if (commentType == Constants.COMMENT_TYPE_POST)
             viewModel.getComments(requireContext(), id, null)
         else
             viewModel.getComments(requireContext(), null, id)
@@ -116,6 +116,7 @@ class CommentBottomSheet(
             if (it != null) {
                 if (it == Constants.API_SUCCESS) {
                     Toast.makeText(requireContext(), "Comment added", Toast.LENGTH_SHORT).show()
+                    binding.commentReplyCv.visibility = View.GONE
                 } else {
                     Toast.makeText(requireContext(), "Error Adding Comment", Toast.LENGTH_SHORT)
                         .show()
@@ -160,7 +161,7 @@ class CommentBottomSheet(
         binding.commentAddProgressBar.visibility = View.VISIBLE
         binding.addCommentBtn.visibility = View.GONE
 
-        when (type) {
+        when (commentType) {
             Constants.COMMENT_TYPE_POST -> viewModel.createComment(
                 requireContext(),
                 id,
@@ -194,7 +195,14 @@ class CommentBottomSheet(
 
     override fun onCommentReply(commentId: String) {
         this.commentId = commentId
-        Log.d(TAG, "onCommentReply: $commentId")
+        commentType = Constants.COMMENT_TYPE_NESTED
+        binding.commentReplyCv.visibility = View.VISIBLE
+        binding.commentReplyUsernameTv.text = commentId
+        binding.commentReplyCancelBtn.setOnClickListener {
+            binding.commentReplyCv.visibility = View.GONE
+            //restoring comment type
+            commentType = type
+        }
     }
 
     override fun onCommentEdit(commentId: String, content: String) {
