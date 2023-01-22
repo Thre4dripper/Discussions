@@ -15,7 +15,8 @@ import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class CommentBottomSheet(var id: String, var type: String) : BottomSheetDialogFragment() {
+class CommentBottomSheet(var id: String, var type: String, private var commentCount: Int) :
+    BottomSheetDialogFragment() {
 
     private val TAG = "CommentBottomSheet"
 
@@ -37,6 +38,8 @@ class CommentBottomSheet(var id: String, var type: String) : BottomSheetDialogFr
         super.onViewCreated(view, savedInstanceState)
         bottomSheetBehavior = BottomSheetBehavior.from(view.parent as View)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+
+        binding.commentsCountTv.text = commentCount.toString()
 
         binding.commentsRv.apply {
             commentsAdapter = CommentsRecyclerAdapter()
