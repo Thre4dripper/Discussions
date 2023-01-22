@@ -56,48 +56,24 @@ class GetCommentsApi {
                 username = "@$username"
 
                 val commentId = commentObject.getString("id")
+                val parentCommentId = commentObject.getString("parent_id")
                 val comment = commentObject.getString("content")
                 val createdAt = commentObject.getString("created_at")
 
-                val repliesArray = commentObject.getJSONArray("reply")
-                val repliesList = mutableListOf<CommentModel>()
+                val repliesList =
+                    parseCommentsJson(commentObject.getJSONArray("replies").toString())
 
-                // Parse replies
-                for (j in 0 until repliesArray.length()) {
-                    val replyObject = repliesArray.getJSONObject(j)
-                    val replyCreatedByObject = replyObject.getJSONObject("created_by")
-                    var replyUsername = replyCreatedByObject.getString("username")
-                    val replyUserImage = replyCreatedByObject.getString("image")
-                    replyUsername = "@$replyUsername"
-
-                    val replyId = replyObject.getString("id")
-                    val reply = replyObject.getString("content")
-                    val replyCreatedAt = replyObject.getString("created_at")
-
-                    //adding replies to list
-                    val replyCommentModel = CommentModel(
-                        replyId,
+                commentsList.add(
+                    CommentModel(
                         commentId,
-                        reply,
-                        replyUsername,
-                        replyUserImage,
-                        replyCreatedAt,
-                        mutableListOf()
+                        if (parentCommentId == "null") null else parentCommentId,
+                        comment,
+                        username,
+                        userImage,
+                        createdAt,
+                        repliesList
                     )
-                    repliesList.add(replyCommentModel)
-                }
-
-                //adding comment to list
-                val commentModel = CommentModel(
-                    commentId,
-                    null,
-                    comment,
-                    username,
-                    userImage,
-                    createdAt,
-                    repliesList
                 )
-                commentsList.add(commentModel)
             }
 
             return commentsList

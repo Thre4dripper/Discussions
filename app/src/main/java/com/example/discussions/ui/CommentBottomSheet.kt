@@ -49,7 +49,7 @@ class CommentBottomSheet(
 
         binding.commentsCountTv.text = commentCount.toString()
         binding.commentsCl.layoutParams.height =
-            Resources.getSystem().displayMetrics.heightPixels / 2 + 200
+            Resources.getSystem().displayMetrics.heightPixels / 2 + 400
 
         binding.commentsRv.apply {
             commentsAdapter = CommentsRecyclerAdapter()
@@ -149,7 +149,7 @@ class CommentBottomSheet(
                 null,
                 content
             )
-        else if(type == Constants.COMMENT_TYPE_POLL)
+        else if (type == Constants.COMMENT_TYPE_POLL)
             viewModel.createComment(requireContext(), null, id, null, content)
     }
 }

@@ -2,7 +2,7 @@ package com.example.discussions.api
 
 class ApiRoutes {
     companion object {
-        const val BASE_URL = "https://discussion-1tm9g49wo-faizullah9181.vercel.app"
+        const val BASE_URL = "https://discussion-app-nine.vercel.app"
 
         const val LOGIN = "/api/users/login/"
         const val REGISTER = "/api/users/register/"
