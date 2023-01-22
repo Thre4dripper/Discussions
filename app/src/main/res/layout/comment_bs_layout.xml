@@ -3,143 +3,130 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/comments_cl"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/comments_cl"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <View
+            android:id="@+id/comments_bs_control"
+            android:layout_width="70dp"
+            android:layout_height="2dp"
+            android:layout_margin="16dp"
+            android:background="@color/dark_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <View
-                android:id="@+id/comments_bs_control"
-                android:layout_width="70dp"
-                android:layout_height="2dp"
-                android:layout_margin="16dp"
-                android:background="@color/dark_gray"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/comments_count_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@string/post_list_item_comment_count"
+            android:textColor="@color/dark_gray"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
-            <TextView
-                android:id="@+id/comments_count_tv"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@string/post_list_item_comment_count"
-                android:textColor="@color/dark_gray"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/post_list_item_comment"
+            android:focusable="true"
+            android:src="@drawable/ic_right_arrow"
+            app:layout_constraintStart_toEndOf="@+id/comments_count_tv"
+            app:layout_constraintTop_toBottomOf="@+id/comments_bs_control" />
 
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_marginTop="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:contentDescription="@string/post_list_item_comment"
-                android:focusable="true"
-                android:src="@drawable/ic_right_arrow"
-                app:layout_constraintStart_toEndOf="@+id/comments_count_tv"
-                app:layout_constraintTop_toBottomOf="@+id/comments_bs_control" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/post_list_item_like"
+            android:focusable="true"
+            android:padding="4dp"
+            android:src="@drawable/ic_like"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:contentDescription="@string/post_list_item_like"
-                android:focusable="true"
-                android:padding="4dp"
-                android:src="@drawable/ic_like"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imageView2" />
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/comments_swipe_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/comments_swipe_layout"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/comments_rv"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/comments_rv"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:clipToPadding="false"
-                    android:paddingBottom="100dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:listitem="@layout/item_comment" />
-
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-            <ProgressBar
-                android:id="@+id/comments_progress_bar"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:indeterminateTint="@color/login_header_color"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/comments_swipe_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/comments_swipe_layout" />
+                android:clipToPadding="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_comment" />
 
-            <com.airbnb.lottie.LottieAnimationView
-                android:id="@+id/item_comment_lottie"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/comments_swipe_layout"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/comments_swipe_layout"
-                app:lottie_autoPlay="true"
-                app:lottie_loop="true"
-                app:lottie_rawRes="@raw/no_comments" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <LinearLayout
-            android:id="@+id/comments_keypad_ll"
+        <ProgressBar
+            android:id="@+id/comments_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/login_header_color"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/comments_swipe_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/comments_swipe_layout" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/item_comment_lottie"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/comments_swipe_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/comments_swipe_layout"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/no_comments" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="16dp"
+            android:background="@color/light_gray"
+            app:layout_constraintBottom_toTopOf="@+id/add_comment_et"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/add_comment_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/light_gray" />
-
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:autofillHints=""
-                android:background="@drawable/comments_tv_bg"
-                android:hint="@string/comment_hint"
-                android:inputType="textMultiLine"
-                android:minHeight="50dp"
-                android:paddingStart="16dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="16dp"
-                android:paddingBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-        </LinearLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:autofillHints=""
+            android:background="@drawable/comments_tv_bg"
+            android:drawableEnd="@drawable/ic_send"
+            android:hint="@string/comment_hint"
+            android:inputType="textMultiLine"
+            android:minHeight="50dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

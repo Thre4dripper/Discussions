@@ -2,6 +2,7 @@ package com.example.discussions.ui
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,11 @@ import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class CommentBottomSheet(var id: String, var type: String, private var commentCount: Int) :
+class CommentBottomSheet(
+    var id: String,
+    var type: String,
+    private var commentCount: Int,
+) :
     BottomSheetDialogFragment() {
 
     private val TAG = "CommentBottomSheet"
@@ -42,6 +47,8 @@ class CommentBottomSheet(var id: String, var type: String, private var commentCo
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
 
         binding.commentsCountTv.text = commentCount.toString()
+        binding.commentsCl.layoutParams.height =
+            Resources.getSystem().displayMetrics.heightPixels / 2 + 200
 
         binding.commentsRv.apply {
             commentsAdapter = CommentsRecyclerAdapter()
@@ -55,9 +62,6 @@ class CommentBottomSheet(var id: String, var type: String, private var commentCo
                 }
             })
         }
-
-        binding.commentsCl.layoutParams.height =
-            Resources.getSystem().displayMetrics.heightPixels - 200
 
         binding.commentsSwipeLayout.setOnRefreshListener { getAllComments() }
         binding.commentsProgressBar.visibility = View.VISIBLE
