@@ -248,7 +248,7 @@ class PollsRecyclerAdapter(
 
             binding.itemPollCommentBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onComment(pollModel.pollId)
+                    likeCommentInterface.onComment(pollModel.pollId, Constants.COMMENT_TYPE_POLL)
                 }
                 visibility = if (pollModel.allowComments) View.VISIBLE else View.GONE
             }

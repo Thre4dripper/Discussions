@@ -151,7 +151,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
         homeViewModel.likePoll(requireContext(), postOrPollId)
     }
 
-    override fun onComment(postOrPollId: String) {
+    override fun onComment(id: String, type: String) {
 
     }
 }

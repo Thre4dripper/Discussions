@@ -112,7 +112,7 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
         viewModel.likePost(this, postOrPollId)
     }
 
-    override fun onComment(postOrPollId: String) {
+    override fun onComment(id: String, type: String) {
 
     }
 }

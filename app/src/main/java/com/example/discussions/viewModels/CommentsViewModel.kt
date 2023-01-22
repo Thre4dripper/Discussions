@@ -29,8 +29,14 @@ class CommentsViewModel : ViewModel() {
     val isCommentDeleted: LiveData<String?>
         get() = _isCommentDeleted
 
+    companion object {
+        var commentsScrollToTop = false
+    }
+
     fun getComments(context: Context, postId: Int?, pollId: Int?) {
         _isCommentsFetched.value = null
+        CommentsRepository.commentsList.value = null
+        commentsScrollToTop = true
         CommentsRepository.getAllComments(context, postId, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isCommentsFetched.value = Constants.API_SUCCESS
@@ -41,10 +47,5 @@ class CommentsViewModel : ViewModel() {
                 commentsList.value = null
             }
         })
-    }
-
-    fun refreshComments(context: Context, postId: Int?, pollId: Int?) {
-        _isCommentsFetched.value = null
-        getComments(context, postId, pollId)
     }
 }

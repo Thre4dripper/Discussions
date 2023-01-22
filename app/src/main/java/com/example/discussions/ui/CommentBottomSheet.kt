@@ -2,7 +2,6 @@ package com.example.discussions.ui
 
 import android.content.res.Resources
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +15,7 @@ import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class CommentBottomSheet : BottomSheetDialogFragment() {
+class CommentBottomSheet(var id: String, var type: String) : BottomSheetDialogFragment() {
 
     private val TAG = "CommentBottomSheet"
 
@@ -55,30 +54,26 @@ class CommentBottomSheet : BottomSheetDialogFragment() {
         binding.commentsCl.layoutParams.height =
             Resources.getSystem().displayMetrics.heightPixels - 200
 
-        binding.commentsSwipeLayout.setOnRefreshListener {
-            viewModel.refreshComments(requireContext(), 21, null)
-        }
+        binding.commentsSwipeLayout.setOnRefreshListener { getAllComments() }
+        binding.commentsProgressBar.visibility = View.VISIBLE
         getAllComments()
     }
 
     private fun getAllComments() {
-        binding.commentsProgressBar.visibility = View.VISIBLE
         viewModel.commentsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 commentsAdapter.submitList(it) {
-//                    if (viewModel.postsOrPollsScrollToTop)
-//                        binding.commentsRv.scrollToPosition(0)
+                    if (CommentsViewModel.commentsScrollToTop)
+                        binding.commentsRv.scrollToPosition(0)
                 }
                 //hiding all loading
                 binding.commentsSwipeLayout.isRefreshing = false
                 binding.commentsProgressBar.visibility = View.GONE
-//                binding.discussLottieNoData.visibility = View.GONE
-
-                Log.d(TAG, "getAllComments: $it")
+                binding.itemCommentLottie.visibility = View.GONE
 
                 //when empty list is loaded
                 if (it.isEmpty()) {
-//                    binding.discussLottieNoData.visibility = View.VISIBLE
+                    binding.itemCommentLottie.visibility = View.VISIBLE
                     val error = viewModel.isCommentsFetched.value
 
                     //when empty list is due to network error
@@ -95,6 +90,9 @@ class CommentBottomSheet : BottomSheetDialogFragment() {
             }
         }
 
-        viewModel.getComments(requireContext(), 21, null)
+        if (type == Constants.COMMENT_TYPE_POST)
+            viewModel.getComments(requireContext(), id.toInt(), null)
+        else
+            viewModel.getComments(requireContext(), null, id.toInt())
     }
 }

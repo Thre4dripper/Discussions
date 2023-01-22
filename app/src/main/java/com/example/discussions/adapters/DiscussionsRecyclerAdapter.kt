@@ -122,7 +122,7 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
 
             binding.itemPostCommentBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onComment(postModel.postId)
+                    likeCommentInterface.onComment(postModel.postId, Constants.COMMENT_TYPE_POST)
                 }
                 visibility = if (postModel.allowComments) View.VISIBLE else View.GONE
             }

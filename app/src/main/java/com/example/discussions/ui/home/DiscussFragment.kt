@@ -95,8 +95,8 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
         homeViewModel.likePost(requireContext(), postOrPollId)
     }
 
-    override fun onComment(postOrPollId: String) {
-        val commentBottomSheet = CommentBottomSheet()
+    override fun onComment(id: String, type: String) {
+        val commentBottomSheet = CommentBottomSheet(id, type)
         commentBottomSheet.show(requireActivity().supportFragmentManager, commentBottomSheet.tag)
     }
 }

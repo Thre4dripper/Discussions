@@ -46,5 +46,9 @@ class Constants {
 
         //for passing poll data
         const val POLL_ID = "poll_id"
+
+        //for comments modes
+        const val COMMENT_TYPE_POST = "post"
+        const val COMMENT_TYPE_POLL = "poll"
     }
 }
