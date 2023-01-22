@@ -33,7 +33,7 @@ class CommentsViewModel : ViewModel() {
         var commentsScrollToTop = false
     }
 
-    fun getComments(context: Context, postId: Int?, pollId: Int?) {
+    fun getComments(context: Context, postId: String?, pollId: String?) {
         _isCommentsFetched.value = null
         CommentsRepository.commentsList.value = null
         commentsScrollToTop = true
@@ -47,5 +47,30 @@ class CommentsViewModel : ViewModel() {
                 commentsList.value = null
             }
         })
+    }
+
+    fun createComment(
+        context: Context,
+        postId: String?,
+        pollId: String?,
+        commentId: String?,
+        content: String
+    ) {
+        _isCommentAdded.value = null
+        CommentsRepository.createComment(
+            context,
+            postId,
+            pollId,
+            commentId,
+            content,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    _isCommentAdded.value = Constants.API_SUCCESS
+                }
+
+                override fun onError(response: String) {
+                    _isCommentAdded.value = response
+                }
+            })
     }
 }

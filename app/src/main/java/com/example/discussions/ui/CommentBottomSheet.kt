@@ -26,6 +26,8 @@ class CommentBottomSheet(var id: String, var type: String, private var commentCo
     private lateinit var viewModel: CommentsViewModel
     private lateinit var commentsAdapter: CommentsRecyclerAdapter
 
+    private var commentId: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -94,8 +96,21 @@ class CommentBottomSheet(var id: String, var type: String, private var commentCo
         }
 
         if (type == Constants.COMMENT_TYPE_POST)
-            viewModel.getComments(requireContext(), id.toInt(), null)
+            viewModel.getComments(requireContext(), id, null)
         else
-            viewModel.getComments(requireContext(), null, id.toInt())
+            viewModel.getComments(requireContext(), null, id)
+    }
+
+    fun createComment() {
+        if (type == Constants.COMMENT_TYPE_POST)
+            viewModel.createComment(
+                requireContext(),
+                id,
+                null,
+                commentId,
+                "first comment from phone"
+            )
+        else
+            viewModel.createComment(requireContext(), null, id, commentId, "")
     }
 }

@@ -15,8 +15,8 @@ class GetCommentsApi {
         fun getCommentsJson(
             context: Context,
             token: String,
-            postId: Int?,
-            pollId: Int?,
+            postId: String?,
+            pollId: String?,
             callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
