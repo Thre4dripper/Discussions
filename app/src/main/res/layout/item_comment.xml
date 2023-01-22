@@ -11,7 +11,7 @@
             android:id="@+id/item_comment_user_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:contentDescription="@string/item_comment_avatar_desc"
             app:layout_constraintStart_toStartOf="parent"
@@ -20,9 +20,11 @@
 
         <View
             android:id="@+id/horizontal_line"
-            android:layout_width="20dp"
-            android:layout_height="16dp"
+            android:layout_width="12dp"
+            android:layout_height="8dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/nested_comment_wire_curve"
+            app:layout_constraintBottom_toBottomOf="@+id/item_comment_user_image"
             app:layout_constraintEnd_toStartOf="@+id/item_comment_user_image"
             app:layout_constraintTop_toTopOf="@+id/item_comment_user_image" />
 
@@ -59,7 +61,6 @@
             android:id="@+id/comment_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="2dp"
             app:layout_constraintBottom_toTopOf="@+id/item_comment_replies_rv"
@@ -67,6 +68,11 @@
             app:layout_constraintStart_toEndOf="@+id/item_comment_user_image"
             app:layout_constraintTop_toTopOf="parent">
 
+            <!--comment content must be inside another layout-->
+            <!--in order to set width to correctly, otherwise it will be-->
+            <!--set to match_parent and will not be able to wrap content-->
+            <!--and when content is too long it will be cut off-->
+            <!--to the next line-->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
                 android:layout_width="wrap_content"
@@ -108,11 +114,42 @@
             </androidx.cardview.widget.CardView>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/item_comment_time_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="@string/item_comment_time"
+            android:textColor="@color/dark_gray"
+            app:layout_constraintStart_toStartOf="@+id/comment_container"
+            app:layout_constraintTop_toBottomOf="@+id/comment_container" />
+
+        <TextView
+            android:id="@+id/item_comment_like_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="@string/item_comment_like"
+            android:textColor="@color/dark_gray"
+            app:layout_constraintStart_toEndOf="@+id/item_comment_time_tv"
+            app:layout_constraintTop_toBottomOf="@+id/comment_container" />
+
+        <TextView
+            android:id="@+id/item_comment_reply_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:text="@string/item_comment_reply"
+            android:textColor="@color/dark_gray"
+            app:layout_constraintStart_toEndOf="@+id/item_comment_like_tv"
+            app:layout_constraintTop_toBottomOf="@+id/comment_container" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/item_comment_replies_rv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="-6dp"
+            android:layout_marginTop="24dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

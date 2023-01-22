@@ -1,6 +1,7 @@
 package com.example.discussions.adapters
 
 import android.content.Context
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,8 @@ import com.bumptech.glide.Glide
 import com.example.discussions.R
 import com.example.discussions.databinding.ItemCommentBinding
 import com.example.discussions.models.CommentModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDiffCallback()) {
 
@@ -35,9 +38,9 @@ class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDi
                 .placeholder(R.drawable.ic_profile).circleCrop().into(binding.itemCommentUserImage)
 
             val avatarSize = if (commentModel.parentCommentId == null)
-                dpToFloat(itemView.context, 50f)
+                dpToFloat(itemView.context, 40f)
             else
-                dpToFloat(itemView.context, 30f)
+                dpToFloat(itemView.context, 25f)
 
             binding.horizontalLine.visibility =
                 if (commentModel.parentCommentId != null) View.VISIBLE else View.GONE
@@ -53,6 +56,16 @@ class CommentsRecyclerAdapter : ListAdapter<CommentModel, ViewHolder>(CommentsDi
 
             binding.itemCommentUserName.text = commentModel.username
             binding.itemCommentContent.text = commentModel.comment
+
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val date = dateFormat.parse(commentModel.createdAt)
+
+            binding.itemCommentTimeTv.text = DateUtils.getRelativeTimeSpanString(
+                date!!.time,
+                System.currentTimeMillis(),
+                DateUtils.MINUTE_IN_MILLIS
+            )
 
             binding.itemCommentRepliesRv.apply {
                 adapter = CommentsRecyclerAdapter()
