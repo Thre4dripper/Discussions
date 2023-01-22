@@ -56,39 +56,18 @@ class CreateCommentApi {
             username = "@$username"
 
             val commentId = rootObject.getString("id")
+            val parentCommentId = rootObject.getString("parent_id")
             val comment = rootObject.getString("content")
             val createdAt = rootObject.getString("created_at")
 
-            val repliesArray = rootObject.getJSONArray("reply")
-            val repliesList = mutableListOf<CommentModel>()
-
-            for (i in 0 until repliesArray.length()) {
-                val replyObject = repliesArray.getJSONObject(i)
-                val replyCreatedByObject = replyObject.getJSONObject("created_by")
-                var replyUsername = replyCreatedByObject.getString("username")
-                val replyUserImage = replyCreatedByObject.getString("image")
-                replyUsername = "@$replyUsername"
-
-                val replyId = replyObject.getString("id")
-                val reply = replyObject.getString("content")
-                val replyCreatedAt = replyObject.getString("created_at")
-
-                //adding replies to list
-                val replyCommentModel = CommentModel(
-                    replyId,
-                    commentId,
-                    reply,
-                    replyUsername,
-                    replyUserImage,
-                    replyCreatedAt,
-                    mutableListOf()
-                )
-
-                repliesList.add(replyCommentModel)
-            }
-
             return CommentModel(
-                commentId, null, username, userImage, comment, createdAt, repliesList
+                commentId,
+                if (parentCommentId == "null") null else parentCommentId,
+                comment,
+                username,
+                userImage,
+                createdAt,
+                mutableListOf()
             )
         }
     }

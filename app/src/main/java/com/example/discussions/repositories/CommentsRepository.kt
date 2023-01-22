@@ -24,7 +24,10 @@ class CommentsRepository {
                 pollId,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        commentsList.postValue(GetCommentsApi.parseCommentsJson(response))
+                        val comments = GetCommentsApi.parseCommentsJson(response)
+                        //TODO remove after testing
+                        //reverse the list to show the latest comments first temporarily
+                        commentsList.postValue(comments.reversed().toMutableList())
                         callback.onSuccess(response)
                     }
 
@@ -70,7 +73,7 @@ class CommentsRepository {
                     override fun onSuccess(response: String) {
                         val comment = CreateCommentApi.parseCreateCommentJson(response)
                         val newCommentsList = commentsList.value?.toMutableList()
-                        newCommentsList?.add(comment)
+                        newCommentsList?.add(0, comment)
                         commentsList.postValue(newCommentsList)
                         callback.onSuccess(response)
                     }
