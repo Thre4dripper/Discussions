@@ -74,6 +74,9 @@ class CommentBottomSheet(
     }
 
     private fun getAllComments() {
+        //resetting fetch comment type on refresh all comments
+        commentType = type
+
         viewModel.commentsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 commentsAdapter.submitList(it) {
@@ -106,7 +109,7 @@ class CommentBottomSheet(
 
         if (commentType == Constants.COMMENT_TYPE_POST)
             viewModel.getComments(requireContext(), id, null)
-        else
+        else if (commentType == Constants.COMMENT_TYPE_POLL)
             viewModel.getComments(requireContext(), null, id)
     }
 
