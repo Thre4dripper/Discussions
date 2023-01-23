@@ -41,5 +41,8 @@ class OptionsBottomSheet(
             commentInterface.onCommentCopy(commentId)
             dismiss()
         }
+        binding.optionCancelCommentTv.setOnClickListener {
+            dismiss()
+        }
     }
 }

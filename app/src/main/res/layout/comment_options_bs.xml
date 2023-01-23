@@ -11,26 +11,32 @@
             android:id="@+id/option_edit_comment_tv"
             style="@style/CommentOptionsTvStyle"
             android:layout_marginTop="16dp"
-            android:text="Edit Comment"
+            android:text="@string/comment_options_edit"
             app:drawableStartCompat="@drawable/ic_edit" />
 
         <TextView
             android:id="@+id/option_delete_comment_tv"
             style="@style/CommentOptionsTvStyle"
-            android:text="Delete Comment"
+            android:text="@string/comment_options_delete"
             app:drawableStartCompat="@drawable/ic_delete" />
 
         <TextView
             android:id="@+id/option_reply_comment_tv"
             style="@style/CommentOptionsTvStyle"
-            android:text="Reply Comment"
+            android:text="@string/comment_options_reply"
             app:drawableStartCompat="@drawable/ic_comments" />
 
         <TextView
             android:id="@+id/option_copy_comment_tv"
             style="@style/CommentOptionsTvStyle"
-            android:text="Copy Comment"
+            android:text="@string/comment_options_copy"
             app:drawableStartCompat="@drawable/ic_copy" />
 
+
+        <TextView
+            android:id="@+id/option_cancel_comment_tv"
+            style="@style/CommentOptionsTvStyle"
+            android:text="@string/comment_options_cancel"
+            app:drawableStartCompat="@drawable/ic_back_arrow" />
     </LinearLayout>
 </layout>

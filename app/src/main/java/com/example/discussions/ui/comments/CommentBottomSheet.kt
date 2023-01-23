@@ -8,7 +8,6 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
 import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
-import com.example.discussions.databinding.CommentBsLayoutBinding
+import com.example.discussions.databinding.CommentsBsBinding
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -33,7 +32,7 @@ class CommentBottomSheet(
 
     private val TAG = "CommentBottomSheet"
 
-    private lateinit var binding: CommentBsLayoutBinding
+    private lateinit var binding: CommentsBsBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private lateinit var viewModel: CommentsViewModel
@@ -45,7 +44,7 @@ class CommentBottomSheet(
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding = CommentBsLayoutBinding.inflate(inflater, container, false)
+        binding = CommentsBsBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[CommentsViewModel::class.java]
         return binding.root
     }
@@ -224,7 +223,11 @@ class CommentBottomSheet(
     }
 
     override fun onCommentCopy(commentId: String) {
-
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("comment", commentId)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(requireContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
     override fun onCommentLongClick(commentId: String) {

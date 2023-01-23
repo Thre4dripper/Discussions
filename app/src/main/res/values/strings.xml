@@ -142,4 +142,12 @@
     <string name="item_comment_like">Like</string>
     <string name="item_comment_reply">Reply</string>
 
+    //Comment Options Bottom Sheet
+    <string name="comment_options_edit">Edit</string>
+    <string name="comment_options_delete">Delete</string>
+    <string name="comment_options_reply">Reply</string>
+    <string name="comment_options_copy">Copy</string>
+    <string name="comment_options_cancel">Cancel</string>
+
+
 </resources>
