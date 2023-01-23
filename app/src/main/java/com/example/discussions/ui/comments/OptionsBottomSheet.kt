@@ -40,7 +40,7 @@ class OptionsBottomSheet(
             dismiss()
         }
         binding.optionDeleteCommentTv.setOnClickListener {
-            commentInterface.onCommentDeleted(comment.commentId)
+            commentInterface.onCommentDeleted(comment)
             dismiss()
         }
         binding.optionReplyCommentTv.setOnClickListener {

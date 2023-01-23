@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.comments.CreateCommentApi
+import com.example.discussions.api.apiCalls.comments.DeleteCommentApi
 import com.example.discussions.api.apiCalls.comments.GetCommentsApi
 import com.example.discussions.models.CommentModel
 import com.example.discussions.store.LoginStore

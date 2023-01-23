@@ -23,6 +23,7 @@ import com.example.discussions.models.CommentModel
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class CommentBottomSheet(
     var id: String,
@@ -204,7 +205,17 @@ class CommentBottomSheet(
 
     }
 
-    override fun onCommentDeleted(commentId: String) {
+    override fun onCommentDeleted(comment: CommentModel) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete Comment")
+            .setMessage("Are you sure you want to delete this comment?")
+            .setPositiveButton("Yes") { _, _ ->
+                viewModel.deleteComment(requireContext(), comment)
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 
     override fun onCommentReply(commentId: String, username: String) {
