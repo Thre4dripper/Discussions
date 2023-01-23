@@ -1,9 +1,5 @@
 package com.example.discussions.ui.comments
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.Editable
@@ -11,7 +7,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +18,6 @@ import com.example.discussions.models.CommentModel
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class CommentBottomSheet(
     var id: String,
@@ -77,7 +71,24 @@ class CommentBottomSheet(
         binding.commentsProgressBar.visibility = View.VISIBLE
         getAllComments()
 
+        setupCommentObservers()
         addCommentHandler()
+    }
+
+    private fun setupCommentObservers() {
+        //setting add comment observer only once
+        CommentControllers.addCommentObserver(
+            requireContext(),
+            viewModel,
+            binding,
+            viewLifecycleOwner
+        )
+        //setting delete comment observer only once
+        CommentControllers.deleteCommentObserver(
+            requireContext(),
+            viewModel,
+            viewLifecycleOwner
+        )
     }
 
     private fun getAllComments() {
@@ -122,25 +133,6 @@ class CommentBottomSheet(
     }
 
     private fun addCommentHandler() {
-        //setting add comment observer only once
-        viewModel.isCommentAdded.observe(viewLifecycleOwner) {
-            if (it != null) {
-                if (it == Constants.API_SUCCESS) {
-                    Toast.makeText(requireContext(), "Comment added", Toast.LENGTH_SHORT).show()
-                    binding.commentReplyCv.visibility = View.GONE
-                    //close keyboard
-                    val imm =
-                        requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(binding.addCommentEt.windowToken, 0)
-                } else {
-                    Toast.makeText(requireContext(), "Error Adding Comment", Toast.LENGTH_SHORT)
-                        .show()
-                }
-                binding.commentAddProgressBar.visibility = View.GONE
-                binding.addCommentBtn.visibility = View.VISIBLE
-            }
-        }
-
         //preconfiguring add comment button
         binding.addCommentBtn.apply {
             isEnabled = false
@@ -206,16 +198,7 @@ class CommentBottomSheet(
     }
 
     override fun onCommentDeleted(comment: CommentModel) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete Comment")
-            .setMessage("Are you sure you want to delete this comment?")
-            .setPositiveButton("Yes") { _, _ ->
-                viewModel.deleteComment(requireContext(), comment)
-            }
-            .setNegativeButton("No") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
+        CommentControllers.commentDeleteHandler(requireContext(), viewModel, comment)
     }
 
     override fun onCommentReply(commentId: String, username: String) {
@@ -235,12 +218,7 @@ class CommentBottomSheet(
     }
 
     override fun onCommentCopy(content: String) {
-
-        val clipboard =
-            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("comment", content)
-        clipboard.setPrimaryClip(clip)
-        Toast.makeText(requireContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show()
+        CommentControllers.commentCopyHandler(requireContext(), content)
     }
 
     override fun onCommentLongClick(comment: CommentModel) {
