@@ -76,6 +76,20 @@ class CommentsViewModel : ViewModel() {
             })
     }
 
+    fun editComment(context: Context, commentId: String, content: String) {
+        _isCommentAdded.value = null
+        commentsScrollToTop = false
+        CommentsRepository.editComment(context, commentId, content, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isCommentAdded.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isCommentAdded.value = response
+            }
+        })
+    }
+
     fun deleteComment(context: Context, comment: CommentModel) {
         _isCommentDeleted.value = null
         commentsScrollToTop = false

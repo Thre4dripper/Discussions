@@ -191,6 +191,11 @@ class CommentBottomSheet(
                 commentId = commentId,
                 content
             )
+            Constants.COMMENT_TYPE_EDIT -> viewModel.editComment(
+                requireContext(),
+                commentId!!,
+                content
+            )
         }
     }
 
