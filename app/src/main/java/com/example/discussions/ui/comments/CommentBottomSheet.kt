@@ -19,7 +19,7 @@ import com.example.discussions.Constants
 import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.CommentsBsBinding
-import com.example.discussions.repositories.CommentsRepository
+import com.example.discussions.models.CommentModel
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -207,12 +207,7 @@ class CommentBottomSheet(
     override fun onCommentDeleted(commentId: String) {
     }
 
-    override fun onCommentReply(commentId: String) {
-        val username = CommentsRepository.searchCommentById(
-            CommentsRepository.commentsList.value,
-            commentId
-        )?.username
-
+    override fun onCommentReply(commentId: String, username: String) {
         this.commentId = commentId
         commentType = Constants.COMMENT_TYPE_NESTED
         binding.commentReplyCv.visibility = View.VISIBLE
@@ -228,22 +223,17 @@ class CommentBottomSheet(
 
     }
 
-    override fun onCommentCopy(commentId: String) {
-        //getting comment from comments list
-        val comment = CommentsRepository.searchCommentById(
-            CommentsRepository.commentsList.value,
-            commentId
-        )?.comment
+    override fun onCommentCopy(content: String) {
 
         val clipboard =
             requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("comment", comment)
+        val clip = ClipData.newPlainText("comment", content)
         clipboard.setPrimaryClip(clip)
         Toast.makeText(requireContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onCommentLongClick(commentId: String) {
-        val optionsBottomSheet = OptionsBottomSheet(commentId, this@CommentBottomSheet)
+    override fun onCommentLongClick(comment: CommentModel) {
+        val optionsBottomSheet = OptionsBottomSheet(comment, this@CommentBottomSheet)
         optionsBottomSheet.show(requireActivity().supportFragmentManager, optionsBottomSheet.tag)
     }
 }

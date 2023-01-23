@@ -6,10 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.CommentOptionsBsBinding
+import com.example.discussions.models.CommentModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class OptionsBottomSheet(
-    private var commentId: String,
+    private var comment: CommentModel,
     private var commentInterface: CommentInterface
 ) :
     BottomSheetDialogFragment() {
@@ -26,19 +27,19 @@ class OptionsBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.optionEditCommentTv.setOnClickListener {
-            commentInterface.onCommentEdit(commentId)
+            commentInterface.onCommentEdit(comment.commentId)
             dismiss()
         }
         binding.optionDeleteCommentTv.setOnClickListener {
-            commentInterface.onCommentDeleted(commentId)
+            commentInterface.onCommentDeleted(comment.commentId)
             dismiss()
         }
         binding.optionReplyCommentTv.setOnClickListener {
-            commentInterface.onCommentReply(commentId)
+            commentInterface.onCommentReply(comment.commentId, comment.username)
             dismiss()
         }
         binding.optionCopyCommentTv.setOnClickListener {
-            commentInterface.onCommentCopy(commentId)
+            commentInterface.onCommentCopy(comment.comment)
             dismiss()
         }
         binding.optionCancelCommentTv.setOnClickListener {

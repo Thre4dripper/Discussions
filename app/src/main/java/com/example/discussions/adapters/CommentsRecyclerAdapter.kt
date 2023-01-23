@@ -70,12 +70,12 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
             )
 
             binding.itemCommentReplyTv.setOnClickListener {
-                commentInterface.onCommentReply(commentModel.commentId)
+                commentInterface.onCommentReply(commentModel.commentId, commentModel.username)
             }
 
             //for opening the comment options menu
             binding.itemCommentCv.setOnLongClickListener {
-                commentInterface.onCommentLongClick(commentModel.commentId)
+                commentInterface.onCommentLongClick(commentModel)
                 true
             }
 
