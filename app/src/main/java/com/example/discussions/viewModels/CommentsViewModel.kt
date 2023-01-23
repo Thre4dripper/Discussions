@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.models.CommentModel
 import com.example.discussions.repositories.CommentsRepository
 
 class CommentsViewModel : ViewModel() {
@@ -73,5 +74,19 @@ class CommentsViewModel : ViewModel() {
                     _isCommentAdded.value = response
                 }
             })
+    }
+
+    fun deleteComment(context: Context, comment: CommentModel) {
+        _isCommentDeleted.value = null
+        commentsScrollToTop = false
+        CommentsRepository.deleteComment(context, comment, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isCommentDeleted.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isCommentDeleted.value = response
+            }
+        })
     }
 }

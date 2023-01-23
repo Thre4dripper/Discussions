@@ -4,7 +4,7 @@ import com.example.discussions.models.CommentModel
 
 interface CommentInterface {
     fun onCommentLikeChanged(commentId: String, isLiked: Boolean)
-    fun onCommentDeleted(commentId: String)
+    fun onCommentDeleted(comment: CommentModel)
     fun onCommentReply(commentId: String, username: String)
     fun onCommentEdit(commentId: String)
     fun onCommentCopy(content: String)
