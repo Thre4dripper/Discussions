@@ -84,6 +84,13 @@ class CommentBottomSheet(
             binding,
             viewLifecycleOwner
         )
+        //setting edit comment observer only once
+        CommentControllers.editCommentObserver(
+            requireContext(),
+            viewModel,
+            binding,
+            viewLifecycleOwner
+        )
         //setting delete comment observer only once
         CommentControllers.deleteCommentObserver(
             requireContext(),

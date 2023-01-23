@@ -22,13 +22,17 @@ class CommentsViewModel : ViewModel() {
     val isCommentAdded: LiveData<String?>
         get() = _isCommentAdded
 
-    private var _isCommentLikedChanged = MutableLiveData<String?>(null)
-    val isCommentLikedChanged: LiveData<String?>
-        get() = _isCommentLikedChanged
+    private var _isCommentEdited = MutableLiveData<String?>(null)
+    val isCommentEdited: LiveData<String?>
+        get() = _isCommentEdited
 
     private var _isCommentDeleted = MutableLiveData<String?>(null)
     val isCommentDeleted: LiveData<String?>
         get() = _isCommentDeleted
+
+    private var _isCommentLikedChanged = MutableLiveData<String?>(null)
+    val isCommentLikedChanged: LiveData<String?>
+        get() = _isCommentLikedChanged
 
     companion object {
         var commentsScrollToTop = false
@@ -77,15 +81,15 @@ class CommentsViewModel : ViewModel() {
     }
 
     fun editComment(context: Context, commentId: String, content: String) {
-        _isCommentAdded.value = null
+        _isCommentEdited.value = null
         commentsScrollToTop = false
         CommentsRepository.editComment(context, commentId, content, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                _isCommentAdded.value = Constants.API_SUCCESS
+                _isCommentEdited.value = Constants.API_SUCCESS
             }
 
             override fun onError(response: String) {
-                _isCommentAdded.value = response
+                _isCommentEdited.value = response
             }
         })
     }

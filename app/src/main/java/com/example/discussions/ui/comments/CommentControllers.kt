@@ -42,6 +42,30 @@ class CommentControllers {
             }
         }
 
+        fun editCommentObserver(
+            context: Context,
+            viewModel: CommentsViewModel,
+            binding: CommentsBsBinding,
+            viewLifecycleOwner: LifecycleOwner
+        ) {
+            viewModel.isCommentEdited.observe(viewLifecycleOwner) {
+                if (it != null) {
+                    if (it == Constants.API_SUCCESS) {
+                        Toast.makeText(context, "Comment Updated", Toast.LENGTH_SHORT).show()
+                        binding.commentActionsCv.visibility = View.GONE
+                        //close keyboard
+                        val imm =
+                            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(binding.addCommentEt.windowToken, 0)
+                    } else {
+                        Toast.makeText(context, "Error Editing Comment", Toast.LENGTH_SHORT).show()
+                    }
+                    binding.commentAddProgressBar.visibility = View.GONE
+                    binding.addCommentBtn.visibility = View.VISIBLE
+                }
+            }
+        }
+
         fun deleteCommentObserver(
             context: Context, viewModel: CommentsViewModel, viewLifecycleOwner: LifecycleOwner
         ) {

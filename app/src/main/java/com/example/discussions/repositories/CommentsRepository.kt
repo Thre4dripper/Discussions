@@ -109,6 +109,12 @@ class CommentsRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
+            val oldCommentList = commentsList.value?.toMutableList()
+
+            val updatedCommentsList =
+                editComment(commentsList.value?.toMutableList(), commentId, content)
+            commentsList.value = updatedCommentsList
+
             UpdateCommentApi.updateComment(context,
                 token,
                 commentId,
@@ -120,6 +126,9 @@ class CommentsRepository {
                     }
 
                     override fun onError(response: String) {
+                        //restore the old list on api error
+                        commentsList.value = oldCommentList
+
                         if (response.contains("com.android.volley.TimeoutError")) {
                             callback.onError("Time Out")
                         } else if (response.contains("com.android.volley.NoConnectionError")) {
@@ -147,7 +156,8 @@ class CommentsRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            var updatedCommentsList =
+            val oldCommentList = commentsList.value?.toMutableList()
+            val updatedCommentsList =
                 deleteComment(commentsList.value?.toMutableList(), comment)
             commentsList.value = updatedCommentsList
 
@@ -160,10 +170,8 @@ class CommentsRepository {
                     }
 
                     override fun onError(response: String) {
-                        //on fail deletion
-                        updatedCommentsList =
-                            addComment(commentsList.value?.toMutableList(), comment)
-                        commentsList.value = updatedCommentsList
+                        //restore the old list on api error
+                        commentsList.value = oldCommentList
 
                         if (response.contains("com.android.volley.TimeoutError")) {
                             callback.onError("Time Out")
@@ -201,6 +209,21 @@ class CommentsRepository {
                     return comments.toMutableList()
                 }
                 c.replies = addComment(c.replies.toMutableList(), comment)
+            }
+            return comments
+        }
+
+        private fun editComment(
+            comments: MutableList<CommentModel>?, commentId: String, content: String
+        ): MutableList<CommentModel> {
+            if (comments == null) return mutableListOf()
+            for (c in comments) {
+                if (c.commentId == commentId) {
+                    val comment = c.copy(comment = content)
+                    comments[comments.indexOf(c)] = comment
+                    return comments
+                }
+                c.replies = editComment(c.replies.toMutableList(), commentId, content)
             }
             return comments
         }
