@@ -57,6 +57,7 @@ class CommentsViewModel : ViewModel() {
         content: String
     ) {
         _isCommentAdded.value = null
+        commentsScrollToTop = false
         CommentsRepository.createComment(
             context,
             postId,

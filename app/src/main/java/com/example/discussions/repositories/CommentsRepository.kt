@@ -18,8 +18,7 @@ class CommentsRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            GetCommentsApi.getCommentsJson(
-                context,
+            GetCommentsApi.getCommentsJson(context,
                 token,
                 postId,
                 pollId,
@@ -28,7 +27,7 @@ class CommentsRepository {
                         val comments = GetCommentsApi.parseCommentsJson(response)
                         //TODO remove after testing
                         //reverse the list to show the latest comments first temporarily
-                        commentsList.postValue(comments.reversed().toMutableList())
+                        commentsList.postValue(comments.toMutableList())
                         callback.onSuccess(response)
                     }
 
@@ -63,8 +62,7 @@ class CommentsRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            CreateCommentApi.createComment(
-                context,
+            CreateCommentApi.createComment(context,
                 token,
                 postId,
                 pollId,
@@ -76,22 +74,26 @@ class CommentsRepository {
 
                         fun addComment(
                             comments: MutableList<CommentModel>?, comment: CommentModel
-                        ): MutableList<CommentModel>? {
+                        ): MutableList<CommentModel> {
+                            if (comments == null) return mutableListOf(comment)
                             if (comment.parentCommentId == null) {
-                                comments?.add(0, comment)
+                                comments.add(0, comment)
                                 return comments
                             }
-                            for (c in comments!!) {
+                            for (c in comments) {
                                 if (c.commentId == comment.parentCommentId) {
-                                    c.replies.add(0, comment)
-                                    return comments
-                                } else addComment(c.replies, comment)
+                                    val replies = c.replies.toMutableList()
+                                    replies.add(comment)
+                                    c.replies = replies
+                                    return comments.toMutableList()
+                                }
+                                c.replies = addComment(c.replies.toMutableList(), comment)
                             }
                             return comments
                         }
 
-                        val updatedCommentsList = addComment(commentsList.value, comment)
-                        commentsList.value = null
+                        val updatedCommentsList =
+                            addComment(commentsList.value?.toMutableList(), comment)
                         commentsList.value = updatedCommentsList
                         callback.onSuccess(response)
                     }

@@ -7,5 +7,5 @@ data class CommentModel(
     val username: String,
     val userImage: String,
     val createdAt: String,
-    val replies: MutableList<CommentModel>
+    var replies: MutableList<CommentModel>
 )

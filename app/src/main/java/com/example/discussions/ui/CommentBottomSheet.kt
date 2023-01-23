@@ -1,5 +1,6 @@
 package com.example.discussions.ui
 
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.Editable
@@ -7,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -83,6 +85,7 @@ class CommentBottomSheet(
                     if (CommentsViewModel.commentsScrollToTop)
                         binding.commentsRv.scrollToPosition(0)
                 }
+                commentsAdapter.notifyDataSetChanged()
                 //hiding all loading
                 binding.commentsSwipeLayout.isRefreshing = false
                 binding.commentsProgressBar.visibility = View.GONE
@@ -120,6 +123,10 @@ class CommentBottomSheet(
                 if (it == Constants.API_SUCCESS) {
                     Toast.makeText(requireContext(), "Comment added", Toast.LENGTH_SHORT).show()
                     binding.commentReplyCv.visibility = View.GONE
+                    //close keyboard
+                    val imm =
+                        requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.addCommentEt.windowToken, 0)
                 } else {
                     Toast.makeText(requireContext(), "Error Adding Comment", Toast.LENGTH_SHORT)
                         .show()
