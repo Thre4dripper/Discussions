@@ -208,8 +208,10 @@ class CreateEditPostActivity : AppCompatActivity() {
                 binding.createPostIv.setImageDrawable(null)
                 binding.createPostClearImageBtn.visibility = View.GONE
 
-                //on clearing post image, delete it from cloudinary also
-                Cloudinary.deleteImage(this, postImageFallbackUri.toString())
+                //on clearing post image, delete it from cloudinary also,
+                //when new post is created, there is no fallback uri
+                if (postImageFallbackUri != Uri.EMPTY)
+                    Cloudinary.deleteImage(this, postImageFallbackUri.toString())
 
                 postImageFallbackUri = Uri.EMPTY
             }
