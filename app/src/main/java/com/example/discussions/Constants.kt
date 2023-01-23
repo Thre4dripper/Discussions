@@ -50,6 +50,7 @@ class Constants {
         //for comments modes
         const val COMMENT_TYPE_POST = "post"
         const val COMMENT_TYPE_POLL = "poll"
-        const val COMMENT_TYPE_NESTED = "nested"
+        const val COMMENT_TYPE_REPLY = "reply"
+        const val COMMENT_TYPE_EDIT = "edit"
     }
 }

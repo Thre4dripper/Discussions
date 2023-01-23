@@ -28,7 +28,7 @@ class CommentControllers {
                 if (it != null) {
                     if (it == Constants.API_SUCCESS) {
                         Toast.makeText(context, "Comment added", Toast.LENGTH_SHORT).show()
-                        binding.commentReplyCv.visibility = View.GONE
+                        binding.commentActionsCv.visibility = View.GONE
                         //close keyboard
                         val imm =
                             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

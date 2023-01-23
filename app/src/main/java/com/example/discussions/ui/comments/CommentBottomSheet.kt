@@ -184,7 +184,7 @@ class CommentBottomSheet(
                 null,
                 content
             )
-            Constants.COMMENT_TYPE_NESTED -> viewModel.createComment(
+            Constants.COMMENT_TYPE_REPLY -> viewModel.createComment(
                 requireContext(),
                 null,
                 null,
@@ -204,12 +204,13 @@ class CommentBottomSheet(
 
     override fun onCommentReply(commentId: String, username: String) {
         this.commentId = commentId
-        commentType = Constants.COMMENT_TYPE_NESTED
-        binding.commentReplyCv.visibility = View.VISIBLE
-        binding.commentActionTypeTv.text = getString(R.string.comment_options_reply)
+        commentType = Constants.COMMENT_TYPE_REPLY
+
+        binding.commentActionsCv.visibility = View.VISIBLE
+        binding.commentActionTypeTv.text = getString(R.string.comment_action_label_reply)
         binding.commentActionContentTv.text = username
         binding.commentReplyCancelBtn.setOnClickListener {
-            binding.commentReplyCv.visibility = View.GONE
+            binding.commentActionsCv.visibility = View.GONE
             //restoring comment type
             commentType = type
         }
@@ -219,11 +220,11 @@ class CommentBottomSheet(
         this.commentId = commentId
         commentType = Constants.COMMENT_TYPE_EDIT
 
-        binding.commentReplyCv.visibility = View.VISIBLE
-        binding.commentActionTypeTv.text = getString(R.string.comment_options_edit)
+        binding.commentActionsCv.visibility = View.VISIBLE
+        binding.commentActionTypeTv.text = getString(R.string.comment_action_label_edit)
         binding.commentActionContentTv.text = content
         binding.commentReplyCancelBtn.setOnClickListener {
-            binding.commentReplyCv.visibility = View.GONE
+            binding.commentActionsCv.visibility = View.GONE
             //restoring comment type
             commentType = type
         }
