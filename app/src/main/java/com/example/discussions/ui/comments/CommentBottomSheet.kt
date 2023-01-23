@@ -19,6 +19,7 @@ import com.example.discussions.Constants
 import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.CommentsBsBinding
+import com.example.discussions.repositories.CommentsRepository
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -207,10 +208,15 @@ class CommentBottomSheet(
     }
 
     override fun onCommentReply(commentId: String) {
+        val username = CommentsRepository.searchCommentById(
+            CommentsRepository.commentsList.value,
+            commentId
+        )?.username
+
         this.commentId = commentId
         commentType = Constants.COMMENT_TYPE_NESTED
         binding.commentReplyCv.visibility = View.VISIBLE
-        binding.commentReplyUsernameTv.text = commentId
+        binding.commentReplyUsernameTv.text = username
         binding.commentReplyCancelBtn.setOnClickListener {
             binding.commentReplyCv.visibility = View.GONE
             //restoring comment type
@@ -223,9 +229,15 @@ class CommentBottomSheet(
     }
 
     override fun onCommentCopy(commentId: String) {
+        //getting comment from comments list
+        val comment = CommentsRepository.searchCommentById(
+            CommentsRepository.commentsList.value,
+            commentId
+        )?.comment
+
         val clipboard =
             requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("comment", commentId)
+        val clip = ClipData.newPlainText("comment", comment)
         clipboard.setPrimaryClip(clip)
         Toast.makeText(requireContext(), "Copied to clipboard", Toast.LENGTH_SHORT).show()
     }

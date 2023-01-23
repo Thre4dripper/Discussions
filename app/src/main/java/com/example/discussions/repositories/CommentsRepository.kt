@@ -13,6 +13,18 @@ class CommentsRepository {
         private const val TAG = "CommentsRepository"
         val commentsList = MutableLiveData<MutableList<CommentModel>?>(null)
 
+        fun searchCommentById(
+            comments: MutableList<CommentModel>?, commentId: String
+        ): CommentModel? {
+            if (comments == null) return null
+            for (comment in comments) {
+                if (comment.commentId == commentId) return comment
+                val reply = searchCommentById(comment.replies, commentId)
+                if (reply != null) return reply
+            }
+            return null
+        }
+
         fun getAllComments(
             context: Context, postId: String?, pollId: String?, callback: ResponseCallback
         ) {
