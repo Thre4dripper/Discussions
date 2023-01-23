@@ -12,7 +12,7 @@ import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
 import com.example.discussions.repositories.PostRepository
-import com.example.discussions.ui.CommentBottomSheet
+import com.example.discussions.ui.comments.CommentBottomSheet
 import com.example.discussions.viewModels.HomeViewModel
 
 class DiscussFragment : Fragment(), LikeCommentInterface {

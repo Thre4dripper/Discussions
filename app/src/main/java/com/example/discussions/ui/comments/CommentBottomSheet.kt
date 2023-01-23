@@ -1,10 +1,14 @@
-package com.example.discussions.ui
+package com.example.discussions.ui.comments
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.res.Resources
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -215,6 +219,16 @@ class CommentBottomSheet(
         }
     }
 
-    override fun onCommentEdit(commentId: String, content: String) {
+    override fun onCommentEdit(commentId: String) {
+
+    }
+
+    override fun onCommentCopy(commentId: String) {
+
+    }
+
+    override fun onCommentLongClick(commentId: String) {
+        val optionsBottomSheet = OptionsBottomSheet(commentId, this@CommentBottomSheet)
+        optionsBottomSheet.show(requireActivity().supportFragmentManager, optionsBottomSheet.tag)
     }
 }

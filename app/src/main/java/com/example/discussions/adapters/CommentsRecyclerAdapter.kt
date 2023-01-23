@@ -73,6 +73,12 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
                 commentInterface.onCommentReply(commentModel.commentId)
             }
 
+            //for opening the comment options menu
+            binding.itemCommentCv.setOnLongClickListener {
+                commentInterface.onCommentLongClick(commentModel.commentId)
+                true
+            }
+
             binding.itemCommentRepliesRv.apply {
                 adapter = CommentsRecyclerAdapter(commentInterface)
                 (adapter as CommentsRecyclerAdapter).submitList(commentModel.replies)

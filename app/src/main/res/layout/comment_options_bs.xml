@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/option_edit_comment_tv"
+            style="@style/CommentOptionsTvStyle"
+            android:layout_marginTop="16dp"
+            android:text="Edit Comment"
+            app:drawableStartCompat="@drawable/ic_edit" />
+
+        <TextView
+            android:id="@+id/option_delete_comment_tv"
+            style="@style/CommentOptionsTvStyle"
+            android:text="Delete Comment"
+            app:drawableStartCompat="@drawable/ic_delete" />
+
+        <TextView
+            android:id="@+id/option_reply_comment_tv"
+            style="@style/CommentOptionsTvStyle"
+            android:text="Reply Comment"
+            app:drawableStartCompat="@drawable/ic_comments" />
+
+        <TextView
+            android:id="@+id/option_copy_comment_tv"
+            style="@style/CommentOptionsTvStyle"
+            android:text="Copy Comment"
+            app:drawableStartCompat="@drawable/ic_copy" />
+
+    </LinearLayout>
+</layout>
