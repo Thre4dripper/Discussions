@@ -7,6 +7,7 @@ class LoginStore {
         private const val PREF_NAME = "login_pref"
         private const val PREF_KEY_JWT = "jwt"
         private const val PREF_KEY_LOGIN_STATUS = "login_status"
+        private const val PREF_KEY_USERNAME = "username"
 
         fun saveLoginStatus(context: Context, status: Boolean) {
             val pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
@@ -29,6 +30,17 @@ class LoginStore {
         fun getJWTToken(context: Context): String? {
             return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
                 .getString(PREF_KEY_JWT, null)
+        }
+
+        fun saveUserName(context: Context, username: String?) {
+            val editor = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE).edit()
+            editor.putString(PREF_KEY_USERNAME, username)
+            editor.apply()
+        }
+
+        fun getUserName(context: Context): String? {
+            return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+                .getString(PREF_KEY_USERNAME, "")
         }
     }
 }

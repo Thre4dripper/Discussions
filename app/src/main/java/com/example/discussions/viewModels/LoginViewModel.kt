@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
+import com.example.discussions.MyApplication
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.repositories.AuthRepository
 import com.example.discussions.store.LoginStore
@@ -23,6 +24,7 @@ class LoginViewModel : ViewModel() {
         val loginStatus = LoginStore.getLoginStatus(context)
         val token = LoginStore.getJWTToken(context)
         if (loginStatus && token != null) {
+            MyApplication.username = LoginStore.getUserName(context)!!
             isAuthenticated.postValue(Constants.API_SUCCESS)
         }
     }
@@ -38,6 +40,7 @@ class LoginViewModel : ViewModel() {
                 isAuthenticated.value = Constants.API_SUCCESS
                 //also logged session will be saved
                 LoginStore.saveJWTToken(context, response)
+                LoginStore.saveUserName(context, username)
                 if (rememberMe) {
                     LoginStore.saveLoginStatus(context, true)
                 }

@@ -5,6 +5,7 @@ import android.app.Application
 class MyApplication : Application() {
     companion object {
         lateinit var instance: MyApplication
+        lateinit var username: String
     }
 
     override fun onCreate() {
