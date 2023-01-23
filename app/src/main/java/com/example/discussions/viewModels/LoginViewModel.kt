@@ -41,6 +41,7 @@ class LoginViewModel : ViewModel() {
                 //also logged session will be saved
                 LoginStore.saveJWTToken(context, response)
                 LoginStore.saveUserName(context, username)
+                MyApplication.username = username
                 if (rememberMe) {
                     LoginStore.saveLoginStatus(context, true)
                 }
