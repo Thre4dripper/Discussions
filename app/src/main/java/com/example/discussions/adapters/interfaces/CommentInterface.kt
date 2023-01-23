@@ -6,7 +6,7 @@ interface CommentInterface {
     fun onCommentLikeChanged(commentId: String, isLiked: Boolean)
     fun onCommentDeleted(comment: CommentModel)
     fun onCommentReply(commentId: String, username: String)
-    fun onCommentEdit(commentId: String)
+    fun onCommentEdit(commentId: String, content: String)
     fun onCommentCopy(content: String)
     fun onCommentLongClick(comment: CommentModel)
 }

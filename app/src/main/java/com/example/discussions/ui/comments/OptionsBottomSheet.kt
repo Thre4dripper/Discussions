@@ -36,7 +36,7 @@ class OptionsBottomSheet(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.optionEditCommentTv.setOnClickListener {
-            commentInterface.onCommentEdit(comment.commentId)
+            commentInterface.onCommentEdit(comment.commentId, comment.comment)
             dismiss()
         }
         binding.optionDeleteCommentTv.setOnClickListener {

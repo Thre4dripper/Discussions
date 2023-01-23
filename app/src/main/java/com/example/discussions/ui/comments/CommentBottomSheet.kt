@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
+import com.example.discussions.R
 import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.CommentsBsBinding
@@ -205,7 +206,8 @@ class CommentBottomSheet(
         this.commentId = commentId
         commentType = Constants.COMMENT_TYPE_NESTED
         binding.commentReplyCv.visibility = View.VISIBLE
-        binding.commentReplyUsernameTv.text = username
+        binding.commentActionTypeTv.text = getString(R.string.comment_options_reply)
+        binding.commentActionContentTv.text = username
         binding.commentReplyCancelBtn.setOnClickListener {
             binding.commentReplyCv.visibility = View.GONE
             //restoring comment type
@@ -213,8 +215,18 @@ class CommentBottomSheet(
         }
     }
 
-    override fun onCommentEdit(commentId: String) {
+    override fun onCommentEdit(commentId: String, content: String) {
+        this.commentId = commentId
+        commentType = Constants.COMMENT_TYPE_EDIT
 
+        binding.commentReplyCv.visibility = View.VISIBLE
+        binding.commentActionTypeTv.text = getString(R.string.comment_options_edit)
+        binding.commentActionContentTv.text = content
+        binding.commentReplyCancelBtn.setOnClickListener {
+            binding.commentReplyCv.visibility = View.GONE
+            //restoring comment type
+            commentType = type
+        }
     }
 
     override fun onCommentCopy(content: String) {
