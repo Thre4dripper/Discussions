@@ -87,6 +87,7 @@ class ProfileFragment : Fragment(), UserPostClickInterface {
         retryDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Oops!")
             .setMessage("Error getting profile")
+            .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
                 getProfile()
