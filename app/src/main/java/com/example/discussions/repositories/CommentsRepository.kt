@@ -20,7 +20,8 @@ class CommentsRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            GetCommentsApi.getCommentsJson(context,
+            GetCommentsApi.getCommentsJson(
+                context,
                 token,
                 postId,
                 pollId,
@@ -62,7 +63,8 @@ class CommentsRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            CreateCommentApi.createComment(context,
+            CreateCommentApi.createComment(
+                context,
                 token,
                 postId,
                 pollId,
@@ -101,14 +103,12 @@ class CommentsRepository {
         }
 
         fun editComment(
-            context: Context,
-            commentId: String,
-            content: String,
-            callback: ResponseCallback
+            context: Context, commentId: String, content: String, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            UpdateCommentApi.updateComment(context,
+            UpdateCommentApi.updateComment(
+                context,
                 token,
                 commentId,
                 content,
@@ -144,18 +144,16 @@ class CommentsRepository {
         }
 
         fun deleteComment(
-            context: Context,
-            comment: CommentModel,
-            callback: ResponseCallback
+            context: Context, comment: CommentModel, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
             val oldCommentList = commentsList.value?.toMutableList()
-            val updatedCommentsList =
-                deleteComment(cloneCommentList(commentsList.value), comment)
+            val updatedCommentsList = deleteComment(cloneCommentList(commentsList.value), comment)
             commentsList.value = updatedCommentsList
 
-            DeleteCommentApi.deleteComment(context,
+            DeleteCommentApi.deleteComment(
+                context,
                 token,
                 comment.commentId,
                 object : ResponseCallback {
@@ -198,6 +196,8 @@ class CommentsRepository {
                     c.username,
                     c.userImage,
                     c.createdAt,
+                    c.isLiked,
+                    c.likes,
                     cloneCommentList(c.replies.toMutableList()) ?: mutableListOf()
                 )
                 newComments.add(newComment)
@@ -210,12 +210,12 @@ class CommentsRepository {
         ): MutableList<CommentModel> {
             if (comments == null) return mutableListOf(comment)
             if (comment.parentCommentId == null) {
-                comments.add(comment)
+                comments.add(0, comment)
                 return comments
             }
             for (c in comments) {
                 if (c.commentId == comment.parentCommentId) {
-                    c.replies.add(comment)
+                    c.replies.add(0, comment)
                     return comments
                 }
                 c.replies = addComment(c.replies.toMutableList(), comment)

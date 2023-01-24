@@ -68,6 +68,14 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
                 System.currentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS
             )
+            binding.itemCommentLikeTv.text =
+                if (commentModel.isLiked) "UnLike" else "Like"
+
+            binding.itemCommentLikeCountTv.text = commentModel.likes.toString()
+
+            binding.itemCommentLikeTv.setOnClickListener {
+                commentInterface.onCommentLikeChanged(commentModel.commentId)
+            }
 
             binding.itemCommentReplyTv.setOnClickListener {
                 commentInterface.onCommentReply(commentModel.commentId, commentModel.username)

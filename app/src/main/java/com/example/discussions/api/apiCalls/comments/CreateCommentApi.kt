@@ -59,6 +59,8 @@ class CreateCommentApi {
             val parentCommentId = rootObject.getString("parent_id")
             val comment = rootObject.getString("content")
             val createdAt = rootObject.getString("created_at")
+            val isLiked = rootObject.getBoolean("is_liked")
+            val likes = rootObject.getInt("like_count")
 
             return CommentModel(
                 commentId,
@@ -67,6 +69,8 @@ class CreateCommentApi {
                 username,
                 userImage,
                 createdAt,
+                isLiked,
+                likes,
                 mutableListOf()
             )
         }

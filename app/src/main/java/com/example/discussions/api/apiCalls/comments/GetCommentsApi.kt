@@ -59,6 +59,8 @@ class GetCommentsApi {
                 val parentCommentId = commentObject.getString("parent_id")
                 val comment = commentObject.getString("content")
                 val createdAt = commentObject.getString("created_at")
+                val isLiked = commentObject.getBoolean("is_liked")
+                val likes = commentObject.getInt("like_count")
 
                 val repliesList =
                     parseCommentsJson(commentObject.getJSONArray("replies").toString())
@@ -71,6 +73,8 @@ class GetCommentsApi {
                         username,
                         userImage,
                         createdAt,
+                        isLiked,
+                        likes,
                         repliesList
                     )
                 )
