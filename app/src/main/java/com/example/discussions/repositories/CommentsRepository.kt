@@ -108,12 +108,6 @@ class CommentsRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            val oldCommentList = commentsList.value?.toMutableList()
-
-            val updatedCommentsList =
-                editComment(cloneCommentList(commentsList.value), commentId, content)
-            commentsList.value = updatedCommentsList
-
             UpdateCommentApi.updateComment(context,
                 token,
                 commentId,
@@ -121,13 +115,14 @@ class CommentsRepository {
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
 
+                        val updatedCommentsList =
+                            editComment(cloneCommentList(commentsList.value), commentId, content)
+
+                        commentsList.value = updatedCommentsList
                         callback.onSuccess(response)
                     }
 
                     override fun onError(response: String) {
-                        //restore the old list on api error
-                        commentsList.value = oldCommentList
-
                         if (response.contains("com.android.volley.TimeoutError")) {
                             callback.onError("Time Out")
                         } else if (response.contains("com.android.volley.NoConnectionError")) {
