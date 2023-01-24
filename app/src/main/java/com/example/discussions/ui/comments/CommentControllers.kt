@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import com.example.discussions.Constants
@@ -22,17 +21,15 @@ class CommentControllers {
             context: Context,
             viewModel: CommentsViewModel,
             binding: CommentsBsBinding,
-            viewLifecycleOwner: LifecycleOwner
+            viewLifecycleOwner: LifecycleOwner,
+            restoreCommentType: () -> Unit,
         ) {
             viewModel.isCommentAdded.observe(viewLifecycleOwner) {
                 if (it != null) {
                     if (it == Constants.API_SUCCESS) {
                         Toast.makeText(context, "Comment added", Toast.LENGTH_SHORT).show()
                         binding.commentActionsCv.visibility = View.GONE
-                        //close keyboard
-                        val imm =
-                            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(binding.addCommentEt.windowToken, 0)
+                        restoreCommentType()
                     } else {
                         Toast.makeText(context, "Error Adding Comment", Toast.LENGTH_SHORT).show()
                     }
@@ -46,17 +43,15 @@ class CommentControllers {
             context: Context,
             viewModel: CommentsViewModel,
             binding: CommentsBsBinding,
-            viewLifecycleOwner: LifecycleOwner
+            viewLifecycleOwner: LifecycleOwner,
+            restoreCommentType: () -> Unit,
         ) {
             viewModel.isCommentEdited.observe(viewLifecycleOwner) {
                 if (it != null) {
                     if (it == Constants.API_SUCCESS) {
                         Toast.makeText(context, "Comment Updated", Toast.LENGTH_SHORT).show()
                         binding.commentActionsCv.visibility = View.GONE
-                        //close keyboard
-                        val imm =
-                            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(binding.addCommentEt.windowToken, 0)
+                        restoreCommentType()
                     } else {
                         Toast.makeText(context, "Error Editing Comment", Toast.LENGTH_SHORT).show()
                     }
@@ -71,9 +66,7 @@ class CommentControllers {
         ) {
             viewModel.isCommentDeleted.observe(viewLifecycleOwner) {
                 if (it != null && it != Constants.API_SUCCESS) Toast.makeText(
-                    context,
-                    "Error deleting comment",
-                    Toast.LENGTH_SHORT
+                    context, "Error deleting comment", Toast.LENGTH_SHORT
                 ).show()
             }
         }

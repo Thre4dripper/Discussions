@@ -24,8 +24,7 @@ class CommentBottomSheet(
     var id: String,
     var type: String,
     private var commentCount: Int,
-) :
-    BottomSheetDialogFragment(), CommentInterface {
+) : BottomSheetDialogFragment(), CommentInterface {
 
     private val TAG = "CommentBottomSheet"
 
@@ -79,23 +78,17 @@ class CommentBottomSheet(
     private fun setupCommentObservers() {
         //setting add comment observer only once
         CommentControllers.addCommentObserver(
-            requireContext(),
-            viewModel,
-            binding,
-            viewLifecycleOwner
-        )
+            requireContext(), viewModel, binding, viewLifecycleOwner
+        ) { this.commentType = type }
+
         //setting edit comment observer only once
         CommentControllers.editCommentObserver(
-            requireContext(),
-            viewModel,
-            binding,
-            viewLifecycleOwner
-        )
+            requireContext(), viewModel, binding, viewLifecycleOwner
+        ) { this.commentType = type }
+
         //setting delete comment observer only once
         CommentControllers.deleteCommentObserver(
-            requireContext(),
-            viewModel,
-            viewLifecycleOwner
+            requireContext(), viewModel, viewLifecycleOwner
         )
     }
 
@@ -106,8 +99,7 @@ class CommentBottomSheet(
         viewModel.commentsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 commentsAdapter.submitList(it) {
-                    if (CommentsViewModel.commentsScrollToTop)
-                        binding.commentsRv.scrollToPosition(0)
+                    if (CommentsViewModel.commentsScrollToTop) binding.commentsRv.scrollToPosition(0)
                 }
                 //hiding all loading
                 binding.commentsSwipeLayout.isRefreshing = false
@@ -133,10 +125,12 @@ class CommentBottomSheet(
             }
         }
 
-        if (commentType == Constants.COMMENT_TYPE_POST)
-            viewModel.getComments(requireContext(), id, null)
-        else if (commentType == Constants.COMMENT_TYPE_POLL)
-            viewModel.getComments(requireContext(), null, id)
+        if (commentType == Constants.COMMENT_TYPE_POST) viewModel.getComments(
+            requireContext(), id, null
+        )
+        else if (commentType == Constants.COMMENT_TYPE_POLL) viewModel.getComments(
+            requireContext(), null, id
+        )
     }
 
     private fun addCommentHandler() {
@@ -177,30 +171,16 @@ class CommentBottomSheet(
 
         when (commentType) {
             Constants.COMMENT_TYPE_POST -> viewModel.createComment(
-                requireContext(),
-                postId = id,
-                null,
-                null,
-                content
+                requireContext(), postId = id, null, null, content
             )
             Constants.COMMENT_TYPE_POLL -> viewModel.createComment(
-                requireContext(),
-                null,
-                pollId = id,
-                null,
-                content
+                requireContext(), null, pollId = id, null, content
             )
             Constants.COMMENT_TYPE_REPLY -> viewModel.createComment(
-                requireContext(),
-                null,
-                null,
-                commentId = commentId,
-                content
+                requireContext(), null, null, commentId = commentId, content
             )
             Constants.COMMENT_TYPE_EDIT -> viewModel.editComment(
-                requireContext(),
-                commentId!!,
-                content
+                requireContext(), commentId!!, content
             )
         }
     }
