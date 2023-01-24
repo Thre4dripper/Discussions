@@ -109,7 +109,6 @@ class CommentBottomSheet(
                     if (CommentsViewModel.commentsScrollToTop)
                         binding.commentsRv.scrollToPosition(0)
                 }
-                commentsAdapter.notifyDataSetChanged()
                 //hiding all loading
                 binding.commentsSwipeLayout.isRefreshing = false
                 binding.commentsProgressBar.visibility = View.GONE

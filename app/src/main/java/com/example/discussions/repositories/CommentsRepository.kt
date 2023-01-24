@@ -27,8 +27,6 @@ class CommentsRepository {
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
                         val comments = GetCommentsApi.parseCommentsJson(response)
-                        //TODO remove after testing
-                        //reverse the list to show the latest comments first temporarily
                         commentsList.postValue(comments.toMutableList())
                         callback.onSuccess(response)
                     }
@@ -75,8 +73,9 @@ class CommentsRepository {
                         val comment = CreateCommentApi.parseCreateCommentJson(response)
 
                         val updatedCommentsList =
-                            addComment(commentsList.value?.toMutableList(), comment)
-                        commentsList.value = updatedCommentsList
+                            addComment(cloneCommentList(commentsList.value), comment)
+
+                        commentsList.postValue(updatedCommentsList)
                         callback.onSuccess(response)
                     }
 
@@ -112,7 +111,7 @@ class CommentsRepository {
             val oldCommentList = commentsList.value?.toMutableList()
 
             val updatedCommentsList =
-                editComment(commentsList.value?.toMutableList(), commentId, content)
+                editComment(cloneCommentList(commentsList.value), commentId, content)
             commentsList.value = updatedCommentsList
 
             UpdateCommentApi.updateComment(context,
@@ -158,7 +157,7 @@ class CommentsRepository {
 
             val oldCommentList = commentsList.value?.toMutableList()
             val updatedCommentsList =
-                deleteComment(commentsList.value?.toMutableList(), comment)
+                deleteComment(cloneCommentList(commentsList.value), comment)
             commentsList.value = updatedCommentsList
 
             DeleteCommentApi.deleteComment(context,
@@ -193,20 +192,36 @@ class CommentsRepository {
 
         }
 
+        private fun cloneCommentList(comments: MutableList<CommentModel>?): MutableList<CommentModel>? {
+            if (comments == null) return null
+            val newComments = mutableListOf<CommentModel>()
+            for (c in comments) {
+                val newComment = CommentModel(
+                    c.commentId,
+                    c.parentCommentId,
+                    c.comment,
+                    c.username,
+                    c.userImage,
+                    c.createdAt,
+                    cloneCommentList(c.replies.toMutableList()) ?: mutableListOf()
+                )
+                newComments.add(newComment)
+            }
+            return newComments
+        }
+
         private fun addComment(
             comments: MutableList<CommentModel>?, comment: CommentModel
         ): MutableList<CommentModel> {
             if (comments == null) return mutableListOf(comment)
             if (comment.parentCommentId == null) {
-                comments.add(0, comment)
+                comments.add(comment)
                 return comments
             }
             for (c in comments) {
                 if (c.commentId == comment.parentCommentId) {
-                    val replies = c.replies.toMutableList()
-                    replies.add(comment)
-                    c.replies = replies
-                    return comments.toMutableList()
+                    c.replies.add(comment)
+                    return comments
                 }
                 c.replies = addComment(c.replies.toMutableList(), comment)
             }
@@ -223,7 +238,7 @@ class CommentsRepository {
                     comments[comments.indexOf(c)] = comment
                     return comments
                 }
-                c.replies = editComment(c.replies.toMutableList(), commentId, content)
+                c.replies = editComment(c.replies, commentId, content)
             }
             return comments
         }
@@ -238,12 +253,10 @@ class CommentsRepository {
             }
             for (c in comments) {
                 if (c.commentId == comment.parentCommentId) {
-                    val replies = c.replies.toMutableList()
-                    replies.remove(comment)
-                    c.replies = replies
-                    return comments.toMutableList()
+                    c.replies.remove(comment)
+                    return comments
                 }
-                c.replies = deleteComment(c.replies.toMutableList(), comment)
+                c.replies = deleteComment(c.replies, comment)
             }
             return comments
         }
