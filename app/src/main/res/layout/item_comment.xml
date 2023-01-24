@@ -68,53 +68,88 @@
             app:layout_constraintStart_toEndOf="@+id/item_comment_user_image"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!--comment content must be inside another layout-->
-            <!--in order to set width to correctly, otherwise it will be-->
-            <!--set to match_parent and will not be able to wrap content-->
-            <!--and when content is too long it will be cut off-->
-            <!--to the next line-->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/item_comment_cv"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
-                app:cardBackgroundColor="@color/comment_bg_color"
-                app:cardCornerRadius="24dp">
+                android:orientation="horizontal"
+                tools:ignore="UselessParent">
 
-                <LinearLayout
+                <!--comment content must be inside another layout-->
+                <!--in order to set width to correctly, otherwise it will be-->
+                <!--set to match_parent and will not be able to wrap content-->
+                <!--and when content is too long it will be cut off-->
+                <!--to the next line-->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/item_comment_cv"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/comment_bg_color"
+                    app:cardCornerRadius="24dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/item_comment_user_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/item_comment_user_name"
+                            android:textColor="@color/dark_gray"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/item_comment_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/item_comment_content"
+                            android:textColor="@color/dark_gray"
+                            android:textSize="15sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:orientation="vertical">
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="-12dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="@color/comment_like_count_bg_color"
+                    app:cardCornerRadius="50dp">
 
                     <TextView
-                        android:id="@+id/item_comment_user_name"
+                        android:id="@+id/item_comment_like_count_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_marginStart="8dp"
+                        android:layout_marginTop="4dp"
                         android:layout_marginEnd="8dp"
-                        android:text="@string/item_comment_user_name"
-                        android:textColor="@color/dark_gray"
-                        android:textSize="16sp"
+                        android:layout_marginBottom="4dp"
+                        android:text="@string/item_comment_like_count"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
                         android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/item_comment_content"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/item_comment_content"
-                        android:textColor="@color/dark_gray"
-                        android:textSize="15sp" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
         </LinearLayout>
 
         <TextView
@@ -132,6 +167,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/item_comment_like"
             android:textColor="@color/dark_gray"
             app:layout_constraintStart_toEndOf="@+id/item_comment_time_tv"
@@ -142,6 +180,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/item_comment_reply"
             android:textColor="@color/dark_gray"
             app:layout_constraintStart_toEndOf="@+id/item_comment_like_tv"
@@ -153,6 +194,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="-6dp"
             android:layout_marginTop="24dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

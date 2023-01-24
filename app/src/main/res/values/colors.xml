@@ -26,4 +26,5 @@
     <color name="pie_chart_color_6">#A6ACE8</color>
 
     <color name="comment_bg_color">#EDF6FF</color>
+    <color name="comment_like_count_bg_color">@color/login_header_color</color>
 </resources>
