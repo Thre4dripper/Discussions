@@ -185,8 +185,8 @@ class CommentBottomSheet(
         }
     }
 
-    override fun onCommentLikeChanged(commentId: String, isLiked: Boolean) {
-
+    override fun onCommentLikeChanged(commentId: String) {
+        viewModel.likeComment(requireContext(), commentId)
     }
 
     override fun onCommentDeleted(comment: CommentModel) {

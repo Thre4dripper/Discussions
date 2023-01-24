@@ -107,4 +107,18 @@ class CommentsViewModel : ViewModel() {
             }
         })
     }
+
+    fun likeComment(context: Context, commentId: String) {
+        _isCommentLikedChanged.value = null
+        commentsScrollToTop = false
+        CommentsRepository.likeComment(context, commentId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isCommentLikedChanged.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isCommentLikedChanged.value = response
+            }
+        })
+    }
 }

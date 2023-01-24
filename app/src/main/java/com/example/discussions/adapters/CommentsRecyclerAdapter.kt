@@ -69,7 +69,7 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
                 DateUtils.MINUTE_IN_MILLIS
             )
             binding.itemCommentLikeTv.text =
-                if (commentModel.isLiked) "UnLike" else "Like"
+                if (commentModel.isLiked) "Liked" else "Like"
 
             binding.itemCommentLikeCountTv.text = commentModel.likes.toString()
 

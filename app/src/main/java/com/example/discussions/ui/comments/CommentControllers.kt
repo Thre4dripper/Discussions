@@ -71,6 +71,8 @@ class CommentControllers {
             }
         }
 
+        //TODO add comment like observer
+
         /***
          * METHODS FOR HANDLING COMMENT ACTIONS
          */
