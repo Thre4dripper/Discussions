@@ -47,7 +47,7 @@ class UserPostsRecyclerAdapter(
         fun bind(
             binding: ItemDiscussionPostBinding,
             postModel: PostModel,
-            posInterface: PostMenuInterface,
+            postInterface: PostMenuInterface,
             likeCommentInterface: LikeCommentInterface
         ) {
             //setting post popup menu
@@ -62,11 +62,11 @@ class UserPostsRecyclerAdapter(
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.post_options_menu_edit -> {
-                        posInterface.onPostEdit(postModel.postId)
+                        postInterface.onPostEdit(postModel.postId)
                         true
                     }
                     R.id.post_options_menu_delete -> {
-                        posInterface.onPostDelete(postModel.postId)
+                        postInterface.onPostDelete(postModel.postId)
                         true
                     }
                     else -> false
@@ -102,9 +102,11 @@ class UserPostsRecyclerAdapter(
 
             binding.itemPostTitle.apply {
                 text = postModel.title
+                visibility = if (postModel.title.isEmpty()) View.GONE else View.VISIBLE
             }
             binding.itemPostContent.apply {
                 text = postModel.content
+                visibility = if (postModel.content.isEmpty()) View.GONE else View.VISIBLE
             }
 
             val image = postModel.postImage
