@@ -112,9 +112,9 @@ class CommentBottomSheet(
                     val error = viewModel.isCommentsFetched.value
 
                     //when empty list is due to network error
-                    if (error != Constants.API_SUCCESS) {
+                    if (error != Constants.API_SUCCESS && error != null) {
                         Toast.makeText(
-                            requireContext(), viewModel.isCommentsFetched.value, Toast.LENGTH_SHORT
+                            requireContext(), error, Toast.LENGTH_SHORT
                         ).show()
                     }
                     if (error == Constants.AUTH_FAILURE_ERROR) {
