@@ -230,11 +230,13 @@ class PollsRecyclerAdapter(
             binding.itemPollLikesCount.text = pollModel.likes.toString()
             binding.itemPollCommentsCount.text = pollModel.comments.toString()
 
-            //setting like and comment button click listeners
+            //local variable for realtime like button change
             var pollIsLiked = pollModel.isLiked
+            //setting like and comment button click listeners
             binding.itemPollLikeBtn.apply {
                 setOnClickListener {
                     likeCommentInterface.onLike(pollModel.pollId, pollModel.isLiked, pollIsLiked)
+                    //changing the like button icon every time it is clicked
                     pollIsLiked = !pollIsLiked
                     setCompoundDrawablesWithIntrinsicBounds(
                         if (pollIsLiked) {
@@ -244,6 +246,14 @@ class PollsRecyclerAdapter(
                         0,
                         0
                     )
+                    //changing the likes count every time the like button is clicked based on the current state of the post
+                    if (!pollModel.isLiked) {
+                        binding.itemPollLikesCount.text =
+                            if (pollIsLiked) (pollModel.likes + 1).toString() else pollModel.likes.toString()
+                    } else {
+                        binding.itemPollLikesCount.text =
+                            if (pollIsLiked) (pollModel.likes).toString() else (pollModel.likes - 1).toString()
+                    }
                 }
                 //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(

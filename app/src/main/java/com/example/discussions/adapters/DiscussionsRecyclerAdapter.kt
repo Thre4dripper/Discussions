@@ -104,11 +104,13 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
             binding.itemPostLikesCount.text = postModel.likes.toString()
             binding.itemPostCommentsCount.text = postModel.comments.toString()
 
-            //setting like and comment button click listeners
+            //local variable for realtime like button change
             var postIsLiked = postModel.isLiked
+            //setting like and comment button click listeners
             binding.itemPostLikeBtn.apply {
                 setOnClickListener {
                     likeCommentInterface.onLike(postModel.postId, postModel.isLiked, postIsLiked)
+                    //changing the like button icon every time it is clicked
                     postIsLiked = !postIsLiked
                     setCompoundDrawablesWithIntrinsicBounds(
                         if (postIsLiked) {
@@ -118,6 +120,14 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
                         0,
                         0
                     )
+                    //changing the likes count every time the like button is clicked based on the current state of the post
+                    if (!postModel.isLiked) {
+                        binding.itemPostLikesCount.text =
+                            if (postIsLiked) (postModel.likes + 1).toString() else postModel.likes.toString()
+                    } else {
+                        binding.itemPostLikesCount.text =
+                            if (postIsLiked) (postModel.likes).toString() else (postModel.likes - 1).toString()
+                    }
                 }
                 //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(
