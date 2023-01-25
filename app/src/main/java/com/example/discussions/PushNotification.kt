@@ -5,6 +5,8 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -12,6 +14,10 @@ import androidx.core.app.NotificationManagerCompat
 import com.example.discussions.ui.home.HomeActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import java.io.IOException
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
 
 class PushNotification : FirebaseMessagingService() {
     private val TAG = "PushNotification"
@@ -23,12 +29,12 @@ class PushNotification : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val title = message.data["title"]
-        val content = message.data["content"]
-
+        val title = message.notification?.title
+        val content = message.notification?.body
+        val imageUrl = message.data["url"]
         createNotificationChannel()
 
-        val builder = createNotificationBuilder(title, content)
+        val builder = createNotificationBuilder(title, content, imageUrl)
 
         with(NotificationManagerCompat.from(this)) {
             try {
@@ -38,7 +44,9 @@ class PushNotification : FirebaseMessagingService() {
             }
         }
 
-        Log.d(TAG, "onMessageReceived: ${message.data}")
+        val body = "$title" + "$content" + "$imageUrl"
+
+        Log.d(TAG, "onMessageReceived: $body")
     }
 
     private fun createNotificationChannel() {
@@ -59,8 +67,7 @@ class PushNotification : FirebaseMessagingService() {
     }
 
     private fun createNotificationBuilder(
-        title: String?,
-        content: String?
+        title: String?, content: String?, imageUrl: String?
     ): NotificationCompat.Builder {
         // Layouts for the custom notification
 //        val notificationLayout = RemoteViews(packageName, R.layout.notification_collapsed)
@@ -73,11 +80,30 @@ class PushNotification : FirebaseMessagingService() {
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
         // Apply the layouts to the notification builder
-        return NotificationCompat.Builder(this, "CHANNEL_ID")
+        return NotificationCompat
+            .Builder(this, "CHANNEL_ID")
             .setSmallIcon(R.drawable.ic_like)
             .setContentTitle(title)
             .setContentText(content)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
+            .setStyle(
+                NotificationCompat.BigPictureStyle()
+                    .bigPicture(getBitmapFromUrl(imageUrl))
+            )
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT).setContentIntent(pendingIntent)
+    }
+
+    private fun getBitmapFromUrl(imageUrl: String?): Bitmap? {
+        return try {
+            val url = URL(imageUrl)
+            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            connection.doInput = true
+            connection.connect()
+            val input: InputStream = connection.inputStream
+            BitmapFactory.decodeStream(input)
+        } catch (e: IOException) {
+            // Log exception
+            e.printStackTrace()
+            null
+        }
     }
 }
