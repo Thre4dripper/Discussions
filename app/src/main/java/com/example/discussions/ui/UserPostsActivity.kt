@@ -2,6 +2,8 @@ package com.example.discussions.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -22,6 +24,7 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
     private lateinit var viewModel: UserPostsViewModel
 
     private lateinit var userPostsAdapter: UserPostsRecyclerAdapter
+    private var handler = Handler(Looper.getMainLooper())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user_posts)
@@ -50,8 +53,9 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
     private fun getUserPosts(postIndex: Int) {
         viewModel.userPosts.observe(this) {
             userPostsAdapter.submitList(it) {
-                if (UserPostsViewModel.userPostsScrollToIndex)
-                    binding.userPostsRv.scrollToPosition(postIndex)
+                if (UserPostsViewModel.userPostsScrollToIndex) binding.userPostsRv.scrollToPosition(
+                    postIndex
+                )
             }
         }
     }
@@ -69,17 +73,14 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
 
     override fun onPostDelete(postId: String) {
 
-        MaterialAlertDialogBuilder(this)
-            .setTitle("Delete")
+        MaterialAlertDialogBuilder(this).setTitle("Delete")
             .setMessage("Are you sure you want to delete this post?")
             .setPositiveButton("Confirm") { dialog, _ ->
                 dialog.dismiss()
                 deletePost(postId)
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
+            }.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
-            }
-            .show()
+            }.show()
     }
 
     /**
@@ -89,10 +90,16 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
         //post delete api observer
         viewModel.isPostDeleted.observe(this) {
             if (it != null) {
-                if (it == Constants.API_SUCCESS)
-                    Toast.makeText(this, "Post Deleted", Toast.LENGTH_SHORT).show()
-                else if (it == Constants.API_FAILED)
-                    Toast.makeText(this, "Problem Deleting Post", Toast.LENGTH_SHORT).show()
+                if (it == Constants.API_SUCCESS) Toast.makeText(
+                    this,
+                    "Post Deleted",
+                    Toast.LENGTH_SHORT
+                ).show()
+                else if (it == Constants.API_FAILED) Toast.makeText(
+                    this,
+                    "Problem Deleting Post",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         viewModel.deletePost(this, postId)
@@ -109,7 +116,12 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
                 }
             }
         }
-        viewModel.likePost(this, postOrPollId)
+
+        handler.removeCallbacksAndMessages(null)
+        handler.postDelayed({
+            if (isLiked == btnLikeStatus) viewModel.likePost(this, postOrPollId)
+
+        }, Constants.LIKE_DEBOUNCE_TIME)
     }
 
     override fun onComment(id: String, type: String) {

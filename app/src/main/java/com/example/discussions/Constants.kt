@@ -6,6 +6,8 @@ class Constants {
         const val API_FAILED = "error"
         const val AUTH_FAILURE_ERROR = "Auth Error"
 
+        const val LIKE_DEBOUNCE_TIME = 3000L
+
         //for activity results
         const val RESULT_CLOSE = 101
         const val RESULT_LOGOUT = 100
@@ -24,7 +26,7 @@ class Constants {
         const val GENDER = "gender"
         const val MALE = "Male"
         const val FEMALE = "Female"
-        const val EMAIL  = "email"
+        const val EMAIL = "email"
         const val MOBILE = "mobile_no"
         const val DOB = "dob"
         const val ADDRESS = "address"

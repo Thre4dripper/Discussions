@@ -2,6 +2,9 @@ package com.example.discussions.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +29,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
     private lateinit var viewModel: UserPollsViewModel
 
     private lateinit var pollsAdapter: PollsRecyclerAdapter
+    private val handler = Handler(Looper.getMainLooper())
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -148,7 +152,15 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
                 }
             }
         }
-        homeViewModel.likePoll(requireContext(), postOrPollId)
+
+        handler.removeCallbacksAndMessages(null)
+        handler.postDelayed({
+            if (isLiked == btnLikeStatus) {
+                homeViewModel.likePoll(requireContext(), postOrPollId)
+                Log.d(TAG, "onLike: like api called")
+            }
+
+        }, Constants.LIKE_DEBOUNCE_TIME)
     }
 
     override fun onComment(id: String, type: String) {

@@ -231,13 +231,23 @@ class PollsRecyclerAdapter(
             binding.itemPollCommentsCount.text = pollModel.comments.toString()
 
             //setting like and comment button click listeners
+            var pollIsLiked = pollModel.isLiked
             binding.itemPollLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onLike(pollModel.pollId, pollModel.isLiked, true)
+                    likeCommentInterface.onLike(pollModel.pollId, pollModel.isLiked, pollIsLiked)
+                    pollIsLiked = !pollIsLiked
+                    setCompoundDrawablesWithIntrinsicBounds(
+                        if (pollIsLiked) {
+                            R.drawable.ic_like_filled
+                        } else R.drawable.ic_like,
+                        0,
+                        0,
+                        0
+                    )
                 }
                 //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(
-                    if (pollModel.isLiked) {
+                    if (pollIsLiked) {
                         R.drawable.ic_like_filled
                     } else R.drawable.ic_like,
                     0,

@@ -103,7 +103,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
             if (isLiked == btnLikeStatus)
                 homeViewModel.likePost(requireContext(), postOrPollId)
 
-        }, 3000)
+        }, Constants.LIKE_DEBOUNCE_TIME)
     }
 
     override fun onComment(id: String, type: String) {
