@@ -172,16 +172,6 @@ class HomeViewModel : ViewModel() {
         _isPostLikedChanged.value = null
         postsOrPollsScrollToTop = false
 
-        //changing like status to liking, this will trigger refresh in recycler view
-        var newPostsList = postsList.value!!.toMutableList()
-        var postIndex = newPostsList.indexOfFirst { it.postId == postId }
-        var post = newPostsList[postIndex].copy(
-            isLiked = !newPostsList[postIndex].isLiked,
-            likes = newPostsList[postIndex].likes + if (!newPostsList[postIndex].isLiked) 1 else -1
-        )
-        newPostsList[postIndex] = post
-        postsList.value = newPostsList
-
         PostRepository.likePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPostLikedChanged.value = Constants.API_SUCCESS
@@ -189,16 +179,6 @@ class HomeViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isPostLikedChanged.value = Constants.API_FAILED
-
-                //reverting back to previous state
-                newPostsList = postsList.value!!.toMutableList()
-                postIndex = newPostsList.indexOfFirst { it.postId == postId }
-                post = newPostsList[postIndex].copy(
-                    isLiked = !newPostsList[postIndex].isLiked,
-                    likes = newPostsList[postIndex].likes + if (!newPostsList[postIndex].isLiked) 1 else -1
-                )
-                newPostsList[postIndex] = post
-                postsList.value = newPostsList
             }
         })
     }
