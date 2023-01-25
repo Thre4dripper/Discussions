@@ -71,7 +71,15 @@ class CommentControllers {
             }
         }
 
-        //TODO add comment like observer
+        fun likeCommentObserver(
+            context: Context, viewModel: CommentsViewModel, viewLifecycleOwner: LifecycleOwner
+        ) {
+            viewModel.isCommentLikedChanged.observe(viewLifecycleOwner) {
+                if (it != null && it != Constants.API_SUCCESS) Toast.makeText(
+                    context, "Error liking comment", Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
 
         /***
          * METHODS FOR HANDLING COMMENT ACTIONS

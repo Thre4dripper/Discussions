@@ -130,6 +130,11 @@ class CommentBottomSheet(
         CommentControllers.deleteCommentObserver(
             requireContext(), viewModel, viewLifecycleOwner
         )
+
+        //setting like comment observer only once
+        CommentControllers.likeCommentObserver(
+            requireContext(), viewModel, viewLifecycleOwner
+        )
     }
 
     private fun getAllComments() {
