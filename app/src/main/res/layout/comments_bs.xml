@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="@string/post_list_item_comment_count"
+            android:text="@string/comment_bs_count"
             android:textColor="@color/dark_gray"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -45,6 +45,7 @@
             app:layout_constraintTop_toBottomOf="@+id/comments_bs_control" />
 
         <ImageView
+            android:id="@+id/comment_bs_like_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"

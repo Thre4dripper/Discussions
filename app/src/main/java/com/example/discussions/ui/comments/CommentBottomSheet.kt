@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
@@ -70,9 +71,48 @@ class CommentBottomSheet(
         binding.commentsSwipeLayout.setOnRefreshListener { getAllComments() }
         binding.commentsProgressBar.visibility = View.VISIBLE
         getAllComments()
+        handleBottomSheetLike()
 
         setupCommentObservers()
         addCommentHandler()
+    }
+
+    private fun handleBottomSheetLike() {
+        if (commentType == Constants.COMMENT_TYPE_POST) {
+            initLikeButton(
+                viewModel.getPostLikeStatus(id)
+            ) { viewModel.likePost(requireContext(), this@CommentBottomSheet.id) }
+        } else if (commentType == Constants.COMMENT_TYPE_POLL) {
+            initLikeButton(
+                viewModel.getPollLikeStatus(id)
+            ) { viewModel.likePoll(requireContext(), this@CommentBottomSheet.id) }
+        }
+    }
+
+    private fun initLikeButton(
+        likeStatus: Boolean, likeTrigger: () -> Unit
+    ) {
+        binding.commentBsLikeBtn.apply {
+            //checking if the current user has liked the post
+            setOnClickListener {
+                likeTrigger()
+
+                setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        resources,
+                        if (!likeStatus) R.drawable.ic_like_filled else R.drawable.ic_like,
+                        null
+                    )
+                )
+            }
+            setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    if (likeStatus) R.drawable.ic_like_filled else R.drawable.ic_like,
+                    null
+                )
+            )
+        }
     }
 
     private fun setupCommentObservers() {

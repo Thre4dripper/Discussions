@@ -8,6 +8,8 @@ import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.CommentModel
 import com.example.discussions.repositories.CommentsRepository
+import com.example.discussions.repositories.PollRepository
+import com.example.discussions.repositories.PostRepository
 
 class CommentsViewModel : ViewModel() {
     private val TAG = "CommentsViewModel"
@@ -112,6 +114,62 @@ class CommentsViewModel : ViewModel() {
         _isCommentLikedChanged.value = null
         commentsScrollToTop = false
         CommentsRepository.likeComment(context, commentId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isCommentLikedChanged.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isCommentLikedChanged.value = response
+            }
+        })
+    }
+
+    fun getPostLikeStatus(postId: String): Boolean {
+        PostRepository.allPostsList.value?.forEach {
+            if (it.postId == postId) {
+                return it.isLiked
+            }
+        }
+        PostRepository.userPostsList.value?.forEach {
+            if (it.postId == postId) {
+                return it.isLiked
+            }
+        }
+        return false
+    }
+
+    fun getPollLikeStatus(pollId: String): Boolean {
+        PollRepository.userPollsList.value?.forEach {
+            if (it.pollId == pollId) {
+                return it.isLiked
+            }
+        }
+        PollRepository.userPollsList.value?.forEach {
+            if (it.pollId == pollId) {
+                return it.isLiked
+            }
+        }
+        return false
+    }
+
+    fun likePost(context: Context, postId: String) {
+        _isCommentLikedChanged.value = null
+        commentsScrollToTop = false
+        PostRepository.likePost(context, postId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isCommentLikedChanged.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isCommentLikedChanged.value = response
+            }
+        })
+    }
+
+    fun likePoll(context: Context, pollId: String) {
+        _isCommentLikedChanged.value = null
+        commentsScrollToTop = false
+        PollRepository.likePoll(context, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isCommentLikedChanged.value = Constants.API_SUCCESS
             }
