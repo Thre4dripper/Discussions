@@ -247,13 +247,12 @@ class PollsRecyclerAdapter(
                         0
                     )
                     //changing the likes count every time the like button is clicked based on the current state of the post
-                    if (!pollModel.isLiked) {
-                        binding.itemPollLikesCount.text =
-                            if (pollIsLiked) (pollModel.likes + 1).toString() else pollModel.likes.toString()
-                    } else {
-                        binding.itemPollLikesCount.text =
-                            if (pollIsLiked) (pollModel.likes).toString() else (pollModel.likes - 1).toString()
-                    }
+                    binding.itemPollLikesCount.text =
+                        if (pollIsLiked) {
+                            binding.itemPollLikesCount.text.toString().toInt().plus(1).toString()
+                        } else {
+                            binding.itemPollLikesCount.text.toString().toInt().minus(1).toString()
+                        }
                 }
                 //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(

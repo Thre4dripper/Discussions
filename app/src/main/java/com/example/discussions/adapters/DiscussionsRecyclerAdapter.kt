@@ -121,13 +121,12 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
                         0
                     )
                     //changing the likes count every time the like button is clicked based on the current state of the post
-                    if (!postModel.isLiked) {
-                        binding.itemPostLikesCount.text =
-                            if (postIsLiked) (postModel.likes + 1).toString() else postModel.likes.toString()
-                    } else {
-                        binding.itemPostLikesCount.text =
-                            if (postIsLiked) (postModel.likes).toString() else (postModel.likes - 1).toString()
-                    }
+                    binding.itemPostLikesCount.text =
+                        if (postIsLiked) {
+                            binding.itemPostLikesCount.text.toString().toInt().plus(1).toString()
+                        } else {
+                            binding.itemPostLikesCount.text.toString().toInt().minus(1).toString()
+                        }
                 }
                 //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(
