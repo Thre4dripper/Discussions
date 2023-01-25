@@ -1,6 +1,8 @@
 package com.example.discussions.ui.home
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +24,8 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
     private lateinit var homeViewModel: HomeViewModel
 
     private lateinit var discussAdapter: DiscussionsRecyclerAdapter
+    private var handler = Handler(Looper.getMainLooper())
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -82,7 +86,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
         homeViewModel.getAllPosts(requireContext())
     }
 
-    override fun onLike(postOrPollId: String) {
+    override fun onLike(postOrPollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
         homeViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
@@ -93,7 +97,13 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
                 }
             }
         }
-        homeViewModel.likePost(requireContext(), postOrPollId)
+
+        handler.removeCallbacksAndMessages(null)
+        handler.postDelayed({
+            if (isLiked == btnLikeStatus)
+                homeViewModel.likePost(requireContext(), postOrPollId)
+
+        }, 3000)
     }
 
     override fun onComment(id: String, type: String) {

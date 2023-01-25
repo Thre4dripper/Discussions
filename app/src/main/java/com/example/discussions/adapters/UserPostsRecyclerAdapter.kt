@@ -133,7 +133,7 @@ class UserPostsRecyclerAdapter(
             //setting like and comment button click listeners
             binding.itemPostLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onLike(postModel.postId)
+                    likeCommentInterface.onLike(postModel.postId, postModel.isLiked, true)
                 }
                 //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(

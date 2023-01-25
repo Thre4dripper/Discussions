@@ -137,7 +137,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
         startActivity(intent)
     }
 
-    override fun onLike(postOrPollId: String) {
+    override fun onLike(postOrPollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
         homeViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {

@@ -105,13 +105,23 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
             binding.itemPostCommentsCount.text = postModel.comments.toString()
 
             //setting like and comment button click listeners
+            var postIsLiked = postModel.isLiked
             binding.itemPostLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onLike(postModel.postId)
+                    likeCommentInterface.onLike(postModel.postId, postModel.isLiked, postIsLiked)
+                    postIsLiked = !postIsLiked
+                    setCompoundDrawablesWithIntrinsicBounds(
+                        if (postIsLiked) {
+                            R.drawable.ic_like_filled
+                        } else R.drawable.ic_like,
+                        0,
+                        0,
+                        0
+                    )
                 }
                 //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(
-                    if (postModel.isLiked) {
+                    if (postIsLiked) {
                         R.drawable.ic_like_filled
                     } else R.drawable.ic_like,
                     0,

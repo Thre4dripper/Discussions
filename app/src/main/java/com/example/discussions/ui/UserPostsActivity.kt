@@ -98,7 +98,7 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
         viewModel.deletePost(this, postId)
     }
 
-    override fun onLike(postOrPollId: String) {
+    override fun onLike(postOrPollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
         viewModel.isPostLikedChanged.observe(this) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {

@@ -233,7 +233,7 @@ class PollsRecyclerAdapter(
             //setting like and comment button click listeners
             binding.itemPollLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onLike(pollModel.pollId)
+                    likeCommentInterface.onLike(pollModel.pollId, pollModel.isLiked, true)
                 }
                 //checking if the current user has liked the post
                 setCompoundDrawablesWithIntrinsicBounds(
