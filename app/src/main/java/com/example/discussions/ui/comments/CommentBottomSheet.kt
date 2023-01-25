@@ -80,38 +80,39 @@ class CommentBottomSheet(
     private fun handleBottomSheetLike() {
         if (commentType == Constants.COMMENT_TYPE_POST) {
             initLikeButton(
-                viewModel.getPostLikeStatus(id)
-            ) { viewModel.likePost(requireContext(), this@CommentBottomSheet.id) }
+                likeStatus = { viewModel.getPostLikeStatus(id) },
+                likeTrigger = { viewModel.likePost(requireContext(), this@CommentBottomSheet.id) }
+            )
         } else if (commentType == Constants.COMMENT_TYPE_POLL) {
             initLikeButton(
-                viewModel.getPollLikeStatus(id)
-            ) { viewModel.likePoll(requireContext(), this@CommentBottomSheet.id) }
+                likeStatus = { viewModel.getPollLikeStatus(id) },
+                likeTrigger = { viewModel.likePoll(requireContext(), this@CommentBottomSheet.id) }
+            )
         }
     }
 
     private fun initLikeButton(
-        likeStatus: Boolean, likeTrigger: () -> Unit
+        likeStatus: () -> Boolean, likeTrigger: () -> Unit
     ) {
         binding.commentBsLikeBtn.apply {
+            setImageDrawable(
+                ResourcesCompat.getDrawable(
+                    resources,
+                    if (likeStatus()) R.drawable.ic_like_filled else R.drawable.ic_like,
+                    null
+                )
+            )
             //checking if the current user has liked the post
             setOnClickListener {
                 likeTrigger()
-
                 setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
-                        if (!likeStatus) R.drawable.ic_like_filled else R.drawable.ic_like,
+                        if (!likeStatus()) R.drawable.ic_like_filled else R.drawable.ic_like,
                         null
                     )
                 )
             }
-            setImageDrawable(
-                ResourcesCompat.getDrawable(
-                    resources,
-                    if (likeStatus) R.drawable.ic_like_filled else R.drawable.ic_like,
-                    null
-                )
-            )
         }
     }
 
@@ -184,7 +185,7 @@ class CommentBottomSheet(
             isEnabled = false
             drawable.alpha = 100
             setOnClickListener {
-                createComment(binding.addCommentEt.text.toString())
+                createEditComment(binding.addCommentEt.text.toString())
                 binding.addCommentEt.text.clear()
             }
         }
@@ -210,7 +211,7 @@ class CommentBottomSheet(
         })
     }
 
-    private fun createComment(content: String) {
+    private fun createEditComment(content: String) {
         binding.commentAddProgressBar.visibility = View.VISIBLE
         binding.addCommentBtn.visibility = View.GONE
 
