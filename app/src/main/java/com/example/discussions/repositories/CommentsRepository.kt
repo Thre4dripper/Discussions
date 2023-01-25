@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.comments.*
-import com.example.discussions.api.apiCalls.post.PostLikeApi
 import com.example.discussions.models.CommentModel
 import com.example.discussions.store.LoginStore
 
@@ -190,6 +189,10 @@ class CommentsRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
+            val oldCommentList = commentsList.value?.toMutableList()
+            val updatedCommentsList = likeComment(cloneCommentList(commentsList.value), commentId)
+            commentsList.value = updatedCommentsList
+
             CommentLikeApi.likeComment(
                 context,
                 commentId,
@@ -200,6 +203,9 @@ class CommentsRepository {
                     }
 
                     override fun onError(response: String) {
+                        //restore the old list on api error
+                        commentsList.value = oldCommentList
+
                         if (response.contains("com.android.volley.TimeoutError")) {
                             callback.onError("Time Out")
                         } else if (response.contains("com.android.volley.NoConnectionError")) {
@@ -292,6 +298,24 @@ class CommentsRepository {
                     return comments
                 }
                 c.replies = deleteComment(c.replies, comment)
+            }
+            return comments
+        }
+
+        private fun likeComment(
+            comments: MutableList<CommentModel>?, commentId: String
+        ): MutableList<CommentModel> {
+            if (comments == null) return mutableListOf()
+            for (c in comments) {
+                if (c.commentId == commentId) {
+                    val comment = c.copy(
+                        isLiked = !c.isLiked,
+                        likes = if (c.isLiked) c.likes - 1 else c.likes + 1
+                    )
+                    comments[comments.indexOf(c)] = comment
+                    return comments
+                }
+                c.replies = likeComment(c.replies, commentId)
             }
             return comments
         }
