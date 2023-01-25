@@ -26,8 +26,7 @@ class PollRepository {
 
             val token = LoginStore.getJWTToken(context)!!
 
-            CreatePollApi.createPoll(
-                context,
+            CreatePollApi.createPoll(context,
                 token,
                 pollTitle,
                 pollContent,
@@ -56,51 +55,42 @@ class PollRepository {
                             callback.onError("Something went wrong")
                         }
                     }
-                }
-            )
+                })
         }
 
         fun getAllUserPolls(
-            context: Context,
-            callback: ResponseCallback
+            context: Context, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            GetUserPollsApi.getUserPollsJson(
-                context,
-                token,
-                object : ResponseCallback {
-                    override fun onSuccess(response: String) {
-                        userPollsList.postValue(GetUserPollsApi.parseUserPollsJson(response))
-                        callback.onSuccess(response)
-                    }
+            GetUserPollsApi.getUserPollsJson(context, token, object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    userPollsList.postValue(GetUserPollsApi.parseUserPollsJson(response))
+                    callback.onSuccess(response)
+                }
 
-                    override fun onError(response: String) {
-                        if (response.contains("com.android.volley.TimeoutError")) {
-                            callback.onError("Time Out")
-                        } else if (response.contains("com.android.volley.NoConnectionError")) {
-                            callback.onError("Please check your internet connection")
-                        } else if (response.contains("com.android.volley.AuthFailureError")) {
-                            callback.onError("Auth Error")
-                        } else if (response.contains("com.android.volley.NetworkError")) {
-                            callback.onError("Network Error")
-                        } else if (response.contains("com.android.volley.ServerError")) {
-                            callback.onError("Server Error")
-                        } else if (response.contains("com.android.volley.ParseError")) {
-                            callback.onError("Parse Error")
-                        } else {
-                            callback.onError("Something went wrong")
-                        }
+                override fun onError(response: String) {
+                    if (response.contains("com.android.volley.TimeoutError")) {
+                        callback.onError("Time Out")
+                    } else if (response.contains("com.android.volley.NoConnectionError")) {
+                        callback.onError("Please check your internet connection")
+                    } else if (response.contains("com.android.volley.AuthFailureError")) {
+                        callback.onError("Auth Error")
+                    } else if (response.contains("com.android.volley.NetworkError")) {
+                        callback.onError("Network Error")
+                    } else if (response.contains("com.android.volley.ServerError")) {
+                        callback.onError("Server Error")
+                    } else if (response.contains("com.android.volley.ParseError")) {
+                        callback.onError("Parse Error")
+                    } else {
+                        callback.onError("Something went wrong")
                     }
                 }
-            )
+            })
         }
 
         fun pollVote(
-            context: Context,
-            pollId: String,
-            pollOptionId: String,
-            callback: ResponseCallback
+            context: Context, pollId: String, pollOptionId: String, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
             val newPollsList = userPollsList.value!!.toMutableList()
@@ -147,82 +137,98 @@ class PollRepository {
                             callback.onError("Something went wrong")
                         }
                     }
-                }
-            )
+                })
         }
 
         fun deletePoll(
-            context: Context,
-            pollId: String,
-            callback: ResponseCallback
+            context: Context, pollId: String, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            DeletePollApi.deletePoll(
-                context,
-                pollId,
-                token,
-                object : ResponseCallback {
-                    override fun onSuccess(response: String) {
-                        callback.onSuccess(response)
-                    }
+            DeletePollApi.deletePoll(context, pollId, token, object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    callback.onSuccess(response)
+                }
 
-                    override fun onError(response: String) {
-                        if (response.contains("com.android.volley.TimeoutError")) {
-                            callback.onError("Time Out")
-                        } else if (response.contains("com.android.volley.NoConnectionError")) {
-                            callback.onError("Please check your internet connection")
-                        } else if (response.contains("com.android.volley.AuthFailureError")) {
-                            callback.onError("Auth Error")
-                        } else if (response.contains("com.android.volley.NetworkError")) {
-                            callback.onError("Network Error")
-                        } else if (response.contains("com.android.volley.ServerError")) {
-                            callback.onError("Server Error")
-                        } else if (response.contains("com.android.volley.ParseError")) {
-                            callback.onError("Parse Error")
-                        } else {
-                            callback.onError("Something went wrong")
-                        }
+                override fun onError(response: String) {
+                    if (response.contains("com.android.volley.TimeoutError")) {
+                        callback.onError("Time Out")
+                    } else if (response.contains("com.android.volley.NoConnectionError")) {
+                        callback.onError("Please check your internet connection")
+                    } else if (response.contains("com.android.volley.AuthFailureError")) {
+                        callback.onError("Auth Error")
+                    } else if (response.contains("com.android.volley.NetworkError")) {
+                        callback.onError("Network Error")
+                    } else if (response.contains("com.android.volley.ServerError")) {
+                        callback.onError("Server Error")
+                    } else if (response.contains("com.android.volley.ParseError")) {
+                        callback.onError("Parse Error")
+                    } else {
+                        callback.onError("Something went wrong")
                     }
                 }
-            )
+            })
         }
 
         fun likePoll(
-            context: Context,
-            pollId: String,
-            callback: ResponseCallback
+            context: Context, pollId: String, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            PollLikeApi.likePoll(
-                context,
-                pollId,
-                token,
-                object : ResponseCallback {
-                    override fun onSuccess(response: String) {
-                        callback.onSuccess(response)
-                    }
+            val oldPollsList = userPollsList.value!!.toMutableList()
+            val updatedPollsList = likePollInData(oldPollsList, pollId)
+            userPollsList.postValue(updatedPollsList)
 
-                    override fun onError(response: String) {
-                        if (response.contains("com.android.volley.TimeoutError")) {
-                            callback.onError("Time Out")
-                        } else if (response.contains("com.android.volley.NoConnectionError")) {
-                            callback.onError("Please check your internet connection")
-                        } else if (response.contains("com.android.volley.AuthFailureError")) {
-                            callback.onError("Auth Error")
-                        } else if (response.contains("com.android.volley.NetworkError")) {
-                            callback.onError("Network Error")
-                        } else if (response.contains("com.android.volley.ServerError")) {
-                            callback.onError("Server Error")
-                        } else if (response.contains("com.android.volley.ParseError")) {
-                            callback.onError("Parse Error")
-                        } else {
-                            callback.onError("Something went wrong")
-                        }
+            PollLikeApi.likePoll(context, pollId, token, object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    callback.onSuccess(response)
+                }
+
+                override fun onError(response: String) {
+                    // Revert the changes
+                    userPollsList.postValue(oldPollsList)
+
+                    if (response.contains("com.android.volley.TimeoutError")) {
+                        callback.onError("Time Out")
+                    } else if (response.contains("com.android.volley.NoConnectionError")) {
+                        callback.onError("Please check your internet connection")
+                    } else if (response.contains("com.android.volley.AuthFailureError")) {
+                        callback.onError("Auth Error")
+                    } else if (response.contains("com.android.volley.NetworkError")) {
+                        callback.onError("Network Error")
+                    } else if (response.contains("com.android.volley.ServerError")) {
+                        callback.onError("Server Error")
+                    } else if (response.contains("com.android.volley.ParseError")) {
+                        callback.onError("Parse Error")
+                    } else {
+                        callback.onError("Something went wrong")
                     }
                 }
-            )
+            })
+        }
+
+        /**
+         * METHOD POST DATA MANIPULATION
+         */
+
+        private fun likePollInData(
+            pollsList: MutableList<PollModel>?, pollId: String
+        ): MutableList<PollModel>? {
+            val likedPoll = pollsList?.find { it.pollId == pollId }
+            val likedPollIndex: Int
+            var newPollsList: MutableList<PollModel>? = null
+
+            if (likedPoll != null) {
+                likedPollIndex = pollsList.indexOf(likedPoll)
+                newPollsList = pollsList.toMutableList()
+                val poll = likedPoll.copy(
+                    isLiked = !likedPoll.isLiked,
+                    likes = likedPoll.likes + if (!likedPoll.isLiked) 1 else -1
+                )
+                newPollsList[likedPollIndex] = poll
+            }
+
+            return newPollsList
         }
     }
 }

@@ -59,10 +59,8 @@ class HomeViewModel : ViewModel() {
 
 
     fun getProfile(context: Context) {
-        if (_isProfileFetched.value == Constants.API_SUCCESS)
-            return
-        else
-            _isProfileFetched.value = null
+        if (_isProfileFetched.value == Constants.API_SUCCESS) return
+        else _isProfileFetched.value = null
 
 
         UserRepository.getProfile(context, object : ResponseCallback {
@@ -97,8 +95,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getAllPosts(context: Context) {
-        if (_isPostsFetched.value == Constants.API_SUCCESS)
-            return
+        if (_isPostsFetched.value == Constants.API_SUCCESS) return
         else {
             _isPostsFetched.value = null
         }
@@ -121,8 +118,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun getAllUserPolls(context: Context) {
-        if (_isUserPollsFetched.value == Constants.API_SUCCESS)
-            return
+        if (_isUserPollsFetched.value == Constants.API_SUCCESS) return
         else {
             _isUserPollsFetched.value = null
         }
@@ -187,16 +183,6 @@ class HomeViewModel : ViewModel() {
         _isPollLikedChanged.value = null
         postsOrPollsScrollToTop = false
 
-        //changing like status to liking, this will trigger refresh in recycler view
-        var newPollsList = userPollsList.value!!.toMutableList()
-        var pollIndex = newPollsList.indexOfFirst { it.pollId == pollId }
-        var poll = newPollsList[pollIndex].copy(
-            isLiked = !newPollsList[pollIndex].isLiked,
-            likes = newPollsList[pollIndex].likes + if (!newPollsList[pollIndex].isLiked) 1 else -1
-        )
-        newPollsList[pollIndex] = poll
-        userPollsList.value = newPollsList
-
         PollRepository.likePoll(context, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPollLikedChanged.value = Constants.API_SUCCESS
@@ -204,16 +190,6 @@ class HomeViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isPollLikedChanged.value = Constants.API_FAILED
-
-                //reverting back to previous state
-                newPollsList = userPollsList.value!!.toMutableList()
-                pollIndex = newPollsList.indexOfFirst { it.pollId == pollId }
-                poll = newPollsList[pollIndex].copy(
-                    isLiked = !newPollsList[pollIndex].isLiked,
-                    likes = newPollsList[pollIndex].likes + if (!newPollsList[pollIndex].isLiked) 1 else -1
-                )
-                newPollsList[pollIndex] = poll
-                userPollsList.value = newPollsList
             }
         })
     }
