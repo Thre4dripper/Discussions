@@ -72,6 +72,8 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
                 if (commentModel.isLiked) "Liked" else "Like"
 
             binding.itemCommentLikeCountTv.text = commentModel.likes.toString()
+            binding.itemCommentLikeCountTv.visibility =
+                if (commentModel.likes > 0) View.VISIBLE else View.GONE
 
             binding.itemCommentLikeTv.setOnClickListener {
                 commentInterface.onCommentLikeChanged(commentModel.commentId)
