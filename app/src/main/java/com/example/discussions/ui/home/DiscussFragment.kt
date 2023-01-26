@@ -109,7 +109,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
     override fun onComment(id: String, type: String) {
         val count = PostRepository.allPostsList.value?.find { it.postId == id }?.comments ?: 0
 
-        val commentBottomSheet = CommentBottomSheet(id, type, count)
+        val commentBottomSheet = CommentBottomSheet(requireContext(),id, type, count)
         commentBottomSheet.show(requireActivity().supportFragmentManager, commentBottomSheet.tag)
     }
 }

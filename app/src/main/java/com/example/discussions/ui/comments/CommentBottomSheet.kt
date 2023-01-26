@@ -1,5 +1,6 @@
 package com.example.discussions.ui.comments
 
+import android.content.Context
 import android.content.res.Resources
 import android.os.Bundle
 import android.os.Handler
@@ -24,6 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class CommentBottomSheet(
+    private var parentContext: Context,
     var id: String,
     var type: String,
     private var commentCount: Int,
@@ -41,6 +43,12 @@ class CommentBottomSheet(
     private var commentId: String? = null
 
     private var commentLikeHandler = Handler(Looper.getMainLooper())
+    private var bsLikeHandler = Handler(Looper.getMainLooper())
+
+    //variables for realtime update of like button in bs and parent post or poll
+    private var bsParentLikeStatus = false
+    private var bsLikeBtnStatus = false
+    private var bsLikeTrigger: () -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -83,40 +91,79 @@ class CommentBottomSheet(
 
     private fun handleBottomSheetLike() {
         if (commentType == Constants.COMMENT_TYPE_POST) {
-            initLikeButton(
-                likeStatus = { viewModel.getPostLikeStatus(id) },
-                likeTrigger = { viewModel.likePost(requireContext(), this@CommentBottomSheet.id) }
-            )
+            initLikeButton(likeStatus = { viewModel.getPostLikeStatus(id) })
+
+            //setting like trigger for bottom sheet
+            bsLikeTrigger = {
+                viewModel.likePost(
+                    this@CommentBottomSheet.parentContext, this@CommentBottomSheet.id
+                )
+            }
+
         } else if (commentType == Constants.COMMENT_TYPE_POLL) {
-            initLikeButton(
-                likeStatus = { viewModel.getPollLikeStatus(id) },
-                likeTrigger = { viewModel.likePoll(requireContext(), this@CommentBottomSheet.id) }
-            )
+            initLikeButton(likeStatus = { viewModel.getPollLikeStatus(id) })
+
+            //setting like trigger for bottom sheet
+            bsLikeTrigger = {
+                viewModel.likePoll(
+                    this@CommentBottomSheet.parentContext, this@CommentBottomSheet.id
+                )
+            }
+
         }
     }
 
     private fun initLikeButton(
-        likeStatus: () -> Boolean, likeTrigger: () -> Unit
+        likeStatus: () -> Boolean
     ) {
+        //getting like status of parent post or poll
+        bsParentLikeStatus = likeStatus()
+        bsLikeBtnStatus = bsParentLikeStatus
         binding.commentBsLikeBtn.apply {
             setImageDrawable(
                 ResourcesCompat.getDrawable(
                     resources,
-                    if (likeStatus()) R.drawable.ic_like_filled else R.drawable.ic_like,
+                    if (bsLikeBtnStatus) R.drawable.ic_like_filled else R.drawable.ic_like,
                     null
                 )
             )
             //checking if the current user has liked the post
             setOnClickListener {
-                likeTrigger()
+                //switching like status of button on every click
+                bsLikeBtnStatus = !bsLikeBtnStatus
+
+                //getting latest like status of parent post or poll
+                bsParentLikeStatus = likeStatus()
+
+                //removing previous callbacks and adding new callback
+                bsLikeHandler.removeCallbacksAndMessages(null)
+                bsLikeHandler.postDelayed({
+                    //like will only be triggered if the like status of parent post or poll is changed
+                    if (bsParentLikeStatus != bsLikeBtnStatus) {
+                        bsLikeTrigger()
+                    }
+                }, Constants.LIKE_DEBOUNCE_TIME)
+
+                //setting like button drawable according to "bsLikeBtnStatus"
                 setImageDrawable(
                     ResourcesCompat.getDrawable(
                         resources,
-                        if (!likeStatus()) R.drawable.ic_like_filled else R.drawable.ic_like,
+                        if (bsLikeBtnStatus) R.drawable.ic_like_filled else R.drawable.ic_like,
                         null
                     )
                 )
             }
+        }
+    }
+
+    /***
+     * WHEN BS IS CLOSING LIKE STATUS SHOULD INSTANTLY BE UPDATED
+     */
+    override fun onDestroyView() {
+        super.onDestroyView()
+        bsLikeHandler.removeCallbacksAndMessages(null)
+        if (bsParentLikeStatus != bsLikeBtnStatus) {
+            bsLikeTrigger()
         }
     }
 
