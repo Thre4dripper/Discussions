@@ -2,6 +2,8 @@ package com.example.discussions.ui.comments
 
 import android.content.res.Resources
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -37,6 +39,8 @@ class CommentBottomSheet(
 
     private var commentType = type
     private var commentId: String? = null
+
+    private var commentLikeHandler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -231,8 +235,13 @@ class CommentBottomSheet(
         }
     }
 
-    override fun onCommentLikeChanged(commentId: String) {
-        viewModel.likeComment(requireContext(), commentId)
+    override fun onCommentLikeChanged(commentId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+        commentLikeHandler.removeCallbacksAndMessages(null)
+        commentLikeHandler.postDelayed({
+            if (isLiked == btnLikeStatus) {
+                viewModel.likeComment(requireContext(), commentId)
+            }
+        }, Constants.LIKE_DEBOUNCE_TIME)
     }
 
     override fun onCommentDeleted(comment: CommentModel) {

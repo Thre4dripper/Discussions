@@ -39,10 +39,9 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
             Glide.with(itemView.context).load(commentModel.userImage)
                 .placeholder(R.drawable.ic_profile).circleCrop().into(binding.itemCommentUserImage)
 
-            val avatarSize = if (commentModel.parentCommentId == null)
-                dpToFloat(itemView.context, 40f)
-            else
-                dpToFloat(itemView.context, 25f)
+            val avatarSize =
+                if (commentModel.parentCommentId == null) dpToFloat(itemView.context, 40f)
+                else dpToFloat(itemView.context, 25f)
 
             binding.horizontalLine.visibility =
                 if (commentModel.parentCommentId != null) View.VISIBLE else View.GONE
@@ -64,19 +63,40 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
             val date = dateFormat.parse(commentModel.createdAt)
 
             binding.itemCommentTimeTv.text = DateUtils.getRelativeTimeSpanString(
-                date!!.time,
-                System.currentTimeMillis(),
-                DateUtils.MINUTE_IN_MILLIS
+                date!!.time, System.currentTimeMillis(), DateUtils.MINUTE_IN_MILLIS
             )
-            binding.itemCommentLikeTv.text =
-                if (commentModel.isLiked) "Liked" else "Like"
+            binding.itemCommentLikeTv.text = if (commentModel.isLiked) "Liked" else "Like"
 
             binding.itemCommentLikeCountTv.text = commentModel.likes.toString()
             binding.itemCommentLikeCountTv.visibility =
                 if (commentModel.likes > 0) View.VISIBLE else View.GONE
 
+            //local variable for realtime like button change
+            var commentLikeStatus = commentModel.isLiked
+
             binding.itemCommentLikeTv.setOnClickListener {
-                commentInterface.onCommentLikeChanged(commentModel.commentId)
+                commentInterface.onCommentLikeChanged(
+                    commentModel.commentId, commentModel.isLiked, commentLikeStatus
+                )
+                //changing the like button status
+                commentLikeStatus = !commentLikeStatus
+                //changing the like button text
+                binding.itemCommentLikeTv.text = if (commentLikeStatus) "Liked" else "Like"
+
+                //changing the like count
+                if (commentLikeStatus) {
+                    binding.itemCommentLikeCountTv.text =
+                        binding.itemCommentLikeCountTv.text.toString().toInt().plus(1).toString()
+                } else {
+                    binding.itemCommentLikeCountTv.text =
+                        binding.itemCommentLikeCountTv.text.toString().toInt().minus(1).toString()
+                }
+
+                //changing the like count visibility
+                binding.itemCommentLikeCountTv.visibility =
+                    if (binding.itemCommentLikeCountTv.text.toString()
+                            .toInt() > 0
+                    ) View.VISIBLE else View.GONE
             }
 
             binding.itemCommentReplyTv.setOnClickListener {
