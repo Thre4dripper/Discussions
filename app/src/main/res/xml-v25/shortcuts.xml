@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/create_poll_shortcut"
+        android:shortcutId="poll_shortcut"
+        android:shortcutShortLabel="@string/create_poll_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.example.discussions.ui.CreatePollActivity"
+            android:targetPackage="com.example.discussions">
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/create_post_shortcut"
+        android:shortcutId="post_shortcut"
+        android:shortcutShortLabel="@string/create_post_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.example.discussions.ui.CreateEditPostActivity"
+            android:targetPackage="com.example.discussions">
+            <extra android:name="post_mode" android:value="create_post"/>
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>
