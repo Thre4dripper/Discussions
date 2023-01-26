@@ -1,6 +1,7 @@
 package com.example.discussions.ui
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -117,11 +118,24 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
             }
         }
 
-        handler.removeCallbacksAndMessages(null)
-        handler.postDelayed({
-            if (isLiked == btnLikeStatus) viewModel.likePost(this, postOrPollId)
+        //debouncing the like button above android P
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            handler.removeCallbacksAndMessages(postOrPollId)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    viewModel.likePost(this, postOrPollId)
 
-        }, Constants.LIKE_DEBOUNCE_TIME)
+            }, postOrPollId, Constants.LIKE_DEBOUNCE_TIME)
+        }
+        //debouncing the like button below android P
+        else {
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    viewModel.likePost(this, postOrPollId)
+
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
     }
 
     override fun onComment(id: String, type: String) {

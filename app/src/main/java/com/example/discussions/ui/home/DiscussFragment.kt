@@ -1,5 +1,6 @@
 package com.example.discussions.ui.home
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -98,18 +99,30 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
             }
         }
 
-        handler.removeCallbacksAndMessages(null)
-        handler.postDelayed({
-            if (isLiked == btnLikeStatus)
-                homeViewModel.likePost(requireContext(), postOrPollId)
+        //debouncing the like button above android P
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            handler.removeCallbacksAndMessages(postOrPollId)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    homeViewModel.likePost(requireContext(), postOrPollId)
 
-        }, Constants.LIKE_DEBOUNCE_TIME)
+            }, postOrPollId, Constants.LIKE_DEBOUNCE_TIME)
+        }
+        //debouncing the like button below android P
+        else {
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    homeViewModel.likePost(requireContext(), postOrPollId)
+
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
     }
 
     override fun onComment(id: String, type: String) {
         val count = PostRepository.allPostsList.value?.find { it.postId == id }?.comments ?: 0
 
-        val commentBottomSheet = CommentBottomSheet(requireContext(),id, type, count)
+        val commentBottomSheet = CommentBottomSheet(requireContext(), id, type, count)
         commentBottomSheet.show(requireActivity().supportFragmentManager, commentBottomSheet.tag)
     }
 }

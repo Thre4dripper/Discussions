@@ -2,6 +2,7 @@ package com.example.discussions.ui.comments
 
 import android.content.Context
 import android.content.res.Resources
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -136,13 +137,23 @@ class CommentBottomSheet(
                 bsParentLikeStatus = likeStatus()
 
                 //removing previous callbacks and adding new callback
-                bsLikeHandler.removeCallbacksAndMessages(null)
-                bsLikeHandler.postDelayed({
-                    //like will only be triggered if the like status of parent post or poll is changed
-                    if (bsParentLikeStatus != bsLikeBtnStatus) {
-                        bsLikeTrigger()
-                    }
-                }, Constants.LIKE_DEBOUNCE_TIME)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    bsLikeHandler.removeCallbacksAndMessages(this@CommentBottomSheet.id)
+                    bsLikeHandler.postDelayed({
+                        //like will only be triggered if the like status of parent post or poll is changed
+                        if (bsParentLikeStatus != bsLikeBtnStatus) {
+                            bsLikeTrigger()
+                        }
+                    }, this@CommentBottomSheet.id, Constants.LIKE_DEBOUNCE_TIME)
+                } else {
+                    bsLikeHandler.removeCallbacksAndMessages(null)
+                    bsLikeHandler.postDelayed({
+                        //like will only be triggered if the like status of parent post or poll is changed
+                        if (bsParentLikeStatus != bsLikeBtnStatus) {
+                            bsLikeTrigger()
+                        }
+                    }, Constants.LIKE_DEBOUNCE_TIME)
+                }
 
                 //setting like button drawable according to "bsLikeBtnStatus"
                 setImageDrawable(
@@ -283,12 +294,21 @@ class CommentBottomSheet(
     }
 
     override fun onCommentLikeChanged(commentId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        commentLikeHandler.removeCallbacksAndMessages(null)
-        commentLikeHandler.postDelayed({
-            if (isLiked == btnLikeStatus) {
-                viewModel.likeComment(requireContext(), commentId)
-            }
-        }, Constants.LIKE_DEBOUNCE_TIME)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            commentLikeHandler.removeCallbacksAndMessages(commentId)
+            commentLikeHandler.postDelayed({
+                if (isLiked == btnLikeStatus) {
+                    viewModel.likeComment(requireContext(), commentId)
+                }
+            }, commentId, Constants.LIKE_DEBOUNCE_TIME)
+        } else {
+            commentLikeHandler.removeCallbacksAndMessages(null)
+            commentLikeHandler.postDelayed({
+                if (isLiked == btnLikeStatus) {
+                    viewModel.likeComment(requireContext(), commentId)
+                }
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
     }
 
     override fun onCommentDeleted(comment: CommentModel) {

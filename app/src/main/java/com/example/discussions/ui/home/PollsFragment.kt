@@ -1,10 +1,10 @@
 package com.example.discussions.ui.home
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -153,14 +153,24 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
             }
         }
 
-        handler.removeCallbacksAndMessages(null)
-        handler.postDelayed({
-            if (isLiked == btnLikeStatus) {
-                homeViewModel.likePoll(requireContext(), postOrPollId)
-                Log.d(TAG, "onLike: like api called")
-            }
+        //debouncing the like button above android P
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            handler.removeCallbacksAndMessages(postOrPollId)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    homeViewModel.likePoll(requireContext(), postOrPollId)
 
-        }, Constants.LIKE_DEBOUNCE_TIME)
+            }, postOrPollId, Constants.LIKE_DEBOUNCE_TIME)
+        }
+        //debouncing the like button below android P
+        else {
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    homeViewModel.likePoll(requireContext(), postOrPollId)
+
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
     }
 
     override fun onComment(id: String, type: String) {
