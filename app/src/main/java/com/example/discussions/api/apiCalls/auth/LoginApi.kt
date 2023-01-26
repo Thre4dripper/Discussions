@@ -13,14 +13,19 @@ class LoginApi {
         private const val TAG = "LoginApi"
 
         fun loginUser(
-            context: Context, username: String, password: String, callback: ResponseCallback
+            context: Context,
+            username: String,
+            password: String,
+            deviceToken: String,
+            callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
             val url = "${ApiRoutes.BASE_URL}${ApiRoutes.LOGIN}"
 
             val body = "{\n" +
-                    "    \"username\": ${username},\n" +
-                    "    \"password\": ${password}\n" +
+                    "    \"username\": \"$username\",\n" +
+                    "    \"password\": \"$password\",\n" +
+                    "    \"fcm_token\": \"$deviceToken\"\n" +
                     "}"
 
             val request =

@@ -1,4 +1,4 @@
-package com.example.discussions
+package com.example.discussions.notifications
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,6 +11,8 @@ import android.os.Build
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.discussions.R
+import com.example.discussions.store.UserStore
 import com.example.discussions.ui.home.HomeActivity
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -23,6 +25,7 @@ class PushNotification : FirebaseMessagingService() {
     private val TAG = "PushNotification"
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        UserStore.saveDeviceToken(this, token)
         Log.d(TAG, "onNewToken: $token")
     }
 

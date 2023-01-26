@@ -8,6 +8,7 @@ import com.example.discussions.MyApplication
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.repositories.AuthRepository
 import com.example.discussions.store.LoginStore
+import com.example.discussions.store.UserStore
 
 class LoginViewModel : ViewModel() {
     private val TAG = "LoginViewModel"
@@ -24,7 +25,7 @@ class LoginViewModel : ViewModel() {
         val loginStatus = LoginStore.getLoginStatus(context)
         val token = LoginStore.getJWTToken(context)
         if (loginStatus && token != null) {
-            MyApplication.username = LoginStore.getUserName(context)!!
+            MyApplication.username = UserStore.getUserName(context)!!
             isAuthenticated.postValue(Constants.API_SUCCESS)
         }
     }
@@ -40,7 +41,7 @@ class LoginViewModel : ViewModel() {
                 isAuthenticated.value = Constants.API_SUCCESS
                 //also logged session will be saved
                 LoginStore.saveJWTToken(context, response)
-                LoginStore.saveUserName(context, username)
+                UserStore.saveUserName(context, username)
                 MyApplication.username = username
                 if (rememberMe) {
                     LoginStore.saveLoginStatus(context, true)

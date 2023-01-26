@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.auth.LoginApi
 import com.example.discussions.api.apiCalls.auth.SignupApi
+import com.example.discussions.store.UserStore
 import org.json.JSONObject
 
 class AuthRepository {
@@ -13,7 +14,10 @@ class AuthRepository {
         fun loginUser(
             context: Context, username: String, password: String, callback: ResponseCallback
         ) {
-            LoginApi.loginUser(context, username, password, object : ResponseCallback {
+
+            val deviceToken = UserStore.getDeviceToken(context)!!
+
+            LoginApi.loginUser(context, username, password, deviceToken, object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     //getting jwt token from response
                     val rootObject = JSONObject(response)
