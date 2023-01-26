@@ -54,5 +54,19 @@ class Constants {
         const val COMMENT_TYPE_POLL = "poll"
         const val COMMENT_TYPE_REPLY = "reply"
         const val COMMENT_TYPE_EDIT = "edit"
+
+        //notification channels
+        const val POST_NOTIFICATION_CHANNEL = "post_notification_channel"
+        const val POLL_NOTIFICATION_CHANNEL = "poll_notification_channel"
+        const val COMMENT_NOTIFICATION_CHANNEL = "comment_notification_channel"
+
+        //notification ids
+        const val POST_LIKE_NOTIFICATION_ID = 1
+        const val POST_COMMENT_NOTIFICATION_ID = 2
+        const val POLL_LIKE_NOTIFICATION_ID = 3
+        const val POLL_COMMENT_NOTIFICATION_ID = 4
+        const val POLL_VOTE_NOTIFICATION_ID = 5
+        const val COMMENT_LIKE_NOTIFICATION_ID = 6
+        const val COMMENT_REPLY_NOTIFICATION_ID = 7
     }
 }
