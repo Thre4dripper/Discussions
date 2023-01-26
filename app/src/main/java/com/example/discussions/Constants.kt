@@ -68,5 +68,11 @@ class Constants {
         const val POLL_VOTE_NOTIFICATION_ID = 5
         const val COMMENT_LIKE_NOTIFICATION_ID = 6
         const val COMMENT_REPLY_NOTIFICATION_ID = 7
+
+        //notification types
+        const val LIKE = "like"
+        const val COMMENT = "comment"
+        const val VOTE = "vote"
+
     }
 }

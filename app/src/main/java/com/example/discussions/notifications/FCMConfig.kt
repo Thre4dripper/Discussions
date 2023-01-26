@@ -11,13 +11,14 @@ import com.example.discussions.Constants
 import com.example.discussions.store.UserStore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
 class FCMConfig : FirebaseMessagingService() {
-    private val TAG = "PushNotification"
+    private val TAG = "FCMConfig"
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         UserStore.saveDeviceToken(this, token)
@@ -49,13 +50,31 @@ class FCMConfig : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val title = message.notification?.title
-        val content = message.notification?.body
-        val imageUrl = message.data["url"]
+        val data = JSONObject(message.data.toString())
+        val type = data.getString("type")
+        val username = data.getJSONObject("created_by").getString("username")
+        val image = data.getJSONObject("created_by").getString("image")
 
-        val body = "$title" + "$content" + "$imageUrl"
+        val postId = if (data.has("post")) data.getString("post") else null
+        val pollId = if (data.has("poll")) data.getString("poll") else null
+        val commentId = if (data.has("comment")) data.getString("comment") else null
 
-        Log.d(TAG, "onMessageReceived: $body")
+        if (postId != null) {
+            val title = getTitle(type, username)
+            val content = "Tap to view"
+            PostNotifications.likeNotification(this, title, content, image, postId)
+        }
+
+        Log.d(TAG, "onMessageReceived: $data")
+    }
+
+    private fun getTitle(type: String, username: String): String {
+        return when (type) {
+            Constants.LIKE -> "$username liked your post"
+            Constants.COMMENT -> "$username commented on your post"
+            Constants.VOTE -> "$username voted on your poll"
+            else -> "Unknown notification"
+        }
     }
 
     private fun createNotificationChannel(
@@ -77,18 +96,20 @@ class FCMConfig : FirebaseMessagingService() {
         }
     }
 
-    private fun getBitmapFromUrl(imageUrl: String?): Bitmap? {
-        return try {
-            val url = URL(imageUrl)
-            val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-            connection.doInput = true
-            connection.connect()
-            val input: InputStream = connection.inputStream
-            BitmapFactory.decodeStream(input)
-        } catch (e: IOException) {
-            // Log exception
-            e.printStackTrace()
-            null
+    companion object {
+        fun getBitmapFromUrl(imageUrl: String?): Bitmap? {
+            return try {
+                val url = URL(imageUrl)
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.doInput = true
+                connection.connect()
+                val input: InputStream = connection.inputStream
+                BitmapFactory.decodeStream(input)
+            } catch (e: IOException) {
+                // Log exception
+                e.printStackTrace()
+                null
+            }
         }
     }
 }

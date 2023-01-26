@@ -1,6 +1,7 @@
 package com.example.discussions.viewModels
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
@@ -24,6 +25,7 @@ class LoginViewModel : ViewModel() {
     fun checkLoginStatus(context: Context) {
         val loginStatus = LoginStore.getLoginStatus(context)
         val token = LoginStore.getJWTToken(context)
+        Log.d(TAG, "checkLoginStatus: ${UserStore.getDeviceToken(context)}")
         if (loginStatus && token != null) {
             MyApplication.username = UserStore.getUserName(context)!!
             isAuthenticated.postValue(Constants.API_SUCCESS)
