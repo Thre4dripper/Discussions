@@ -36,6 +36,28 @@ class PostNotifications {
             )
         }
 
+        fun commentNotification(context: Context, data: JSONObject) {
+            val notifier = data.getJSONObject("created_by").getString("username")
+            val notifierImage = data.getJSONObject("created_by").getString("image")
+            val postId = data.getJSONObject("post").getString("id")
+            val postImage = data.getJSONObject("post").getString("image")
+            val postTitle = data.getJSONObject("post").getString("title")
+            val postContent = data.getJSONObject("post").getString("content")
+            val postComment = data.getJSONObject("post").getString("comment")
+
+            val notificationContent =
+                if (postTitle.isEmpty() && postContent.isEmpty()) "Tap to view post" else "$postTitle $postContent"
+
+            notify(
+                context,
+                notificationId = ("${Constants.POST_COMMENT_NOTIFICATION_ID}$postId").toInt(),
+                title = "$notifier commented \"$postComment\" on your post",
+                content = notificationContent,
+                userImage = FCMConfig.getBitmapFromUrl(notifierImage),
+                postImage = FCMConfig.getBitmapFromUrl(postImage)
+            )
+        }
+
         private fun notify(
             context: Context,
             notificationId: Int,

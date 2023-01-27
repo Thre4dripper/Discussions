@@ -60,15 +60,20 @@ class FCMConfig : FirebaseMessagingService() {
             Constants.NOTIFICATION_CATEGORY_COMMENT
         else Constants.NOTIFICATION_CATEGORY_INVALID
 
-        notifyByCategory(category, data)
+        val type = data.getString("type")
+
+        notifyByCategory(category, data, type)
 
         Log.d(TAG, "onMessageReceived: $data")
     }
 
-    private fun notifyByCategory(category: String, data: JSONObject) {
+    private fun notifyByCategory(category: String, data: JSONObject, type: String) {
         when (category) {
             Constants.NOTIFICATION_CATEGORY_POST -> {
-                PostNotifications.likeNotification(this, data)
+                if (type == Constants.NOTIFICATION_TYPE_LIKE)
+                    PostNotifications.likeNotification(this, data)
+                else if (type == Constants.NOTIFICATION_TYPE_COMMENT)
+                    PostNotifications.commentNotification(this, data)
                 //comment
             }
             Constants.NOTIFICATION_CATEGORY_POLL -> {
