@@ -61,8 +61,7 @@ class FCMConfig : FirebaseMessagingService() {
 
         if (postId != null) {
             val title = getTitle(type, username)
-            val content = "Tap to view"
-            PostNotifications.likeNotification(this, title, content, image, postId)
+            PostNotifications.likeNotification(this, title, image, postId)
         }
 
         Log.d(TAG, "onMessageReceived: $data")
