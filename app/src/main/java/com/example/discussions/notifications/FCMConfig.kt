@@ -4,18 +4,17 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.Log
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.discussions.Constants
 import com.example.discussions.store.UserStore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import org.json.JSONObject
-import java.io.IOException
-import java.io.InputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 class FCMConfig : FirebaseMessagingService() {
     private val TAG = "FCMConfig"
@@ -96,19 +95,31 @@ class FCMConfig : FirebaseMessagingService() {
     }
 
     companion object {
-        fun getBitmapFromUrl(imageUrl: String?): Bitmap? {
-            return try {
-                val url = URL(imageUrl)
-                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
-                connection.doInput = true
-                connection.connect()
-                val input: InputStream = connection.inputStream
-                BitmapFactory.decodeStream(input)
-            } catch (e: IOException) {
-                // Log exception
-                e.printStackTrace()
-                null
-            }
+        fun getBitmapFromUrl(
+            context: Context,
+            imageUrl: String?,
+            onBitmapReady: (Bitmap?) -> Unit
+        ) {
+            Log.d("TAG", "getBitmapFromUrl: $imageUrl")
+            Glide.with(context)
+                .asBitmap()
+                .load(imageUrl)
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(
+                        resource: Bitmap,
+                        transition: Transition<in Bitmap>?
+                    ) {
+                        onBitmapReady(resource)
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                        onBitmapReady(null)
+                    }
+
+                    override fun onLoadFailed(errorDrawable: Drawable?) {
+                        super.onLoadFailed(errorDrawable)
+                        onBitmapReady(null)                    }
+                })
         }
     }
 }

@@ -3,6 +3,7 @@ package com.example.discussions.notifications
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -18,34 +19,96 @@ class PostNotifications {
         val post = PostRepository.singlePost
 
         fun likeNotification(
-            context: Context, title: String?, userImage: String?, postId: String?
+            context: Context, title: String, userImage: String, postId: String
         ) {
-            PostRepository.getPostByID(context, postId!!, object : ResponseCallback {
+
+            var notifierImage: Bitmap? = null
+            var postImage: Bitmap? = null
+
+            //for checking if both requests are completed
+            var requestCount = 0
+
+            //get user image asynchronously
+            FCMConfig.getBitmapFromUrl(context, userImage) { bitmap ->
+                notifierImage = bitmap
+                requestCount++
+                requestNotification(
+                    context,
+                    requestCount,
+                    title,
+                    notifierImage,
+                    if (post.value != null) post.value!!.title + " " + post.value!!.content else "Tap to view post",
+                    postId,
+                    postImage
+                )
+            }
+
+            //get post info asynchronously
+            PostRepository.getPostByID(context, postId, object : ResponseCallback {
                 override fun onSuccess(response: String) {
-                    Log.d(TAG, "onSuccess: $response")
-                    displayNotification(
-                        context,
-                        title,
-                        post.value?.title + " " + post.value?.content,
-                        userImage,
-                        postId,
-                        post.value?.postImage
-                    )
+                    //after getting post info get post image asynchronously
+                    FCMConfig.getBitmapFromUrl(context, post.value!!.postImage) { bitmap ->
+                        postImage = bitmap
+                            requestCount++
+
+                            //fire notification with post content
+                            requestNotification(
+                                context,
+                                requestCount,
+                                title,
+                                notifierImage,
+                                post.value!!.title + " " + post.value!!.content,
+                                postId,
+                                postImage
+                            )
+                    }
                 }
 
-                override fun onError(error: String) {
-                    Log.d(TAG, "error: $error")
+                //post info fetch failed
+                override fun onError(response: String) {
+                    requestCount++
+                    //fire notification without post content with default content
+                    requestNotification(
+                        context,
+                        requestCount,
+                        title,
+                        notifierImage,
+                        "Tap to view post",
+                        postId,
+                        null
+                    )
                 }
             })
         }
 
-        private fun displayNotification(
+        private fun requestNotification(
+            context: Context,
+            requestCount: Int,
+            notificationTitle: String,
+            notifierImage: Bitmap?,
+            notificationContent: String,
+            postId: String,
+            postImage: Bitmap?
+        ) {
+            if (requestCount == 2) {
+                fireNotification(
+                    context,
+                    notificationTitle,
+                    notificationContent,
+                    notifierImage,
+                    postId,
+                    postImage
+                )
+            }
+        }
+
+        private fun fireNotification(
             context: Context,
             title: String?,
             content: String?,
-            userImage: String?,
+            userImage: Bitmap?,
             postId: String?,
-            postImage: String?
+            postImage: Bitmap?
         ) {
             val intent = Intent(context, HomeActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -55,18 +118,10 @@ class PostNotifications {
 
             val builder = NotificationCompat.Builder(context, Constants.POST_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_launcher_foreground).setContentTitle(title)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setContentText(content)
-                .setLargeIcon(FCMConfig.getBitmapFromUrl(userImage))
-                .setStyle(
-                    NotificationCompat.BigPictureStyle()
-//                        .bigPicture(
-//                            FCMConfig.getBitmapFromUrl(userImage)
-//                        )
-                )
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .build()
+                .setPriority(NotificationCompat.PRIORITY_MAX).setContentText(content)
+                .setLargeIcon(userImage).setStyle(
+                    NotificationCompat.BigPictureStyle().bigPicture(postImage)
+                ).setContentIntent(pendingIntent).setAutoCancel(true).build()
 
             with(NotificationManagerCompat.from(context)) {
                 try {
