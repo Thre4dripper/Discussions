@@ -3,6 +3,8 @@ package com.example.discussions.notifications
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.util.Log
 import com.example.discussions.Constants
@@ -10,6 +12,10 @@ import com.example.discussions.store.UserStore
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import org.json.JSONObject
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+
 
 class FCMConfig : FirebaseMessagingService() {
     private val TAG = "FCMConfig"
@@ -54,15 +60,15 @@ class FCMConfig : FirebaseMessagingService() {
             Constants.NOTIFICATION_CATEGORY_COMMENT
         else Constants.NOTIFICATION_CATEGORY_INVALID
 
-        notifyByCategory(category)
+        notifyByCategory(category, data)
 
         Log.d(TAG, "onMessageReceived: $data")
     }
 
-    private fun notifyByCategory(category: String) {
+    private fun notifyByCategory(category: String, data: JSONObject) {
         when (category) {
             Constants.NOTIFICATION_CATEGORY_POST -> {
-                //like
+                PostNotifications.likeNotification(this, data)
                 //comment
             }
             Constants.NOTIFICATION_CATEGORY_POLL -> {
@@ -93,6 +99,22 @@ class FCMConfig : FirebaseMessagingService() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    companion object {
+        fun getBitmapFromUrl(imageUrl: String): Bitmap? {
+            return try {
+                val url = URL(imageUrl)
+                val connection: HttpURLConnection = url.openConnection() as HttpURLConnection
+                connection.doInput = true
+                connection.connect()
+                val input: InputStream = connection.inputStream
+                return BitmapFactory.decodeStream(input)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                null
+            }
         }
     }
 }

@@ -9,15 +9,34 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.discussions.Constants
 import com.example.discussions.R
-import com.example.discussions.repositories.PostRepository
 import com.example.discussions.ui.home.HomeActivity
+import org.json.JSONObject
 
 class PostNotifications {
     companion object {
         private const val TAG = "PostNotifications"
-        val post = PostRepository.singlePost
+        fun likeNotification(context: Context, data: JSONObject) {
+            val notifier = data.getJSONObject("created_by").getString("username")
+            val notifierImage = data.getJSONObject("created_by").getString("image")
+            val postId = data.getJSONObject("post").getString("id")
+            val postImage = data.getJSONObject("post").getString("image")
+            val postTitle = data.getJSONObject("post").getString("title")
+            val postContent = data.getJSONObject("post").getString("content")
 
-        private fun likeNotification(
+            val notificationContent =
+                if (postTitle.isEmpty() && postContent.isEmpty()) "Tap to view post" else "$postTitle $postContent"
+
+            notify(
+                context,
+                notificationId = ("${Constants.POST_LIKE_NOTIFICATION_ID}$postId").toInt(),
+                title = "$notifier liked your post",
+                content = notificationContent,
+                userImage = FCMConfig.getBitmapFromUrl(notifierImage),
+                postImage = FCMConfig.getBitmapFromUrl(postImage)
+            )
+        }
+
+        private fun notify(
             context: Context,
             notificationId: Int,
             title: String?,
