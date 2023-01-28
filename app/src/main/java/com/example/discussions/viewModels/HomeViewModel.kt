@@ -62,7 +62,7 @@ class HomeViewModel : ViewModel() {
         get() = _isPollLikedChanged
 
     companion object {
-        var postsOrPollsScrollToTop = false
+        var postsOrPollsOrNotificationsScrollToTop = false
     }
 
 
@@ -130,7 +130,7 @@ class HomeViewModel : ViewModel() {
         else {
             _isUserPollsFetched.value = null
         }
-        postsOrPollsScrollToTop = true
+        postsOrPollsOrNotificationsScrollToTop = true
 
         PollRepository.getAllUserPolls(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -151,7 +151,7 @@ class HomeViewModel : ViewModel() {
 
     fun pollVote(context: Context, pollId: String, optionId: String) {
         _isPollVoted.value = null
-        postsOrPollsScrollToTop = false
+        postsOrPollsOrNotificationsScrollToTop = false
 
         //changing vote status to voting, this will trigger progress bar in recycler view
         val newPollsList = userPollsList.value!!.toMutableList()
@@ -174,7 +174,7 @@ class HomeViewModel : ViewModel() {
 
     fun likePost(context: Context, postId: String) {
         _isPostLikedChanged.value = null
-        postsOrPollsScrollToTop = false
+        postsOrPollsOrNotificationsScrollToTop = false
 
         PostRepository.likePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -189,7 +189,7 @@ class HomeViewModel : ViewModel() {
 
     fun likePoll(context: Context, pollId: String) {
         _isPollLikedChanged.value = null
-        postsOrPollsScrollToTop = false
+        postsOrPollsOrNotificationsScrollToTop = false
 
         PollRepository.likePoll(context, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -207,6 +207,7 @@ class HomeViewModel : ViewModel() {
         else {
             _isNotificationsFetched.value = null
         }
+        postsOrPollsOrNotificationsScrollToTop = true
 
         NotificationRepository.getAllNotifications(context, object : ResponseCallback {
             override fun onSuccess(response: String) {

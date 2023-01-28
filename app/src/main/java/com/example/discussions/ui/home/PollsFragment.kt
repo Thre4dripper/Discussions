@@ -58,7 +58,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
         homeViewModel.userPollsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 pollsAdapter.submitList(it) {
-                    if (HomeViewModel.postsOrPollsScrollToTop)
+                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop)
                         binding.pollsRv.scrollToPosition(0)
                 }
                 //hiding all loading

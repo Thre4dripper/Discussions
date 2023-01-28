@@ -7,12 +7,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/notification_bg_color"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:padding="8dp">
 
         <ImageView
             android:id="@+id/item_notification_user_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:contentDescription="@string/item_notification_avatar_desc"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

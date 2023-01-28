@@ -1,13 +1,14 @@
 package com.example.discussions.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.NotificationRecyclerAdapter
@@ -31,6 +32,12 @@ class NotificationFragment : Fragment() {
 
         binding.notificationRv.apply {
             notificationAdapter = NotificationRecyclerAdapter()
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
             adapter = notificationAdapter
         }
 
@@ -47,8 +54,8 @@ class NotificationFragment : Fragment() {
         homeViewModel.notificationsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 notificationAdapter.submitList(it) {
-//                    if (HomeViewModel.postsOrPollsScrollToTop)
-//                        binding.discussionRv.scrollToPosition(0)
+                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop)
+                        binding.notificationRv.scrollToPosition(0)
                 }
                 //hiding all loading
                 binding.notificationSwipeLayout.isRefreshing = false

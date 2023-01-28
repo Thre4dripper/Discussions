@@ -23,7 +23,7 @@ class UserPollsViewModel : ViewModel() {
 
     fun deletePoll(context: Context,pollId: String) {
         _isPollDeleted.value = null
-        HomeViewModel.postsOrPollsScrollToTop = false
+        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
 
         //deleting poll from user polls list
         val deletedUserPoll = _userPolls.value!!.find { it.pollId == pollId }!!
