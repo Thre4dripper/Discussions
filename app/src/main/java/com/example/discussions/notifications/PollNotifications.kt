@@ -11,23 +11,22 @@ import com.example.discussions.R
 import com.example.discussions.ui.home.HomeActivity
 import org.json.JSONObject
 
-class PostNotifications {
+class PollNotifications {
     companion object {
-        private const val TAG = "PostNotifications"
+        private const val TAG = "PollNotifications"
+
         fun likeNotification(context: Context, data: JSONObject) {
             val notifier = data.getJSONObject("created_by").getString("username")
             val notifierImage = data.getJSONObject("created_by").getString("image")
-            val postId = data.getJSONObject("post").getString("id")
-            val postImage = data.getJSONObject("post").getString("image")
-            val postTitle = data.getJSONObject("post").getString("title")
-            val postContent = data.getJSONObject("post").getString("content")
+            val pollId = data.getJSONObject("poll").getString("id")
+            val pollTitle = data.getJSONObject("poll").getString("title")
+            val pollContent = data.getJSONObject("poll").getString("content")
 
-            val notificationId = ("${Constants.POST_LIKE_NOTIFICATION_ID}$postId").toInt()
-            val notificationTitle = "$notifier liked your post"
+            val notificationId = ("${Constants.POLL_LIKE_NOTIFICATION_ID}$pollId").toInt()
+            val notificationTitle = "$notifier liked your poll"
             val notificationContent =
-                if (postTitle.isEmpty() && postContent.isEmpty()) "Tap to view post" else "$postTitle $postContent"
+                if (pollTitle.isEmpty() && pollContent.isEmpty()) "Tap to view poll" else "$pollTitle $pollContent"
             val notificationUserImage = FCMConfig.getBitmapFromUrl(notifierImage)
-            val notificationPostImage = FCMConfig.getBitmapFromUrl(postImage)
 
             val intent = Intent(context, HomeActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -40,16 +39,14 @@ class PostNotifications {
                     PendingIntent.FLAG_IMMUTABLE
                 )
 
-            val builder = NotificationCompat.Builder(context, Constants.POST_NOTIFICATION_CHANNEL)
+            val builder = NotificationCompat.Builder(context, Constants.POLL_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(notificationTitle)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setContentText(notificationContent)
                 .setLargeIcon(notificationUserImage)
-                .setStyle(
-                    NotificationCompat.BigPictureStyle().bigPicture(notificationPostImage)
-                )
-                .setContentIntent(pendingIntent).setAutoCancel(true).build()
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true).build()
 
             with(NotificationManagerCompat.from(context)) {
                 try {
@@ -63,16 +60,16 @@ class PostNotifications {
         fun commentNotification(context: Context, data: JSONObject) {
             val notifier = data.getJSONObject("created_by").getString("username")
             val notifierImage = data.getJSONObject("created_by").getString("image")
-            val postId = data.getJSONObject("post").getString("id")
-            val postTitle = data.getJSONObject("post").getString("title")
-            val postContent = data.getJSONObject("post").getString("content")
-            val postComment = data.getJSONObject("post").getString("comment")
+            val pollId = data.getJSONObject("poll").getString("id")
+            val pollTitle = data.getJSONObject("poll").getString("title")
+            val pollContent = data.getJSONObject("poll").getString("content")
+            val pollComment = data.getJSONObject("poll").getString("comment")
 
-            val notificationId = ("${Constants.POST_COMMENT_NOTIFICATION_ID}$postId").toInt()
-            val notificationTitle = "$notifier commented on your post"
+            val notificationId = ("${Constants.POLL_COMMENT_NOTIFICATION_ID}$pollId").toInt()
+            val notificationTitle = "$notifier commented on your poll"
             val notificationContent =
-                if (postTitle.isEmpty() && postContent.isEmpty()) "Tap to view post"
-                else "$postTitle $postContent"
+                if (pollTitle.isEmpty() && pollContent.isEmpty()) "Tap to view poll"
+                else "$pollTitle $pollContent"
 
             val notificationUserImage = FCMConfig.getBitmapFromUrl(notifierImage)
 
@@ -87,7 +84,7 @@ class PostNotifications {
                     PendingIntent.FLAG_IMMUTABLE
                 )
 
-            val builder = NotificationCompat.Builder(context, Constants.POST_NOTIFICATION_CHANNEL)
+            val builder = NotificationCompat.Builder(context, Constants.POLL_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(notificationTitle)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
@@ -95,7 +92,7 @@ class PostNotifications {
                 .setLargeIcon(notificationUserImage)
                 .setStyle(
                     NotificationCompat.BigTextStyle()
-                        .bigText("$notificationContent \n\n$postComment")
+                        .bigText("$notificationContent \n\n$pollComment")
                 )
                 .setContentIntent(pendingIntent).setAutoCancel(true).build()
 

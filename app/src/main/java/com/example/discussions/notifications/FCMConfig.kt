@@ -77,9 +77,17 @@ class FCMConfig : FirebaseMessagingService() {
                 //comment
             }
             Constants.NOTIFICATION_CATEGORY_POLL -> {
-                //like
-                //comment
-                //vote
+                when (type) {
+                    Constants.NOTIFICATION_TYPE_LIKE -> {
+                        PollNotifications.likeNotification(this, data)
+                    }
+                    Constants.NOTIFICATION_TYPE_COMMENT -> {
+                        PollNotifications.commentNotification(this, data)
+                    }
+                    Constants.NOTIFICATION_TYPE_VOTE -> {
+                        //vote
+                    }
+                }
             }
             Constants.NOTIFICATION_CATEGORY_COMMENT -> {
                 //like
