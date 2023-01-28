@@ -27,14 +27,19 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comment = getItem(position)
-        (holder as CommentViewHolder).bind(comment, itemCount, commentInterface)
+        (holder as CommentViewHolder).bind(holder.binding, comment, itemCount, commentInterface)
     }
 
     class CommentViewHolder(itemView: View) : ViewHolder(itemView) {
         private val TAG = "CommentsRecyclerAdapter"
         val binding = DataBindingUtil.bind<ItemCommentBinding>(itemView)!!
 
-        fun bind(commentModel: CommentModel, listSize: Int, commentInterface: CommentInterface) {
+        fun bind(
+            binding: ItemCommentBinding,
+            commentModel: CommentModel,
+            listSize: Int,
+            commentInterface: CommentInterface
+        ) {
 
             Glide.with(itemView.context).load(commentModel.userImage)
                 .placeholder(R.drawable.ic_profile).circleCrop().into(binding.itemCommentUserImage)

@@ -219,4 +219,9 @@ class HomeViewModel : ViewModel() {
             }
         })
     }
+
+    fun refreshAllNotifications(context: Context) {
+        _isNotificationsFetched.value = null
+        getAllNotifications(context)
+    }
 }

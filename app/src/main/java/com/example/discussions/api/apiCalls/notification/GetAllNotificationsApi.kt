@@ -6,6 +6,8 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.models.NotificationModel
+import org.json.JSONArray
 
 class GetAllNotificationsApi {
     companion object {
@@ -36,6 +38,39 @@ class GetAllNotificationsApi {
             )
 
             queue.add(request)
+        }
+
+        fun parseAllNotificationsJson(response: String): MutableList<NotificationModel> {
+            val rootObject = JSONArray(response)
+            val notificationsList = mutableListOf<NotificationModel>()
+
+            for (i in 0 until rootObject.length()) {
+                val notificationObject = rootObject.getJSONObject(i)
+                val createdByObject = notificationObject.getJSONObject("created_by")
+                var username = createdByObject.getString("username")
+                val userImage = createdByObject.getString("image")
+                username = "@$username"
+
+                val postId = notificationObject.getString("post")
+                val pollId = notificationObject.getString("poll")
+                val commentId = notificationObject.getString("comment")
+
+                notificationsList.add(
+                    NotificationModel(
+                        notificationObject.getString("id"),
+                        notificationObject.getString("type"),
+                        notificationObject.getBoolean("is_read"),
+                        username,
+                        userImage,
+                        notificationObject.getString("created_at"),
+                        if (postId == "null") null else postId,
+                        if (pollId == "null") null else pollId,
+                        if (commentId == "null") null else commentId
+                    )
+                )
+            }
+
+            return notificationsList
         }
     }
 }
