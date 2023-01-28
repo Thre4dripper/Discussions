@@ -34,7 +34,12 @@ class PostNotifications {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             val pendingIntent: PendingIntent =
-                PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE)
+                PendingIntent.getActivity(
+                    context,
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
 
             val builder = NotificationCompat.Builder(context, Constants.POST_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_launcher_foreground).setContentTitle(notificationTitle)
@@ -56,10 +61,15 @@ class PostNotifications {
             val notifier = data.getJSONObject("created_by").getString("username")
             val notifierImage = data.getJSONObject("created_by").getString("image")
             val postId = data.getJSONObject("post").getString("id")
+            val postTitle = data.getJSONObject("post").getString("title")
+            val postContent = data.getJSONObject("post").getString("content")
             val postComment = data.getJSONObject("post").getString("comment")
 
             val notificationId = ("${Constants.POST_COMMENT_NOTIFICATION_ID}$postId").toInt()
             val notificationTitle = "$notifier commented on your post"
+            val notificationContent =
+                if (postTitle.isEmpty() && postContent.isEmpty()) "Tap to view post"
+                else "$postTitle $postContent"
 
             val notificationUserImage = FCMConfig.getBitmapFromUrl(notifierImage)
 
@@ -67,13 +77,18 @@ class PostNotifications {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
             val pendingIntent: PendingIntent =
-                PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_IMMUTABLE)
+                PendingIntent.getActivity(
+                    context,
+                    notificationId,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
 
             val builder = NotificationCompat.Builder(context, Constants.POST_NOTIFICATION_CHANNEL)
                 .setSmallIcon(R.drawable.ic_launcher_foreground).setContentTitle(notificationTitle)
-                .setPriority(NotificationCompat.PRIORITY_MAX).setContentText(postComment)
+                .setPriority(NotificationCompat.PRIORITY_MAX).setContentText(notificationContent)
                 .setLargeIcon(notificationUserImage).setStyle(
-                    NotificationCompat.BigTextStyle().bigText(postComment)
+                    NotificationCompat.BigTextStyle().bigText("$notificationContent \n\n$postComment")
                 ).setContentIntent(pendingIntent).setAutoCancel(true).build()
 
             with(NotificationManagerCompat.from(context)) {
