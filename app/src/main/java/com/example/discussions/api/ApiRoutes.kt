@@ -36,5 +36,8 @@ class ApiRoutes {
         const val COMMENTS_DELETE_COMMENT = "/api/comment/delete/"
         const val COMMENTS_UPDATE_COMMENT = "/api/comment/update/"
         const val COMMENTS_LIKE = "/api/post/like/"
+
+        //NOTIFICATIONS
+        const val NOTIFICATIONS_GET_ALL = "/api/notification/get/"
     }
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.ProfileDataModel
+import com.example.discussions.repositories.NotificationRepository
 import com.example.discussions.repositories.PollRepository
 import com.example.discussions.repositories.PostRepository
 import com.example.discussions.repositories.UserRepository
@@ -25,6 +26,9 @@ class HomeViewModel : ViewModel() {
     //get user polls list directly from repository live data
     var userPollsList = PollRepository.userPollsList
 
+    //get notifications list directly from repository live data
+    var notificationsList = NotificationRepository.notificationsList
+
     private var _isPostsFetched = MutableLiveData<String?>(null)
     val isPostsFetched: LiveData<String?>
         get() = _isPostsFetched
@@ -40,6 +44,10 @@ class HomeViewModel : ViewModel() {
     private var _isUserPollsFetched = MutableLiveData<String?>(null)
     val isUserPollsFetched: LiveData<String?>
         get() = _isUserPollsFetched
+
+    private var _isNotificationsFetched = MutableLiveData<String?>(null)
+    val isNotificationsFetched: LiveData<String?>
+        get() = _isNotificationsFetched
 
     private var _isPollVoted = MutableLiveData<String?>(null)
     val isPollVoted: LiveData<String?>
@@ -190,6 +198,24 @@ class HomeViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isPollLikedChanged.value = Constants.API_FAILED
+            }
+        })
+    }
+
+    fun getAllNotifications(context: Context) {
+        if (_isNotificationsFetched.value == Constants.API_SUCCESS) return
+        else {
+            _isNotificationsFetched.value = null
+        }
+
+        NotificationRepository.getAllNotifications(context, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isNotificationsFetched.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isNotificationsFetched.value = response
+                notificationsList.value = mutableListOf()
             }
         })
     }
