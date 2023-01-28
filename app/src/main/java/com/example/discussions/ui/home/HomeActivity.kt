@@ -53,7 +53,9 @@ class HomeActivity : AppCompatActivity() {
                     true
                 }
                 R.id.navigation_notification -> {
-                    //TODO: add notification fragment
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, NotificationFragment(), Constants.TAG_NOTIFICATION_FRAGMENT)
+                        .commit()
                     true
                 }
                 R.id.navigation_profile -> {
