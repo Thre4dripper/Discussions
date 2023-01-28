@@ -74,7 +74,6 @@ class FCMConfig : FirebaseMessagingService() {
                     PostNotifications.likeNotification(this, data)
                 else if (type == Constants.NOTIFICATION_TYPE_COMMENT)
                     PostNotifications.commentNotification(this, data)
-                //comment
             }
             Constants.NOTIFICATION_CATEGORY_POLL -> {
                 when (type) {
@@ -90,8 +89,10 @@ class FCMConfig : FirebaseMessagingService() {
                 }
             }
             Constants.NOTIFICATION_CATEGORY_COMMENT -> {
-                //like
-                //comment
+                if (type == Constants.NOTIFICATION_TYPE_LIKE)
+                    CommentNotifications.likeNotification(this, data)
+                else if (type == Constants.NOTIFICATION_TYPE_COMMENT)
+                    CommentNotifications.commentNotification(this, data)
             }
         }
     }
