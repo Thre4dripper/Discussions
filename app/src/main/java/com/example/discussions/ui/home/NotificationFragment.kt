@@ -21,6 +21,8 @@ import com.example.discussions.R
 import com.example.discussions.adapters.NotificationRecyclerAdapter
 import com.example.discussions.adapters.interfaces.NotificationInterface
 import com.example.discussions.databinding.FragmentNotificationBinding
+import com.example.discussions.models.NotificationModel
+import com.example.discussions.ui.bottomSheets.NotificationOptionsBS
 import com.example.discussions.viewModels.HomeViewModel
 
 class NotificationFragment : Fragment(), NotificationInterface {
@@ -201,8 +203,16 @@ class NotificationFragment : Fragment(), NotificationInterface {
             }
         }
 
-    override fun onNotificationClick(notificationId: String) {
+    override fun onNotificationClick(notification: NotificationModel) {
 
+    }
+
+    override fun onNotificationOptionsClick(notification: NotificationModel) {
+        val notificationOptionsBs = NotificationOptionsBS(notification, this@NotificationFragment)
+        notificationOptionsBs.show(
+            requireActivity().supportFragmentManager,
+            notificationOptionsBs.tag
+        )
     }
 
     override fun onNotificationDelete(notificationId: String) {

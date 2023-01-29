@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="16dp">
+
+        <TextView
+            android:id="@+id/option_delete_notification_tv"
+            style="@style/BSOptionsTvStyle"
+            android:text="@string/comment_options_delete"
+            app:drawableStartCompat="@drawable/ic_delete" />
+
+        <TextView
+            android:id="@+id/option_mark_notification_tv"
+            style="@style/BSOptionsTvStyle"
+            android:text="@string/notification_options_mark_as_read"
+            app:drawableStartCompat="@drawable/ic_notification_read" />
+
+        <TextView
+            android:id="@+id/option_cancel_comment_tv"
+            style="@style/BSOptionsTvStyle"
+            android:text="@string/notification_options_cancel"
+            app:drawableStartCompat="@drawable/ic_back_arrow" />
+    </LinearLayout>
+</layout>

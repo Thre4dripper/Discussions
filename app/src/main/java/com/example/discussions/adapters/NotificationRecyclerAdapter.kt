@@ -50,11 +50,23 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                 .into(binding.itemNotificationUserImage)
 
             binding.itemNotification.apply {
-                setOnClickListener { notificationInterface.onNotificationClick(notification.notificationId) }
+                //setting on click on the whole notification
+                setOnClickListener { notificationInterface.onNotificationClick(notification) }
+                //setting on long click on the whole notification
+                setOnLongClickListener {
+                    notificationInterface.onNotificationOptionsClick(notification)
+                    true
+                }
+                //setting background color based on notification read status
                 setBackgroundColor(
                     if (notification.isRead) itemView.context.getColor(R.color.white)
                     else itemView.context.getColor(R.color.notification_bg_color)
                 )
+            }
+
+            //setting on click on the notification options
+            binding.itemNotificationOptions.setOnClickListener {
+                notificationInterface.onNotificationOptionsClick(notification)
             }
 
             val category = if (notification.post != null) Constants.NOTIFICATION_CATEGORY_POST
