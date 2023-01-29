@@ -157,11 +157,26 @@
 
     //Item Notification
     <string name="item_notification_avatar_desc">User Avatar</string>
-    <string name="item_notification_content">Lorem ipsum dolor sit amet Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="item_notification_time">2 hours ago</string>
     <string name="item_notification_remove">Delete Remove</string>
 
+    //Item Post Notification
+    <string name="item_post_notification_title"><b>\@username</b> Liked your post:</string>
+    <string name="item_post_notification_content">Lorem ipsum dolor sit amet Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="item_post_notification_post_image_desc">Post Image</string>
+
+    //Item Poll Notification
+    <string name="item_poll_notification_title"><b>\@username</b> Liked your poll:></string>
+    <string name="item_poll_notification_content">Lorem ipsum dolor sit amet Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+
+    //Item Comment Notification
+    <string name="item_comment_notification_title"><b>\@username</b> Liked your comment:></string>
+    <string name="item_comment_notification_content">Lorem ipsum dolor sit amet Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+
+
     //Notification Options Bottom Sheet
+    <string name="notification_options_image_desc">Notification Image</string>
+    <string name="notification_options_content">Lorem ipsum dolor sit amet Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
     <string name="notification_options_remove">Delete</string>
     <string name="notification_options_mark_as_read">Mark as Read</string>
     <string name="notification_options_cancel">Cancel</string>

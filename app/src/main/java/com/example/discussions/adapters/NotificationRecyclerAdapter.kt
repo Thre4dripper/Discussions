@@ -118,75 +118,41 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                 notificationInterface.onNotificationOptionsClick(notification)
             }
 
-            val category = if (notification.post != null) Constants.NOTIFICATION_CATEGORY_POST
-            else if (notification.poll != null) Constants.NOTIFICATION_CATEGORY_POLL
-            else Constants.NOTIFICATION_CATEGORY_COMMENT
-
-            //TODO subject to change
             val notificationText = SpannableStringBuilder()
-            when (category) {
-                Constants.NOTIFICATION_CATEGORY_POST -> {
-                    if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
-                        notificationText.append(
-                            HtmlCompat.fromHtml(
-                                "<b>${notification.notifierName} </b>liked your post:" +
-                                        "<br><b>${notification.post!!.title}</b> <br>${notification.post.content}",
-                                HtmlCompat.FROM_HTML_MODE_LEGACY
-                            )
-                        )
-                        binding.itemNotificationContent.text = notificationText
+            val notifiedPost = notification.post!!
+            if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+                notificationText.append(
+                    HtmlCompat.fromHtml(
+                        "<b>${notification.notifierName} </b>liked your post:",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                    )
+                )
+                binding.itemNotificationTitle.text = notificationText
+                binding.itemNotificationPostContent.apply {
+                    text = if (notifiedPost.title.isNotEmpty()) {
+                        String.format("%s", notifiedPost.title)
                     } else {
-                        notificationText.append(
-                            HtmlCompat.fromHtml(
-                                "<b>${notification.notifierName} </b>commented your post:" +
-                                        "<br><b>${notification.post!!.title} ${notification.post.content} </b><br><b>${notification.post.postComment}</b>",
-                                HtmlCompat.FROM_HTML_MODE_LEGACY
-                            )
-                        )
-                        binding.itemNotificationContent.text = notificationText
+                        String.format("%s", notifiedPost.content)
                     }
+                    visibility =
+                        if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
                 }
-                Constants.NOTIFICATION_CATEGORY_POLL -> {
-                    if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
-                        notificationText.append(
-                            HtmlCompat.fromHtml(
-                                "<b>${notification.notifierName} </b>liked your poll:" +
-                                        "<br><b>${notification.poll!!.title}</b> <br>${notification.poll.content}",
-                                HtmlCompat.FROM_HTML_MODE_LEGACY
-                            )
-                        )
-                        binding.itemNotificationContent.text = notificationText
+            } else {
+                notificationText.append(
+                    HtmlCompat.fromHtml(
+                        "<b>${notification.notifierName} </b>commented on your post:",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                    )
+                )
+                binding.itemNotificationTitle.text = notificationText
+                binding.itemNotificationPostContent.apply {
+                    text = if (notifiedPost.title.isNotEmpty()) {
+                        String.format("%s", notifiedPost.title)
                     } else {
-                        notificationText.append(
-                            HtmlCompat.fromHtml(
-                                "<b>${notification.notifierName} </b>commented your poll:" +
-                                        "<br><b>${notification.poll!!.title} ${notification.poll.content} </b><br><b>${notification.poll.pollComment}</b>",
-                                HtmlCompat.FROM_HTML_MODE_LEGACY
-                            )
-                        )
-                        binding.itemNotificationContent.text = notificationText
+                        String.format("%s", notifiedPost.content)
                     }
-                }
-                Constants.NOTIFICATION_CATEGORY_COMMENT -> {
-                    if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
-                        notificationText.append(
-                            HtmlCompat.fromHtml(
-                                "<b>${notification.notifierName} </b>liked your comment:" +
-                                        "<br><b>${notification.comment!!.comment}</b>",
-                                HtmlCompat.FROM_HTML_MODE_LEGACY
-                            )
-                        )
-                        binding.itemNotificationContent.text = notificationText
-                    } else {
-                        notificationText.append(
-                            HtmlCompat.fromHtml(
-                                "<b>${notification.notifierName} </b>replied your comment:" +
-                                        "<br><b>${notification.comment!!.comment}</b>",
-                                HtmlCompat.FROM_HTML_MODE_LEGACY
-                            )
-                        )
-                        binding.itemNotificationContent.text = notificationText
-                    }
+                    visibility =
+                        if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
                 }
             }
 
@@ -199,16 +165,72 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                 System.currentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS
             )
+
+            if (notifiedPost.postImage.isEmpty())
+                binding.itemNotificationPostImage.visibility = View.GONE
+            else
+                binding.itemNotificationPostImage.visibility = View.VISIBLE
+
+            Glide.with(itemView.context)
+                .load(notifiedPost.postImage)
+                .into(binding.itemNotificationPostImage)
         }
     }
 
     class PollNotificationViewHolder(itemView: View) : ViewHolder(itemView) {
         val binding = DataBindingUtil.bind<ItemNotificationPollBinding>(itemView)!!
         fun bind(
-            binding: ItemNotificationPollBinding,
+            binding: Any,
             notification: NotificationModel,
             notificationInterface: NotificationInterface
         ) {
+            binding as ItemNotificationPollBinding
+            Glide.with(itemView.context)
+                .load(notification.notifierImage)
+                .placeholder(R.drawable.ic_profile)
+                .circleCrop()
+                .into(binding.itemNotificationUserImage)
+
+            binding.itemNotification.apply {
+                //setting on click on the whole notification
+                setOnClickListener { notificationInterface.onNotificationClick(notification) }
+                //setting on long click on the whole notification
+                setOnLongClickListener {
+                    notificationInterface.onNotificationOptionsClick(notification)
+                    true
+                }
+                //setting background color based on notification read status
+                setBackgroundColor(
+                    if (notification.isRead) itemView.context.getColor(R.color.white)
+                    else itemView.context.getColor(R.color.notification_bg_color)
+                )
+            }
+
+            //setting on click on the notification options
+            binding.itemNotificationOptions.setOnClickListener {
+                notificationInterface.onNotificationOptionsClick(notification)
+            }
+
+            val notificationText = SpannableStringBuilder()
+            if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+                notificationText.append(
+                    HtmlCompat.fromHtml(
+                        "<b>${notification.notifierName} </b>liked your poll:" +
+                                "<br><b>${notification.poll!!.title}</b> <br>${notification.poll.content}",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                    )
+                )
+                binding.itemNotificationTitle.text = notificationText
+            } else {
+                notificationText.append(
+                    HtmlCompat.fromHtml(
+                        "<b>${notification.notifierName} </b>commented your poll:" +
+                                "<br><b>${notification.poll!!.title} ${notification.poll.content} </b><br><b>${notification.poll.pollComment}</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                    )
+                )
+                binding.itemNotificationTitle.text = notificationText
+            }
         }
     }
 
@@ -219,6 +241,52 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
             notification: NotificationModel,
             notificationInterface: NotificationInterface
         ) {
+            Glide.with(itemView.context)
+                .load(notification.notifierImage)
+                .placeholder(R.drawable.ic_profile)
+                .circleCrop()
+                .into(binding.itemNotificationUserImage)
+
+            binding.itemNotification.apply {
+                //setting on click on the whole notification
+                setOnClickListener { notificationInterface.onNotificationClick(notification) }
+                //setting on long click on the whole notification
+                setOnLongClickListener {
+                    notificationInterface.onNotificationOptionsClick(notification)
+                    true
+                }
+                //setting background color based on notification read status
+                setBackgroundColor(
+                    if (notification.isRead) itemView.context.getColor(R.color.white)
+                    else itemView.context.getColor(R.color.notification_bg_color)
+                )
+            }
+
+            //setting on click on the notification options
+            binding.itemNotificationOptions.setOnClickListener {
+                notificationInterface.onNotificationOptionsClick(notification)
+            }
+
+            val notificationText = SpannableStringBuilder()
+            if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+                notificationText.append(
+                    HtmlCompat.fromHtml(
+                        "<b>${notification.notifierName} </b>liked your comment:" +
+                                "<br><b>${notification.comment!!.comment}</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                    )
+                )
+                binding.itemNotificationTitle.text = notificationText
+            } else {
+                notificationText.append(
+                    HtmlCompat.fromHtml(
+                        "<b>${notification.notifierName} </b>replied your comment:" +
+                                "<br><b>${notification.comment!!.comment}</b>",
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                    )
+                )
+                binding.itemNotificationTitle.text = notificationText
+            }
         }
     }
 
