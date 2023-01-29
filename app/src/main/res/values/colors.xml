@@ -31,4 +31,6 @@
 
     //notification colors
     <color name="notification_bg_color">#EDF6FF</color>
+    <color name="notification_delete_color">#ff5454</color>
+    <color name="notification_mark_as_read_color">@color/login_header_color</color>
 </resources>

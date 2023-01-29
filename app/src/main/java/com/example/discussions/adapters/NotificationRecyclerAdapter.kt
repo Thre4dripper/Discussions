@@ -1,6 +1,5 @@
 package com.example.discussions.adapters
 
-import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -14,12 +13,13 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.NotificationInterface
 import com.example.discussions.databinding.ItemNotificationBinding
 import com.example.discussions.models.NotificationModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NotificationRecyclerAdapter :
+class NotificationRecyclerAdapter(private var notificationInterface: NotificationInterface) :
     ListAdapter<NotificationModel, ViewHolder>(
         NotificationDiffCallback()
     ) {
@@ -32,23 +32,30 @@ class NotificationRecyclerAdapter :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val notification = getItem(position)
-        (holder as NotificationViewHolder).bind(holder.binding, notification)
+        (holder as NotificationViewHolder).bind(holder.binding, notification, notificationInterface)
     }
 
     class NotificationViewHolder(itemView: View) : ViewHolder(itemView) {
         val binding = DataBindingUtil.bind<ItemNotificationBinding>(itemView)!!
 
-        fun bind(binding: ItemNotificationBinding, notification: NotificationModel) {
+        fun bind(
+            binding: ItemNotificationBinding,
+            notification: NotificationModel,
+            notificationInterface: NotificationInterface
+        ) {
             Glide.with(itemView.context)
                 .load(notification.notifierImage)
                 .placeholder(R.drawable.ic_profile)
                 .circleCrop()
                 .into(binding.itemNotificationUserImage)
 
-            binding.itemNotification.setBackgroundColor(
-                if (notification.isRead) itemView.context.getColor(R.color.white)
-                else itemView.context.getColor(R.color.notification_bg_color)
-            )
+            binding.itemNotification.apply {
+                setOnClickListener { notificationInterface.onNotificationClick(notification.notificationId) }
+                setBackgroundColor(
+                    if (notification.isRead) itemView.context.getColor(R.color.white)
+                    else itemView.context.getColor(R.color.notification_bg_color)
+                )
+            }
 
             val category = if (notification.post != null) Constants.NOTIFICATION_CATEGORY_POST
             else if (notification.poll != null) Constants.NOTIFICATION_CATEGORY_POLL
