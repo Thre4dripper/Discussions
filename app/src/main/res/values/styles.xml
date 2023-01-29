@@ -217,8 +217,8 @@
         <item name="android:drawablePadding">16dp</item>
     </style>
 
-    //Comment Options Dialog
-    <style name="CommentOptionsTvStyle">
+    //Bottom Sheets Options Dialog
+    <style name="BSOptionsTvStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">?attr/selectableItemBackground</item>

@@ -1,4 +1,4 @@
-package com.example.discussions.ui.comments
+package com.example.discussions.ui.bottomSheets.comments
 
 import android.content.Context
 import android.content.res.Resources
@@ -19,13 +19,13 @@ import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
-import com.example.discussions.databinding.CommentsBsBinding
+import com.example.discussions.databinding.BsCommentsBinding
 import com.example.discussions.models.CommentModel
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class CommentBottomSheet(
+class CommentsBS(
     private var parentContext: Context,
     var id: String,
     var type: String,
@@ -34,7 +34,7 @@ class CommentBottomSheet(
 
     private val TAG = "CommentBottomSheet"
 
-    private lateinit var binding: CommentsBsBinding
+    private lateinit var binding: BsCommentsBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
 
     private lateinit var viewModel: CommentsViewModel
@@ -54,7 +54,7 @@ class CommentBottomSheet(
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding = CommentsBsBinding.inflate(inflater, container, false)
+        binding = BsCommentsBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[CommentsViewModel::class.java]
         return binding.root
     }
@@ -69,7 +69,7 @@ class CommentBottomSheet(
             Resources.getSystem().displayMetrics.heightPixels / 2 + 400
 
         binding.commentsRv.apply {
-            commentsAdapter = CommentsRecyclerAdapter(this@CommentBottomSheet)
+            commentsAdapter = CommentsRecyclerAdapter(this@CommentsBS)
             adapter = commentsAdapter
 
             //this is to disable dragging of bottom sheet when recycler view is scrolled
@@ -97,7 +97,7 @@ class CommentBottomSheet(
             //setting like trigger for bottom sheet
             bsLikeTrigger = {
                 viewModel.likePost(
-                    this@CommentBottomSheet.parentContext, this@CommentBottomSheet.id
+                    this@CommentsBS.parentContext, this@CommentsBS.id
                 )
             }
 
@@ -107,7 +107,7 @@ class CommentBottomSheet(
             //setting like trigger for bottom sheet
             bsLikeTrigger = {
                 viewModel.likePoll(
-                    this@CommentBottomSheet.parentContext, this@CommentBottomSheet.id
+                    this@CommentsBS.parentContext, this@CommentsBS.id
                 )
             }
 
@@ -138,13 +138,13 @@ class CommentBottomSheet(
 
                 //removing previous callbacks and adding new callback
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    bsLikeHandler.removeCallbacksAndMessages(this@CommentBottomSheet.id)
+                    bsLikeHandler.removeCallbacksAndMessages(this@CommentsBS.id)
                     bsLikeHandler.postDelayed({
                         //like will only be triggered if the like status of parent post or poll is changed
                         if (bsParentLikeStatus != bsLikeBtnStatus) {
                             bsLikeTrigger()
                         }
-                    }, this@CommentBottomSheet.id, Constants.LIKE_DEBOUNCE_TIME)
+                    }, this@CommentsBS.id, Constants.LIKE_DEBOUNCE_TIME)
                 } else {
                     bsLikeHandler.removeCallbacksAndMessages(null)
                     bsLikeHandler.postDelayed({
@@ -348,7 +348,7 @@ class CommentBottomSheet(
     }
 
     override fun onCommentLongClick(comment: CommentModel) {
-        val optionsBottomSheet = OptionsBottomSheet(comment, this@CommentBottomSheet)
-        optionsBottomSheet.show(requireActivity().supportFragmentManager, optionsBottomSheet.tag)
+        val optionsBS = OptionsBS(comment, this@CommentsBS)
+        optionsBS.show(requireActivity().supportFragmentManager, optionsBS.tag)
     }
 }

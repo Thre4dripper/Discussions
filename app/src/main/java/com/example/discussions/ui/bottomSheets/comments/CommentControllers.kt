@@ -1,4 +1,4 @@
-package com.example.discussions.ui.comments
+package com.example.discussions.ui.bottomSheets.comments
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.LifecycleOwner
 import com.example.discussions.Constants
-import com.example.discussions.databinding.CommentsBsBinding
+import com.example.discussions.databinding.BsCommentsBinding
 import com.example.discussions.models.CommentModel
 import com.example.discussions.viewModels.CommentsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -20,7 +20,7 @@ class CommentControllers {
         fun addCommentObserver(
             context: Context,
             viewModel: CommentsViewModel,
-            binding: CommentsBsBinding,
+            binding: BsCommentsBinding,
             viewLifecycleOwner: LifecycleOwner,
             restoreCommentType: () -> Unit,
         ) {
@@ -42,7 +42,7 @@ class CommentControllers {
         fun editCommentObserver(
             context: Context,
             viewModel: CommentsViewModel,
-            binding: CommentsBsBinding,
+            binding: BsCommentsBinding,
             viewLifecycleOwner: LifecycleOwner,
             restoreCommentType: () -> Unit,
         ) {

@@ -7,6 +7,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ActivityHomeBinding
+import com.example.discussions.ui.bottomSheets.CreatePostsBS
 
 class HomeActivity : AppCompatActivity() {
     private val TAG = "HomeActivity"
@@ -22,7 +23,7 @@ class HomeActivity : AppCompatActivity() {
 
         binding.bottomNavigationView.background = null
         binding.homeFab.setOnClickListener {
-            val bottomSheet = CreatePostsBottomSheet()
+            val bottomSheet = CreatePostsBS()
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
 

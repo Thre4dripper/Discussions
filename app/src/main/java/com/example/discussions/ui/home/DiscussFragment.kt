@@ -15,7 +15,7 @@ import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
 import com.example.discussions.repositories.PostRepository
-import com.example.discussions.ui.comments.CommentBottomSheet
+import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
 
 class DiscussFragment : Fragment(), LikeCommentInterface {
@@ -122,7 +122,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
     override fun onComment(id: String, type: String) {
         val count = PostRepository.allPostsList.value?.find { it.postId == id }?.comments ?: 0
 
-        val commentBottomSheet = CommentBottomSheet(requireContext(), id, type, count)
-        commentBottomSheet.show(requireActivity().supportFragmentManager, commentBottomSheet.tag)
+        val commentsBS = CommentsBS(requireContext(), id, type, count)
+        commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
     }
 }

@@ -1,4 +1,4 @@
-package com.example.discussions.ui.comments
+package com.example.discussions.ui.bottomSheets.comments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,24 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.discussions.MyApplication
 import com.example.discussions.adapters.interfaces.CommentInterface
-import com.example.discussions.databinding.CommentOptionsBsBinding
+import com.example.discussions.databinding.BsCommentOptionsBinding
 import com.example.discussions.models.CommentModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class OptionsBottomSheet(
+class OptionsBS(
     private var comment: CommentModel,
     private var commentInterface: CommentInterface
 ) :
     BottomSheetDialogFragment() {
     private val TAG = "OptionsBottomSheet"
 
-    private lateinit var binding: CommentOptionsBsBinding
+    private lateinit var binding: BsCommentOptionsBinding
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = CommentOptionsBsBinding.inflate(inflater, container, false)
+        binding = BsCommentOptionsBinding.inflate(inflater, container, false)
 
         if (comment.username != "@${MyApplication.username}") {
             binding.optionEditCommentTv.visibility = View.GONE
