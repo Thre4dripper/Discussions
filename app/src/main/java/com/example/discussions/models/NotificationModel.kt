@@ -3,6 +3,7 @@ package com.example.discussions.models
 data class NotificationModel(
     val notificationId: String,
     val type: String,
+    val category: Int,
     val isRead: Boolean,
     val notifierName: String,
     val notifierImage: String,

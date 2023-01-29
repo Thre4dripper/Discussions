@@ -14,6 +14,8 @@ import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.interfaces.NotificationInterface
+import com.example.discussions.databinding.ItemNotificationCommentBinding
+import com.example.discussions.databinding.ItemNotificationPollBinding
 import com.example.discussions.databinding.ItemNotificationPostBinding
 import com.example.discussions.models.NotificationModel
 import java.text.SimpleDateFormat
@@ -24,18 +26,65 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
         NotificationDiffCallback()
     ) {
 
+    companion object {
+        const val NOTIFICATION_ITEM_TYPE_POST = 100
+        const val NOTIFICATION_ITEM_TYPE_POLL = 101
+        const val NOTIFICATION_ITEM_TYPE_COMMENT = 102
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_notification_post, parent, false)
-        return NotificationViewHolder(view)
+        when (viewType) {
+            NOTIFICATION_ITEM_TYPE_POST -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_notification_post, parent, false)
+                return PostNotificationViewHolder(view)
+            }
+            NOTIFICATION_ITEM_TYPE_POLL -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_notification_poll, parent, false)
+                return PollNotificationViewHolder(view)
+            }
+            NOTIFICATION_ITEM_TYPE_COMMENT -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_notification_comment, parent, false)
+                return CommentNotificationViewHolder(view)
+            }
+            else -> return null!!
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val notification = getItem(position)
-        (holder as NotificationViewHolder).bind(holder.binding, notification, notificationInterface)
+        when (holder.itemViewType) {
+            NOTIFICATION_ITEM_TYPE_POST -> {
+                (holder as PostNotificationViewHolder).bind(
+                    holder.binding,
+                    notification,
+                    notificationInterface
+                )
+            }
+            NOTIFICATION_ITEM_TYPE_POLL -> {
+                (holder as PollNotificationViewHolder).bind(
+                    holder.binding,
+                    notification,
+                    notificationInterface
+                )
+            }
+            NOTIFICATION_ITEM_TYPE_COMMENT -> {
+                (holder as CommentNotificationViewHolder).bind(
+                    holder.binding,
+                    notification,
+                    notificationInterface
+                )
+            }
+        }
     }
 
-    class NotificationViewHolder(itemView: View) : ViewHolder(itemView) {
+    override fun getItemViewType(position: Int): Int {
+        return getItem(position).category
+    }
+
+    class PostNotificationViewHolder(itemView: View) : ViewHolder(itemView) {
         val binding = DataBindingUtil.bind<ItemNotificationPostBinding>(itemView)!!
 
         fun bind(
@@ -150,6 +199,26 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                 System.currentTimeMillis(),
                 DateUtils.MINUTE_IN_MILLIS
             )
+        }
+    }
+
+    class PollNotificationViewHolder(itemView: View) : ViewHolder(itemView) {
+        val binding = DataBindingUtil.bind<ItemNotificationPollBinding>(itemView)!!
+        fun bind(
+            binding: ItemNotificationPollBinding,
+            notification: NotificationModel,
+            notificationInterface: NotificationInterface
+        ) {
+        }
+    }
+
+    class CommentNotificationViewHolder(itemView: View) : ViewHolder(itemView) {
+        val binding = DataBindingUtil.bind<ItemNotificationCommentBinding>(itemView)!!
+        fun bind(
+            binding: ItemNotificationCommentBinding,
+            notification: NotificationModel,
+            notificationInterface: NotificationInterface
+        ) {
         }
     }
 
