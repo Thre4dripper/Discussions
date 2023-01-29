@@ -7,7 +7,37 @@ data class NotificationModel(
     val notifierName: String,
     val notifierImage: String,
     val createdAt: String,
-    val postId: String?,
-    val pollId: String?,
-    val commentId: String?
+    val post: PostNotificationModel?,
+    val poll: PollNotificationModel?,
+    val comment: CommentNotificationModel?
+)
+
+data class PostNotificationModel(
+    val id: String,
+    val title: String,
+    val content: String,
+    val userName: String,
+    val userImage: String,
+    val createdAt: String,
+    val postImage: String,
+    val postComment: String?,
+)
+
+data class PollNotificationModel(
+    val id: String,
+    val title: String,
+    val content: String,
+    val userName: String,
+    val userImage: String,
+    val createdAt: String,
+    val pollComment: String?,
+)
+
+data class CommentNotificationModel(
+    val id: String,
+    val content: String,
+    val userName: String,
+    val userImage: String,
+    val createdAt: String,
+    val comment: String?,
 )

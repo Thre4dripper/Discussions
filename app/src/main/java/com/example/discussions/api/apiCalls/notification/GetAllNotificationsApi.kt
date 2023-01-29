@@ -6,8 +6,12 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.models.CommentNotificationModel
 import com.example.discussions.models.NotificationModel
+import com.example.discussions.models.PollNotificationModel
+import com.example.discussions.models.PostNotificationModel
 import org.json.JSONArray
+import org.json.JSONObject
 
 class GetAllNotificationsApi {
     companion object {
@@ -51,9 +55,9 @@ class GetAllNotificationsApi {
                 val userImage = createdByObject.getString("image")
                 username = "@$username"
 
-                val postId = notificationObject.getString("post")
-                val pollId = notificationObject.getString("poll")
-                val commentId = notificationObject.getString("comment")
+                val post = notificationObject.get("post")
+                val poll = notificationObject.get("poll")
+                val comment = notificationObject.get("comment")
 
                 notificationsList.add(
                     NotificationModel(
@@ -63,14 +67,50 @@ class GetAllNotificationsApi {
                         username,
                         userImage,
                         notificationObject.getString("created_at"),
-                        if (postId == "null") null else postId,
-                        if (pollId == "null") null else pollId,
-                        if (commentId == "null") null else commentId
+                        if (post is JSONObject) parsePostNotificationJson(post) else null,
+                        if (poll is JSONObject) parsePollNotificationJson(poll) else null,
+                        if (comment is JSONObject) parseCommentNotificationJson(comment) else null,
                     )
                 )
             }
 
             return notificationsList
+        }
+
+        private fun parsePostNotificationJson(post: JSONObject): PostNotificationModel {
+            return PostNotificationModel(
+                post.getString("id"),
+                post.getString("title"),
+                post.getString("content"),
+                post.getJSONObject("created_by").getString("username"),
+                post.getJSONObject("created_by").getString("image"),
+                post.getString("created_at"),
+                post.getString("post_image"),
+                if (post.has("comment")) post.getString("comment") else null,
+            )
+        }
+
+        private fun parsePollNotificationJson(poll: JSONObject): PollNotificationModel {
+            return PollNotificationModel(
+                poll.getString("id"),
+                poll.getString("title"),
+                poll.getString("content"),
+                poll.getJSONObject("created_by").getString("username"),
+                poll.getJSONObject("created_by").getString("image"),
+                poll.getString("created_at"),
+                if (poll.has("comment")) poll.getString("comment") else null,
+            )
+        }
+
+        private fun parseCommentNotificationJson(comment: JSONObject): CommentNotificationModel {
+            return CommentNotificationModel(
+                comment.getString("id"),
+                comment.getString("content"),
+                comment.getJSONObject("created_by").getString("username"),
+                comment.getJSONObject("created_by").getString("image"),
+                comment.getString("created_at"),
+                if (comment.has("comment")) comment.getString("comment") else null
+            )
         }
     }
 }

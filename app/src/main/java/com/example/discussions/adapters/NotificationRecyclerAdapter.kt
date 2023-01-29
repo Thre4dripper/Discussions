@@ -1,14 +1,18 @@
 package com.example.discussions.adapters
 
+import android.text.Html
+import android.text.SpannableStringBuilder
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ItemNotificationBinding
 import com.example.discussions.models.NotificationModel
@@ -41,7 +45,82 @@ class NotificationRecyclerAdapter :
                 .circleCrop()
                 .into(binding.itemNotificationUserImage)
 
-            binding.itemNotificationContent.text = notification.notifierName
+            binding.itemNotification.setBackgroundColor(
+                if (notification.isRead) itemView.context.getColor(R.color.white)
+                else itemView.context.getColor(R.color.notification_bg_color)
+            )
+
+            val category = if (notification.post != null) Constants.NOTIFICATION_CATEGORY_POST
+            else if (notification.poll != null) Constants.NOTIFICATION_CATEGORY_POLL
+            else Constants.NOTIFICATION_CATEGORY_COMMENT
+
+            //TODO subject to change
+            val notificationText = SpannableStringBuilder()
+            when (category) {
+                Constants.NOTIFICATION_CATEGORY_POST -> {
+                    if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+                        notificationText.append(
+                            HtmlCompat.fromHtml(
+                                "<b>${notification.notifierName} </b>liked your post:" +
+                                        "<br><b>${notification.post!!.title}</b> <br>${notification.post.content}",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
+                        )
+                        binding.itemNotificationContent.text = notificationText
+                    } else {
+                        notificationText.append(
+                            HtmlCompat.fromHtml(
+                                "<b>${notification.notifierName} </b>commented your post:" +
+                                        "<br><b>${notification.post!!.title} ${notification.post.content} </b><br><b>${notification.post.postComment}</b>",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
+                        )
+                        binding.itemNotificationContent.text = notificationText
+                    }
+                }
+                Constants.NOTIFICATION_CATEGORY_POLL -> {
+                    if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+                        notificationText.append(
+                            HtmlCompat.fromHtml(
+                                "<b>${notification.notifierName} </b>liked your poll:" +
+                                        "<br><b>${notification.poll!!.title}</b> <br>${notification.poll.content}",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
+                        )
+                        binding.itemNotificationContent.text = notificationText
+                    } else {
+                        notificationText.append(
+                            HtmlCompat.fromHtml(
+                                "<b>${notification.notifierName} </b>commented your poll:" +
+                                        "<br><b>${notification.poll!!.title} ${notification.poll.content} </b><br><b>${notification.poll.pollComment}</b>",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
+                        )
+                        binding.itemNotificationContent.text = notificationText
+                    }
+                }
+                Constants.NOTIFICATION_CATEGORY_COMMENT -> {
+                    if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+                        notificationText.append(
+                            HtmlCompat.fromHtml(
+                                "<b>${notification.notifierName} </b>liked your comment:" +
+                                        "<br><b>${notification.comment!!.comment}</b>",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
+                        )
+                        binding.itemNotificationContent.text = notificationText
+                    } else {
+                        notificationText.append(
+                            HtmlCompat.fromHtml(
+                                "<b>${notification.notifierName} </b>replied your comment:" +
+                                        "<br><b>${notification.comment!!.comment}</b>",
+                                HtmlCompat.FROM_HTML_MODE_LEGACY
+                            )
+                        )
+                        binding.itemNotificationContent.text = notificationText
+                    }
+                }
+            }
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             dateFormat.timeZone = TimeZone.getTimeZone("UTC")

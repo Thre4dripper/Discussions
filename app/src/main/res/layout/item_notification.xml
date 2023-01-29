@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/notification_bg_color"
@@ -49,7 +50,6 @@
             android:text="@string/item_notification_content"
             android:textColor="@color/dark_gray"
             android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/item_notification_time"
             app:layout_constraintEnd_toStartOf="@+id/item_notification_remove"
             app:layout_constraintStart_toEndOf="@+id/item_notification_user_image"
