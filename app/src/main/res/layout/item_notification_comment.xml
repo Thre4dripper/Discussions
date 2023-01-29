@@ -10,21 +10,39 @@
         android:background="@color/notification_bg_color"
         android:clickable="true"
         android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:padding="8dp">
+        android:foreground="?attr/selectableItemBackground">
 
         <ImageView
             android:id="@+id/item_notification_user_image"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             android:contentDescription="@string/item_notification_avatar_desc"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="-4dp"
+            android:layout_marginBottom="-4dp"
+            app:cardBackgroundColor="@color/notification_comment_item_bg_color"
+            app:cardCornerRadius="50dp"
+            app:layout_constraintBottom_toBottomOf="@+id/item_notification_user_image"
+            app:layout_constraintEnd_toEndOf="@+id/item_notification_user_image">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="6dp"
+                android:src="@drawable/ic_faq"
+                app:tint="@color/white"
+                tools:ignore="ContentDescription" />
+        </com.google.android.material.card.MaterialCardView>
 
 
         <ImageView
@@ -47,7 +65,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:maxLines="3"
-            android:text="@string/item_notification_content"
+            android:text=""
             android:textColor="@color/dark_gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/item_notification_time"

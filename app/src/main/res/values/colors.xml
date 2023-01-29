@@ -33,4 +33,7 @@
     <color name="notification_bg_color">#EDF6FF</color>
     <color name="notification_delete_color">#ff5454</color>
     <color name="notification_mark_as_read_color">@color/login_header_color</color>
+    <color name="notification_post_item_bg_color">#E91E63</color>
+    <color name="notification_poll_item_bg_color">#2196F3</color>
+    <color name="notification_comment_item_bg_color">#8BC34A</color>
 </resources>

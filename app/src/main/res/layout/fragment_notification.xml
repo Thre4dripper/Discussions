@@ -62,7 +62,7 @@
                 android:paddingTop="2dp"
                 android:paddingBottom="60dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_notification" />
+                tools:listitem="@layout/item_notification_post" />
 
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

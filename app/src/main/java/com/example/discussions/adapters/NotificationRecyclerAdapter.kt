@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.interfaces.NotificationInterface
-import com.example.discussions.databinding.ItemNotificationBinding
+import com.example.discussions.databinding.ItemNotificationPostBinding
 import com.example.discussions.models.NotificationModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -26,7 +26,7 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_notification, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_notification_post, parent, false)
         return NotificationViewHolder(view)
     }
 
@@ -36,10 +36,10 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
     }
 
     class NotificationViewHolder(itemView: View) : ViewHolder(itemView) {
-        val binding = DataBindingUtil.bind<ItemNotificationBinding>(itemView)!!
+        val binding = DataBindingUtil.bind<ItemNotificationPostBinding>(itemView)!!
 
         fun bind(
-            binding: ItemNotificationBinding,
+            binding: ItemNotificationPostBinding,
             notification: NotificationModel,
             notificationInterface: NotificationInterface
         ) {
