@@ -177,6 +177,7 @@
     //Notification Options Bottom Sheet
     <string name="notification_options_image_desc">Notification Image</string>
     <string name="notification_options_title">Notification Title</string>
+    <string name="notification_options_content_header">%s:</string>
     <string name="notification_options_content">Notification Content</string>
     <string name="notification_options_remove">Delete</string>
     <string name="notification_options_mark_as_read">Mark as Read</string>
