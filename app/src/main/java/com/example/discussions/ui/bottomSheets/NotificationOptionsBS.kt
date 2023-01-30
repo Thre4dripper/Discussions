@@ -2,7 +2,6 @@ package com.example.discussions.ui.bottomSheets
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +39,7 @@ class NotificationOptionsBS(
         var notificationTypeCvBgColor = 0
         var notificationTypeIv = 0
         val notificationTitle = SpannableStringBuilder()
-        Log.d(TAG, "initNotificationDetails: ${notification.category}")
+        val notificationContent = SpannableStringBuilder()
 
         //TODO bold notification content header
         when (notification.category) {
@@ -58,12 +57,14 @@ class NotificationOptionsBS(
                         )
                     )
 
+                    notificationContent.append(
+                        HtmlCompat.fromHtml(
+                            "<b>Post:</b> ${(notifiedPost.title.ifEmpty { notifiedPost.content })}",
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
+                        )
+                    )
                     binding.optionNotificationContent.apply {
-                        text = if (notifiedPost.title.isNotEmpty()) {
-                            String.format("Post: %s", notifiedPost.title)
-                        } else {
-                            String.format("Post: %s", notifiedPost.content)
-                        }
+                        text = notificationContent
                         visibility =
                             if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
                     }
@@ -75,8 +76,14 @@ class NotificationOptionsBS(
                         )
                     )
 
+                    notificationContent.append(
+                        HtmlCompat.fromHtml(
+                            "<b>Comment:</b> ${notifiedPost.postComment}",
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
+                        )
+                    )
                     binding.optionNotificationContent.apply {
-                        text = String.format("Comment: %s", notifiedPost.postComment)
+                        text = notificationContent
                         visibility = View.VISIBLE
                     }
                 }
@@ -96,12 +103,14 @@ class NotificationOptionsBS(
                         )
                     )
 
+                    notificationContent.append(
+                        HtmlCompat.fromHtml(
+                            "<b>Poll:</b> ${(notifiedPoll.title.ifEmpty { notifiedPoll.content })}",
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
+                        )
+                    )
                     binding.optionNotificationContent.apply {
-                        text = if (notifiedPoll.title.isNotEmpty()) {
-                            String.format("Poll: %s", notifiedPoll.title)
-                        } else {
-                            String.format("Poll: %s", notifiedPoll.content)
-                        }
+                        text = notificationContent
                         visibility =
                             if (notifiedPoll.title.isEmpty() && notifiedPoll.content.isEmpty()) View.GONE else View.VISIBLE
                     }
@@ -113,8 +122,14 @@ class NotificationOptionsBS(
                         )
                     )
 
+                    notificationContent.append(
+                        HtmlCompat.fromHtml(
+                            "<b>Comment:</b> ${notifiedPoll.pollComment}",
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
+                        )
+                    )
                     binding.optionNotificationContent.apply {
-                        text = String.format("Comment: %s", notifiedPoll.pollComment)
+                        text = notificationContent
                         visibility = View.VISIBLE
                     }
                 }
@@ -132,8 +147,13 @@ class NotificationOptionsBS(
                         )
                     )
 
-                    binding.optionNotificationContent.text =
-                        String.format("Comment: %s", notifiedComment.content)
+                    notificationContent.append(
+                        HtmlCompat.fromHtml(
+                            "<b>Comment:</b> ${notifiedComment.content}",
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
+                        )
+                    )
+                    binding.optionNotificationContent.text = notificationContent
                 } else {
                     notificationTitle.append(
                         HtmlCompat.fromHtml(
@@ -142,8 +162,13 @@ class NotificationOptionsBS(
                         )
                     )
 
-                    binding.optionNotificationContent.text =
-                        String.format("Comment: %s", notifiedComment.comment)
+                    notificationContent.append(
+                        HtmlCompat.fromHtml(
+                            "<b>Comment:</b> ${notifiedComment.content}",
+                            HtmlCompat.FROM_HTML_MODE_LEGACY
+                        )
+                    )
+                    binding.optionNotificationContent.text = notificationContent
                 }
             }
         }
