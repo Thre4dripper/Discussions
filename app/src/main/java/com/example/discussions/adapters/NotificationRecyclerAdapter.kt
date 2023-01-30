@@ -210,25 +210,49 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
             }
 
             val notificationText = SpannableStringBuilder()
+            val notifiedPoll = notification.poll!!
             if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
                 notificationText.append(
                     HtmlCompat.fromHtml(
-                        "<b>${notification.notifierName} </b>liked your poll:" +
-                                "<br><b>${notification.poll!!.title}</b> <br>${notification.poll.content}",
+                        "<b>${notification.notifierName} </b>liked your poll:",
                         HtmlCompat.FROM_HTML_MODE_LEGACY
                     )
                 )
                 binding.itemNotificationTitle.text = notificationText
+                binding.itemNotificationPollContent.apply {
+                    text = if (notifiedPoll.title.isNotEmpty()) {
+                        String.format("%s", notifiedPoll.title)
+                    } else {
+                        String.format("%s", notifiedPoll.content)
+                    }
+                    visibility =
+                        if (notifiedPoll.title.isEmpty() && notifiedPoll.content.isEmpty()) View.GONE else View.VISIBLE
+                    textSize = 15f
+                }
             } else {
                 notificationText.append(
                     HtmlCompat.fromHtml(
-                        "<b>${notification.notifierName} </b>commented your poll:" +
-                                "<br><b>${notification.poll!!.title} ${notification.poll.content} </b><br><b>${notification.poll.pollComment}</b>",
+                        "<b>${notification.notifierName} </b>commented on your post:",
                         HtmlCompat.FROM_HTML_MODE_LEGACY
                     )
                 )
                 binding.itemNotificationTitle.text = notificationText
+                binding.itemNotificationPollContent.apply {
+                    text = notifiedPoll.pollComment
+                    visibility = View.VISIBLE
+                    textSize = 16f
+                }
             }
+
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+            dateFormat.timeZone = TimeZone.getTimeZone("UTC")
+            val date = dateFormat.parse(notification.createdAt)
+
+            binding.itemNotificationTime.text = DateUtils.getRelativeTimeSpanString(
+                date!!.time,
+                System.currentTimeMillis(),
+                DateUtils.MINUTE_IN_MILLIS
+            )
         }
     }
 
