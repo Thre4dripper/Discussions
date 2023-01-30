@@ -1,5 +1,6 @@
 package com.example.discussions.adapters
 
+import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -136,6 +137,7 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                     }
                     visibility =
                         if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
+                    textSize = 15f
                 }
             } else {
                 notificationText.append(
@@ -146,13 +148,9 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                 )
                 binding.itemNotificationTitle.text = notificationText
                 binding.itemNotificationPostContent.apply {
-                    text = if (notifiedPost.title.isNotEmpty()) {
-                        String.format("%s", notifiedPost.title)
-                    } else {
-                        String.format("%s", notifiedPost.content)
-                    }
-                    visibility =
-                        if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
+                    text = notifiedPost.postComment
+                    visibility = View.VISIBLE
+                    textSize = 16f
                 }
             }
 

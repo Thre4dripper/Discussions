@@ -78,7 +78,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:maxLines="4"
+            android:maxLines="3"
+            android:ellipsize="end"
             android:text="@string/item_post_notification_content"
             android:textColor="@color/dark_gray"
             app:layout_constraintEnd_toStartOf="@+id/item_notification_post_image_cv"
@@ -109,7 +110,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/item_post_notification_post_image_desc"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 tools:src="@tools:sample/avatars" />
         </com.google.android.material.card.MaterialCardView>
 
