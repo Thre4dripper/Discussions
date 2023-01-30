@@ -13,7 +13,10 @@ import com.example.discussions.R
 import com.example.discussions.adapters.NotificationRecyclerAdapter
 import com.example.discussions.adapters.interfaces.NotificationInterface
 import com.example.discussions.databinding.BsNotificationOptionsBinding
+import com.example.discussions.models.CommentNotificationModel
 import com.example.discussions.models.NotificationModel
+import com.example.discussions.models.PollNotificationModel
+import com.example.discussions.models.PostNotificationModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class NotificationOptionsBS(
@@ -40,47 +43,13 @@ class NotificationOptionsBS(
         var notificationTypeIv = 0
         val notificationTitle = SpannableStringBuilder()
 
-        //TODO bold notification content header
         when (notification.category) {
             NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POST -> {
 
                 notificationTypeCvBgColor = R.color.notification_post_item_bg_color
                 notificationTypeIv = R.drawable.ic_image
 
-                val notifiedPost = notification.post!!
-                if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
-                    notificationTitle.append(
-                        HtmlCompat.fromHtml(
-                            "<b>${notification.notifierName}</b> Liked your post",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                    )
-
-                    binding.optionNotificationContentHeader.apply {
-                        text = getString(R.string.notification_options_content_header, "Post")
-                        visibility =
-                            if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
-                    }
-                    binding.optionNotificationContent.apply {
-                        text = notifiedPost.title.ifEmpty { notifiedPost.content }
-                        visibility =
-                            if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
-                    }
-                } else {
-                    notificationTitle.append(
-                        HtmlCompat.fromHtml(
-                            "<b>${notification.notifierName}</b> Commented on your post",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                    )
-
-                    binding.optionNotificationContentHeader.text =
-                        getString(R.string.notification_options_content_header, "Comment")
-                    binding.optionNotificationContent.apply {
-                        text = notifiedPost.postComment
-                        visibility = View.VISIBLE
-                    }
-                }
+                setPostNotificationDetails(notificationTitle)
 
                 binding.optionNotificationTitle.text = notificationTitle
             }
@@ -88,66 +57,13 @@ class NotificationOptionsBS(
                 notificationTypeCvBgColor = R.color.notification_poll_item_bg_color
                 notificationTypeIv = R.drawable.create_poll_shortcut
 
-                val notifiedPoll = notification.poll!!
-                if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
-                    notificationTitle.append(
-                        HtmlCompat.fromHtml(
-                            "<b>${notification.notifierName}</b> Liked your poll",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                    )
-
-                    binding.optionNotificationContentHeader.text =
-                        getString(R.string.notification_options_content_header, "Poll")
-                    binding.optionNotificationContent.apply {
-                        text = notifiedPoll.title.ifEmpty { notifiedPoll.content }
-                        visibility =
-                            if (notifiedPoll.title.isEmpty() && notifiedPoll.content.isEmpty()) View.GONE else View.VISIBLE
-                    }
-                } else {
-                    notificationTitle.append(
-                        HtmlCompat.fromHtml(
-                            "<b>${notification.notifierName}</b> Commented on your poll",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                    )
-
-                    binding.optionNotificationContentHeader.text =
-                        getString(R.string.notification_options_content_header, "Comment")
-                    binding.optionNotificationContent.apply {
-                        text = notifiedPoll.pollComment
-                        visibility = View.VISIBLE
-                    }
-                }
+                setPollNotificationDetails(notificationTitle)
             }
             NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_COMMENT -> {
                 notificationTypeCvBgColor = R.color.notification_comment_item_bg_color
                 notificationTypeIv = R.drawable.ic_faq
 
-                val notifiedComment = notification.comment!!
-                if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
-                    notificationTitle.append(
-                        HtmlCompat.fromHtml(
-                            "<b>${notification.notifierName}</b> Liked your comment",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                    )
-
-                    binding.optionNotificationContentHeader.text =
-                        getString(R.string.notification_options_content_header, "Comment")
-                    binding.optionNotificationContent.text = notifiedComment.content
-                } else {
-                    notificationTitle.append(
-                        HtmlCompat.fromHtml(
-                            "<b>${notification.notifierName}</b> Replied on your comment",
-                            HtmlCompat.FROM_HTML_MODE_LEGACY
-                        )
-                    )
-
-                    binding.optionNotificationContentHeader.text =
-                        getString(R.string.notification_options_content_header, "Reply")
-                    binding.optionNotificationContent.text = notifiedComment.content
-                }
+                setCommentNotificationDetails(notificationTitle)
             }
         }
 
@@ -169,6 +85,148 @@ class NotificationOptionsBS(
         binding.optionNotificationTypeIv.setImageResource(notificationTypeIv)
         binding.optionNotificationTitle.text = notificationTitle
     }
+
+    private fun setPostNotificationDetails(notificationTitle: SpannableStringBuilder) {
+        val notifiedPost = notification.post!!
+        if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+            setPostLikeContent(notificationTitle, notifiedPost)
+        } else {
+            setPostCommentContent(notificationTitle, notifiedPost)
+        }
+    }
+
+    private fun setPollNotificationDetails(notificationTitle: SpannableStringBuilder) {
+        val notifiedPoll = notification.poll!!
+        if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+            setPollLikeContent(notificationTitle, notifiedPoll)
+        } else {
+            setPollCommentContent(notificationTitle, notifiedPoll)
+        }
+    }
+
+    private fun setCommentNotificationDetails(notificationTitle: SpannableStringBuilder) {
+        val notifiedComment = notification.comment!!
+        if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
+            setCommentLikeContent(notificationTitle, notifiedComment)
+        } else {
+            setCommentReplyContent(notificationTitle, notifiedComment)
+        }
+    }
+
+    private fun setPostLikeContent(
+        notificationTitle: SpannableStringBuilder,
+        notifiedPost: PostNotificationModel
+    ) {
+        notificationTitle.append(
+            HtmlCompat.fromHtml(
+                "<b>${notification.notifierName}</b> Liked your post",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+        )
+
+        binding.optionNotificationContentHeader.apply {
+            text = getString(R.string.notification_options_content_header, "Post")
+            visibility =
+                if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
+        }
+        binding.optionNotificationContent.apply {
+            text = notifiedPost.title.ifEmpty { notifiedPost.content }
+            visibility =
+                if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
+        }
+    }
+
+    private fun setPostCommentContent(
+        notificationTitle: SpannableStringBuilder,
+        notifiedPost: PostNotificationModel
+    ) {
+        notificationTitle.append(
+            HtmlCompat.fromHtml(
+                "<b>${notification.notifierName}</b> Commented on your post",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+        )
+
+        binding.optionNotificationContentHeader.text =
+            getString(R.string.notification_options_content_header, "Comment")
+        binding.optionNotificationContent.apply {
+            text = notifiedPost.postComment
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun setPollLikeContent(
+        notificationTitle: SpannableStringBuilder,
+        notifiedPoll: PollNotificationModel
+    ) {
+        notificationTitle.append(
+            HtmlCompat.fromHtml(
+                "<b>${notification.notifierName}</b> Liked your poll",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+        )
+
+        binding.optionNotificationContentHeader.text =
+            getString(R.string.notification_options_content_header, "Poll")
+        binding.optionNotificationContent.apply {
+            text = notifiedPoll.title.ifEmpty { notifiedPoll.content }
+            visibility =
+                if (notifiedPoll.title.isEmpty() && notifiedPoll.content.isEmpty()) View.GONE else View.VISIBLE
+        }
+    }
+
+
+    private fun setPollCommentContent(
+        notificationTitle: SpannableStringBuilder,
+        notifiedPoll: PollNotificationModel
+    ) {
+        notificationTitle.append(
+            HtmlCompat.fromHtml(
+                "<b>${notification.notifierName}</b> Commented on your poll",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+        )
+
+        binding.optionNotificationContentHeader.text =
+            getString(R.string.notification_options_content_header, "Comment")
+        binding.optionNotificationContent.apply {
+            text = notifiedPoll.pollComment
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun setCommentLikeContent(
+        notificationTitle: SpannableStringBuilder,
+        notifiedComment: CommentNotificationModel
+    ) {
+        notificationTitle.append(
+            HtmlCompat.fromHtml(
+                "<b>${notification.notifierName}</b> Liked your comment",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+        )
+
+        binding.optionNotificationContentHeader.text =
+            getString(R.string.notification_options_content_header, "Comment")
+        binding.optionNotificationContent.text = notifiedComment.content
+    }
+
+    private fun setCommentReplyContent(
+        notificationTitle: SpannableStringBuilder,
+        notifiedComment: CommentNotificationModel
+    ) {
+        notificationTitle.append(
+            HtmlCompat.fromHtml(
+                "<b>${notification.notifierName}</b> Replied on your comment",
+                HtmlCompat.FROM_HTML_MODE_LEGACY
+            )
+        )
+
+        binding.optionNotificationContentHeader.text =
+            getString(R.string.notification_options_content_header, "Reply")
+        binding.optionNotificationContent.text = notifiedComment.content
+    }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
