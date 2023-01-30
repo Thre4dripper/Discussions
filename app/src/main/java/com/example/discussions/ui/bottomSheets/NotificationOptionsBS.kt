@@ -74,6 +74,7 @@ class NotificationOptionsBS(
             .circleCrop()
             .into(binding.optionNotificationIv)
 
+        // set notification small icon background color
         binding.optionNotificationTypeCv.setCardBackgroundColor(
             ResourcesCompat.getColor(
                 resources,
@@ -82,10 +83,14 @@ class NotificationOptionsBS(
             )
         )
 
+        //set notification small icon
         binding.optionNotificationTypeIv.setImageResource(notificationTypeIv)
         binding.optionNotificationTitle.text = notificationTitle
     }
 
+    /**
+     * SET NOTIFICATION DETAILS FOR POST
+     */
     private fun setPostNotificationDetails(notificationTitle: SpannableStringBuilder) {
         val notifiedPost = notification.post!!
         if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
@@ -95,6 +100,9 @@ class NotificationOptionsBS(
         }
     }
 
+    /**
+     * SET NOTIFICATION DETAILS FOR POLL
+     */
     private fun setPollNotificationDetails(notificationTitle: SpannableStringBuilder) {
         val notifiedPoll = notification.poll!!
         if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
@@ -104,6 +112,9 @@ class NotificationOptionsBS(
         }
     }
 
+    /**
+     * SET NOTIFICATION DETAILS FOR COMMENT
+     */
     private fun setCommentNotificationDetails(notificationTitle: SpannableStringBuilder) {
         val notifiedComment = notification.comment!!
         if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
@@ -113,10 +124,14 @@ class NotificationOptionsBS(
         }
     }
 
+    /**
+     * METHODS TO SET NOTIFICATION CONTENT FOR POST LIKE AND COMMENT
+     */
     private fun setPostLikeContent(
         notificationTitle: SpannableStringBuilder,
         notifiedPost: PostNotificationModel
     ) {
+        // set post notification title for like notification
         notificationTitle.append(
             HtmlCompat.fromHtml(
                 "<b>${notification.notifierName}</b> Liked your post",
@@ -124,11 +139,14 @@ class NotificationOptionsBS(
             )
         )
 
+        // set post notification content header with visibility control
         binding.optionNotificationContentHeader.apply {
             text = getString(R.string.notification_options_content_header, "Post")
             visibility =
                 if (notifiedPost.title.isEmpty() && notifiedPost.content.isEmpty()) View.GONE else View.VISIBLE
         }
+
+        // set post notification content with visibility control
         binding.optionNotificationContent.apply {
             text = notifiedPost.title.ifEmpty { notifiedPost.content }
             visibility =
@@ -140,6 +158,7 @@ class NotificationOptionsBS(
         notificationTitle: SpannableStringBuilder,
         notifiedPost: PostNotificationModel
     ) {
+        // set post notification title for comment notification
         notificationTitle.append(
             HtmlCompat.fromHtml(
                 "<b>${notification.notifierName}</b> Commented on your post",
@@ -147,18 +166,25 @@ class NotificationOptionsBS(
             )
         )
 
+        // set post notification content header
         binding.optionNotificationContentHeader.text =
             getString(R.string.notification_options_content_header, "Comment")
+
+        // set post notification content
         binding.optionNotificationContent.apply {
             text = notifiedPost.postComment
             visibility = View.VISIBLE
         }
     }
 
+    /**
+     * METHODS TO SET NOTIFICATION CONTENT FOR COMMENT LIKE AND REPLY
+     */
     private fun setPollLikeContent(
         notificationTitle: SpannableStringBuilder,
         notifiedPoll: PollNotificationModel
     ) {
+        // set poll notification title for like notification
         notificationTitle.append(
             HtmlCompat.fromHtml(
                 "<b>${notification.notifierName}</b> Liked your poll",
@@ -166,8 +192,11 @@ class NotificationOptionsBS(
             )
         )
 
+        // set poll notification content header with visibility control
         binding.optionNotificationContentHeader.text =
             getString(R.string.notification_options_content_header, "Poll")
+
+        // set poll notification content with visibility control
         binding.optionNotificationContent.apply {
             text = notifiedPoll.title.ifEmpty { notifiedPoll.content }
             visibility =
@@ -180,6 +209,7 @@ class NotificationOptionsBS(
         notificationTitle: SpannableStringBuilder,
         notifiedPoll: PollNotificationModel
     ) {
+        // set poll notification title for comment notification
         notificationTitle.append(
             HtmlCompat.fromHtml(
                 "<b>${notification.notifierName}</b> Commented on your poll",
@@ -187,18 +217,25 @@ class NotificationOptionsBS(
             )
         )
 
+        // set poll notification content header
         binding.optionNotificationContentHeader.text =
             getString(R.string.notification_options_content_header, "Comment")
+
+        // set poll notification content
         binding.optionNotificationContent.apply {
             text = notifiedPoll.pollComment
             visibility = View.VISIBLE
         }
     }
 
+    /**
+     * METHODS TO SET NOTIFICATION CONTENT FOR COMMENT LIKE AND REPLY
+     */
     private fun setCommentLikeContent(
         notificationTitle: SpannableStringBuilder,
         notifiedComment: CommentNotificationModel
     ) {
+        // set comment notification title for like notification
         notificationTitle.append(
             HtmlCompat.fromHtml(
                 "<b>${notification.notifierName}</b> Liked your comment",
@@ -206,8 +243,11 @@ class NotificationOptionsBS(
             )
         )
 
+        // set comment notification content header
         binding.optionNotificationContentHeader.text =
             getString(R.string.notification_options_content_header, "Comment")
+
+        // set comment notification content
         binding.optionNotificationContent.text = notifiedComment.content
     }
 
@@ -215,6 +255,7 @@ class NotificationOptionsBS(
         notificationTitle: SpannableStringBuilder,
         notifiedComment: CommentNotificationModel
     ) {
+        // set comment notification title for reply notification
         notificationTitle.append(
             HtmlCompat.fromHtml(
                 "<b>${notification.notifierName}</b> Replied on your comment",
@@ -222,8 +263,11 @@ class NotificationOptionsBS(
             )
         )
 
+        // set comment notification content header
         binding.optionNotificationContentHeader.text =
             getString(R.string.notification_options_content_header, "Reply")
+
+        // set comment notification content
         binding.optionNotificationContent.text = notifiedComment.content
     }
 
