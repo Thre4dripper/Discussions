@@ -17,15 +17,14 @@
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginBottom="12dp"
             android:contentDescription="@string/item_notification_avatar_desc"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/item_notification_comment_cv"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_notification_title"
             tools:src="@tools:sample/avatars" />
 
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/materialCardView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="-4dp"
@@ -63,33 +62,69 @@
             android:id="@+id/item_notification_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:maxLines="3"
-            android:text="@string/item_comment_notification_content"
+            android:text="@string/item_comment_notification_title"
             android:textColor="@color/dark_gray"
             android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@+id/item_notification_time"
+            app:layout_constraintBottom_toTopOf="@+id/item_notification_comment_cv"
             app:layout_constraintEnd_toStartOf="@+id/item_notification_options"
             app:layout_constraintStart_toEndOf="@+id/item_notification_user_image"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/item_notification_comment_content"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+
+            android:text="@string/item_post_notification_content"
+            android:textColor="@color/dark_gray"
+            app:layout_constraintEnd_toStartOf="@+id/item_notification_comment_cv"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/item_notification_title"
+            app:layout_constraintTop_toBottomOf="@+id/item_notification_title" />
 
         <TextView
             android:id="@+id/item_notification_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
             android:text="@string/item_notification_time"
+            app:layout_constraintStart_toStartOf="@+id/item_notification_title"
+            app:layout_constraintTop_toBottomOf="@+id/item_notification_comment_content" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/item_notification_comment_cv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="@color/login_header_color"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/item_notification_options"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/item_notification_user_image"
-            app:layout_constraintTop_toBottomOf="@+id/item_notification_title" />
+            app:layout_constraintTop_toBottomOf="@+id/item_notification_title"
+            app:layout_constraintWidth_max="150dp">
 
+            <TextView
+                android:id="@+id/item_notification_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@string/item_comment_content"
+                android:textColor="@color/white" />
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

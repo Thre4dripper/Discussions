@@ -1,6 +1,5 @@
 package com.example.discussions.adapters
 
-import android.graphics.Typeface
 import android.text.SpannableStringBuilder
 import android.text.format.DateUtils
 import android.view.LayoutInflater
@@ -290,24 +289,31 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
             }
 
             val notificationText = SpannableStringBuilder()
+            val notifiedComment = notification.comment!!
             if (notification.type == Constants.NOTIFICATION_TYPE_LIKE) {
                 notificationText.append(
                     HtmlCompat.fromHtml(
-                        "<b>${notification.notifierName} </b>liked your comment:" +
-                                "<br><b>${notification.comment!!.comment}</b>",
+                        "<b>${notification.notifierName} </b>liked your comment:",
                         HtmlCompat.FROM_HTML_MODE_LEGACY
                     )
                 )
                 binding.itemNotificationTitle.text = notificationText
+                binding.itemNotificationComment.text = notifiedComment.content
+                binding.itemNotificationCommentContent.apply { visibility = View.GONE }
             } else {
                 notificationText.append(
                     HtmlCompat.fromHtml(
-                        "<b>${notification.notifierName} </b>replied your comment:" +
-                                "<br><b>${notification.comment!!.comment}</b>",
+                        "<b>${notification.notifierName} </b>replied your comment:",
                         HtmlCompat.FROM_HTML_MODE_LEGACY
                     )
                 )
                 binding.itemNotificationTitle.text = notificationText
+                binding.itemNotificationComment.text = notifiedComment.content
+                binding.itemNotificationCommentContent.apply {
+                    text = notifiedComment.comment
+                    visibility =
+                        if (notifiedComment.comment!!.isEmpty()) View.GONE else View.VISIBLE
+                }
             }
         }
     }

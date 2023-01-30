@@ -56,8 +56,6 @@ class GetAllNotificationsApi {
                 val userImage = createdByObject.getString("image")
                 username = "@$username"
 
-                val type = notificationObject.getString("type")
-
                 val post = notificationObject.get("post")
                 val poll = notificationObject.get("poll")
                 val comment = notificationObject.get("comment")
