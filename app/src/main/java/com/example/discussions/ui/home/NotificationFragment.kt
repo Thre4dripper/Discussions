@@ -216,6 +216,23 @@ class NotificationFragment : Fragment(), NotificationInterface {
     }
 
     override fun onNotificationDelete(notificationId: String) {
+        homeViewModel.isNotificationDeleted.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS) {
+                    Toast.makeText(requireContext(), "Notification deleted", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error deleting notification",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
+        }
+
+        homeViewModel.deleteNotificationById(requireContext(), notificationId)
     }
 
     override fun onNotificationMarkAsRead(notificationId: String) {

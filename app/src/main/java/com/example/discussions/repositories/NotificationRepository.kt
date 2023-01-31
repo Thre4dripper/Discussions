@@ -3,7 +3,7 @@ package com.example.discussions.repositories
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.api.apiCalls.notification.DeleteNotification
+import com.example.discussions.api.apiCalls.notification.DeleteNotificationApi
 import com.example.discussions.api.apiCalls.notification.GetAllNotificationsApi
 import com.example.discussions.models.NotificationModel
 import com.example.discussions.store.LoginStore
@@ -54,7 +54,7 @@ class NotificationRepository {
             context: Context, notificationId: String, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
-            DeleteNotification.deleteNotificationById(
+            DeleteNotificationApi.deleteNotificationById(
                 context,
                 token,
                 notificationId,

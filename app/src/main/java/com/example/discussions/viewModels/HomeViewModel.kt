@@ -234,6 +234,12 @@ class HomeViewModel : ViewModel() {
         _isNotificationDeleted.value = null
         postsOrPollsOrNotificationsScrollToTop = false
 
+        val oldNotificationsList = notificationsList.value!!.toMutableList()
+        val notificationIndex =
+            oldNotificationsList.indexOfFirst { it.notificationId == notificationId }
+        oldNotificationsList.removeAt(notificationIndex)
+        notificationsList.value = oldNotificationsList
+
         NotificationRepository.deleteNotificationById(
             context,
             notificationId,
@@ -244,6 +250,9 @@ class HomeViewModel : ViewModel() {
 
                 override fun onError(response: String) {
                     _isNotificationDeleted.value = Constants.API_FAILED
+
+                    //if notification delete failed, then add it back to list
+                    notificationsList.value = oldNotificationsList
                 }
             })
     }

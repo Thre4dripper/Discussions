@@ -1,15 +1,16 @@
 package com.example.discussions.api.apiCalls.notification
 
 import android.content.Context
-import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import org.json.JSONObject
 
-class DeleteNotification {
+class DeleteNotificationApi {
     companion object {
+        private const val TAG = "DeleteNotificationApi"
+
         fun deleteNotificationById(
             context: Context,
             token: String,
@@ -24,7 +25,7 @@ class DeleteNotification {
                     "}"
 
             val request =
-                object : JsonObjectRequest(Method.GET, url, JSONObject(body), { response ->
+                object : JsonObjectRequest(Method.POST, url, JSONObject(body), { response ->
                     callback.onSuccess(response.toString())
                 }, { error ->
                     callback.onError(error.toString())
@@ -35,12 +36,6 @@ class DeleteNotification {
                         return headers
                     }
                 }
-
-            request.retryPolicy = DefaultRetryPolicy(
-                15000,
-                0,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
-            )
 
             queue.add(request)
         }
