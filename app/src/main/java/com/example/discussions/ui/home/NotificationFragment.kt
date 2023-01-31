@@ -273,6 +273,22 @@ class NotificationFragment : Fragment(), NotificationInterface {
     }
 
     override fun onNotificationMarkAsRead(notificationId: String) {
+        homeViewModel.isNotificationRead.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS) {
+                    Toast.makeText(requireContext(), "Notification Read", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error Marking notification",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
+        }
 
+        homeViewModel.readNotification(requireContext(), notificationId)
     }
 }

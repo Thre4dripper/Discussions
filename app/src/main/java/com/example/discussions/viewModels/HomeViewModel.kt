@@ -290,6 +290,13 @@ class HomeViewModel : ViewModel() {
         _isNotificationRead.value = null
         postsOrPollsOrNotificationsScrollToTop = false
 
+        val oldNotificationsList = notificationsList.value!!.toMutableList()
+        val notificationIndex =
+            oldNotificationsList.indexOfFirst { it.notificationId == notificationId }
+        val readNotification = oldNotificationsList[notificationIndex].copy(isRead = true)
+        oldNotificationsList[notificationIndex] = readNotification
+        notificationsList.value = oldNotificationsList
+
         NotificationRepository.readNotification(context, notificationId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isNotificationRead.value = Constants.API_SUCCESS
@@ -297,6 +304,9 @@ class HomeViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isNotificationRead.value = Constants.API_FAILED
+
+                //if notification read failed, then add it back to list
+                notificationsList.value = oldNotificationsList
             }
         })
     }
