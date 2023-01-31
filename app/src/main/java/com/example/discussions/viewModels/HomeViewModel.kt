@@ -53,6 +53,10 @@ class HomeViewModel : ViewModel() {
     val isNotificationDeleted: LiveData<String?>
         get() = _isNotificationDeleted
 
+    private var _isAllNotificationsDeleted = MutableLiveData<String?>(null)
+    val isAllNotificationsDeleted: LiveData<String?>
+        get() = _isAllNotificationsDeleted
+
     private var _isPollVoted = MutableLiveData<String?>(null)
     val isPollVoted: LiveData<String?>
         get() = _isPollVoted
@@ -255,5 +259,20 @@ class HomeViewModel : ViewModel() {
                     notificationsList.value = oldNotificationsList
                 }
             })
+    }
+
+    fun deleteAllNotifications(context: Context) {
+        _isAllNotificationsDeleted.value = null
+        postsOrPollsOrNotificationsScrollToTop = false
+
+        NotificationRepository.deleteAllNotifications(context, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isAllNotificationsDeleted.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isAllNotificationsDeleted.value = Constants.API_FAILED
+            }
+        })
     }
 }
