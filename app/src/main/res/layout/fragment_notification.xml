@@ -58,7 +58,6 @@
                 android:id="@+id/notification_rv"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="@color/light_gray"
                 android:clipToPadding="false"
                 android:paddingTop="2dp"
                 android:paddingBottom="60dp"

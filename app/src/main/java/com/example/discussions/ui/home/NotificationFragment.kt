@@ -125,6 +125,12 @@ class NotificationFragment : Fragment(), NotificationInterface {
         }
 
         binding.notificationClearAllBtn.setOnClickListener {
+            if (homeViewModel.notificationsList.value == null || homeViewModel.notificationsList.value!!.isEmpty()) {
+                Toast.makeText(requireContext(), "No notifications to delete", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+            //if list is empty then no need to show dialog
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Delete All Notifications")
                 .setMessage("Are you sure you want to delete all notifications?")

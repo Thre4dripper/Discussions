@@ -5,6 +5,7 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.core.text.HtmlCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
@@ -55,12 +56,18 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val notification = getItem(position)
+
         when (holder.itemViewType) {
             NOTIFICATION_ITEM_TYPE_POST -> {
                 (holder as PostNotificationViewHolder).bind(
                     holder.binding,
                     notification,
                     notificationInterface
+                )
+
+                holder.binding.root.animation = AnimationUtils.loadAnimation(
+                    holder.binding.root.context,
+                    R.anim.translate
                 )
             }
             NOTIFICATION_ITEM_TYPE_POLL -> {
@@ -69,12 +76,22 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                     notification,
                     notificationInterface
                 )
+
+                holder.binding.root.animation = AnimationUtils.loadAnimation(
+                    holder.binding.root.context,
+                    R.anim.translate
+                )
             }
             NOTIFICATION_ITEM_TYPE_COMMENT -> {
                 (holder as CommentNotificationViewHolder).bind(
                     holder.binding,
                     notification,
                     notificationInterface
+                )
+
+                holder.binding.root.animation = AnimationUtils.loadAnimation(
+                    holder.binding.root.context,
+                    R.anim.translate
                 )
             }
         }
