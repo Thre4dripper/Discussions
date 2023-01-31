@@ -265,6 +265,9 @@ class HomeViewModel : ViewModel() {
         _isAllNotificationsDeleted.value = null
         postsOrPollsOrNotificationsScrollToTop = false
 
+        val oldNotificationsList = notificationsList.value!!.toMutableList()
+        notificationsList.value = mutableListOf()
+
         NotificationRepository.deleteAllNotifications(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isAllNotificationsDeleted.value = Constants.API_SUCCESS
@@ -272,6 +275,9 @@ class HomeViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isAllNotificationsDeleted.value = Constants.API_FAILED
+
+                //if all notifications delete failed, then add it back to list
+                notificationsList.value = oldNotificationsList
             }
         })
     }

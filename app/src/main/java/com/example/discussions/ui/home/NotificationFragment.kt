@@ -24,6 +24,7 @@ import com.example.discussions.databinding.FragmentNotificationBinding
 import com.example.discussions.models.NotificationModel
 import com.example.discussions.ui.bottomSheets.NotificationOptionsBS
 import com.example.discussions.viewModels.HomeViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class NotificationFragment : Fragment(), NotificationInterface {
     private val TAG = "NotificationFragment"
@@ -59,6 +60,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(binding.notificationRv)
 
+        setDeleteAllNotificationsButton()
         getAllNotifications()
         return binding.root
     }
@@ -99,6 +101,41 @@ class NotificationFragment : Fragment(), NotificationInterface {
         }
 
         homeViewModel.getAllNotifications(requireContext())
+    }
+
+    private fun setDeleteAllNotificationsButton() {
+        homeViewModel.isAllNotificationsDeleted.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS) {
+                    Toast.makeText(
+                        requireContext(),
+                        "All Notifications Deleted",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error deleting notifications",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            }
+        }
+
+        binding.notificationClearAllBtn.setOnClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Delete All Notifications")
+                .setMessage("Are you sure you want to delete all notifications?")
+                .setPositiveButton("Yes") { _, _ ->
+                    homeViewModel.deleteAllNotifications(requireContext())
+                }
+                .setNegativeButton("No") { _, _ -> }
+                .setCancelable(false)
+                .create()
+                .show()
+        }
     }
 
 
