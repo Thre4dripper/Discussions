@@ -126,7 +126,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
 
         binding.notificationClearAllBtn.setOnClickListener {
             if (homeViewModel.notificationsList.value == null || homeViewModel.notificationsList.value!!.isEmpty()) {
-                Toast.makeText(requireContext(), "No notifications to delete", Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(), "No notifications to clear", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
             }
@@ -260,18 +260,14 @@ class NotificationFragment : Fragment(), NotificationInterface {
 
     override fun onNotificationDelete(notificationId: String) {
         homeViewModel.isNotificationDeleted.observe(viewLifecycleOwner) {
-            if (it != null) {
-                if (it == Constants.API_SUCCESS) {
-                    Toast.makeText(requireContext(), "Notification deleted", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error deleting notification",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
+
+            if (it != null && it != Constants.API_SUCCESS) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error deleting notification",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
             }
         }
 
@@ -280,20 +276,20 @@ class NotificationFragment : Fragment(), NotificationInterface {
 
     override fun onNotificationMarkAsRead(notificationId: String) {
         homeViewModel.isNotificationRead.observe(viewLifecycleOwner) {
-            if (it != null) {
-                if (it == Constants.API_SUCCESS) {
-                    Toast.makeText(requireContext(), "Notification Read", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Error Marking notification",
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
-                }
+            if (it != null && it != Constants.API_SUCCESS) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error Marking notification",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
             }
         }
+
+        //manually update the notification item
+        val position =
+            notificationAdapter.currentList.indexOfFirst { it.notificationId == notificationId }
+        notificationAdapter.notifyItemChanged(position)
 
         homeViewModel.readNotification(requireContext(), notificationId)
     }

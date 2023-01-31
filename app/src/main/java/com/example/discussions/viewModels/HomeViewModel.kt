@@ -290,12 +290,14 @@ class HomeViewModel : ViewModel() {
         _isNotificationRead.value = null
         postsOrPollsOrNotificationsScrollToTop = false
 
-        val oldNotificationsList = notificationsList.value!!.toMutableList()
+        val oldNotificationsList = notificationsList.value!!
+        val newNotificationsList = notificationsList.value!!.toMutableList()
         val notificationIndex =
-            oldNotificationsList.indexOfFirst { it.notificationId == notificationId }
-        val readNotification = oldNotificationsList[notificationIndex].copy(isRead = true)
-        oldNotificationsList[notificationIndex] = readNotification
-        notificationsList.value = oldNotificationsList
+            newNotificationsList.indexOfFirst { it.notificationId == notificationId }
+
+        val readNotification = newNotificationsList[notificationIndex].copy(isRead = true)
+        newNotificationsList[notificationIndex] = readNotification
+        notificationsList.value = newNotificationsList
 
         NotificationRepository.readNotification(context, notificationId, object : ResponseCallback {
             override fun onSuccess(response: String) {
