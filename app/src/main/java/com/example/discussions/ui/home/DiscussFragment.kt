@@ -1,5 +1,6 @@
 package com.example.discussions.ui.home
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -13,12 +14,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
+import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
 import com.example.discussions.repositories.PostRepository
+import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
 
-class DiscussFragment : Fragment(), LikeCommentInterface {
+class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface {
     private val TAG = "DiscussFragment"
 
     private lateinit var binding: FragmentDiscussBinding
@@ -36,7 +39,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         binding.discussionRv.apply {
-            discussAdapter = DiscussionsRecyclerAdapter(this@DiscussFragment)
+            discussAdapter = DiscussionsRecyclerAdapter(this@DiscussFragment, this@DiscussFragment)
             adapter = discussAdapter
         }
 
@@ -124,5 +127,11 @@ class DiscussFragment : Fragment(), LikeCommentInterface {
 
         val commentsBS = CommentsBS(requireContext(), id, type, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
+    }
+
+    override fun onPostClick(postId: String) {
+        val intent = Intent(requireContext(), PostDetailsActivity::class.java)
+        intent.putExtra(Constants.POST_ID, postId)
+        startActivity(intent)
     }
 }

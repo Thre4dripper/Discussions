@@ -14,13 +14,17 @@ import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
+import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.ItemDiscussionPostBinding
 import com.example.discussions.models.PostModel
 import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentInterface) :
+class DiscussionsRecyclerAdapter(
+    private var likeCommentInterface: LikeCommentInterface,
+    private var postClickInterface: PostClickInterface
+) :
     ListAdapter<PostModel, ViewHolder>(DiscussionDiffCallback()) {
     private val TAG = "DiscussionsRecyclerAdap"
 
@@ -32,7 +36,7 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = getItem(position)
-        (holder as PostViewHolder).bind(holder.binding, post, likeCommentInterface)
+        (holder as PostViewHolder).bind(holder.binding, post, likeCommentInterface,postClickInterface)
     }
 
     class PostViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -41,7 +45,8 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
         fun bind(
             binding: ItemDiscussionPostBinding,
             postModel: PostModel,
-            likeCommentInterface: LikeCommentInterface
+            likeCommentInterface: LikeCommentInterface,
+            postClickInterface: PostClickInterface
         ) {
 
             //hiding more options button on discussion posts
@@ -146,6 +151,9 @@ class DiscussionsRecyclerAdapter(private var likeCommentInterface: LikeCommentIn
                 visibility = if (postModel.allowComments) View.VISIBLE else View.GONE
             }
 
+            binding.root.setOnClickListener {
+                postClickInterface.onPostClick(postModel.postId)
+            }
         }
     }
 
