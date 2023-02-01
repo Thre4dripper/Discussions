@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:name=".MyApplication"
@@ -15,9 +15,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Discussions"
-        tools:replace="android:fullBackupContent"
         android:usesCleartextTraffic="true"
+        tools:replace="android:fullBackupContent"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.PostDetailsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.PollResultsActivity"
             android:exported="false">
@@ -86,7 +89,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
             <meta-data
                 android:name="android.app.lib_name"
