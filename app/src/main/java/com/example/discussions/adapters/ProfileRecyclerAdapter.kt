@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.R
-import com.example.discussions.adapters.interfaces.UserPostClickInterface
+import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.ItemUserPostBinding
 import com.example.discussions.models.PostModel
 
-class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickInterface) :
+class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface) :
     ListAdapter<PostModel, ProfileRecyclerAdapter.ProfilePostsViewHolder>(ProfileDiffCallback()) {
 
 
@@ -28,7 +28,7 @@ class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickIn
 
     override fun onBindViewHolder(holder: ProfilePostsViewHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(holder.binding, post, userPostClickInterface)
+        holder.bind(holder.binding, post, postClickInterface)
     }
 
     class ProfilePostsViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -38,7 +38,7 @@ class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickIn
         fun bind(
             binding: ItemUserPostBinding,
             postModel: PostModel,
-            userPostClickInterface: UserPostClickInterface
+            postClickInterface: PostClickInterface
         ) {
             binding.itemUserPostTitle.apply {
                 text = postModel.title
@@ -52,8 +52,7 @@ class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickIn
             //blur on photos only shown on posts which have content
             if (postModel.title.isEmpty() && postModel.content.isEmpty()) {
                 binding.itemUserPostImage.foreground = null
-            }
-            else {
+            } else {
                 binding.itemUserPostImage.foreground = ContextCompat.getDrawable(
                     binding.root.context,
                     R.drawable.item_user_post_grad
@@ -72,7 +71,7 @@ class ProfileRecyclerAdapter(private val userPostClickInterface: UserPostClickIn
             }
 
             binding.itemUserPostCv.setOnClickListener {
-                userPostClickInterface.onUserPostClick(adapterPosition)
+                postClickInterface.onPostClick(postModel.postId)
             }
         }
     }

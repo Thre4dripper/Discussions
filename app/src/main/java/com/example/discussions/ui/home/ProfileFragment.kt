@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.adapters.ProfileRecyclerAdapter
-import com.example.discussions.adapters.interfaces.UserPostClickInterface
+import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentProfileBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.ui.EditDetailsActivity
@@ -25,7 +25,7 @@ import com.example.discussions.ui.ZoomImageActivity
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class ProfileFragment : Fragment(), UserPostClickInterface {
+class ProfileFragment : Fragment(), PostClickInterface {
     private val TAG = "ProfileFragment"
 
     private lateinit var binding: FragmentProfileBinding
@@ -193,9 +193,9 @@ class ProfileFragment : Fragment(), UserPostClickInterface {
             }
     }
 
-    override fun onUserPostClick(index: Int) {
+    override fun onPostClick(postId: String) {
         val intent = Intent(requireContext(), UserPostsActivity::class.java)
-        intent.putExtra(Constants.USER_POST_INDEX, index)
+        intent.putExtra(Constants.POST_ID, postId)
         intent.putExtra(Constants.USERNAME, binding.profileUsernameTv.text.toString())
         startActivity(intent)
     }

@@ -33,7 +33,6 @@ class Constants {
 
         //for intents
         const val ZOOM_IMAGE_URL = "imageUrl"
-        const val USER_POST_INDEX = "userPostIndex"
 
         //for posts modes
         const val POST_MODE = "post_mode"

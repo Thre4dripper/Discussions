@@ -41,10 +41,12 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
         val username = intent.getStringExtra(Constants.USERNAME)
         binding.userPostsHeaderTv.text = getString(R.string.user_post_label, username)
 
-        //getting post index from intent
-        val postIndex = intent.getIntExtra(Constants.USER_POST_INDEX, 0)
+        //getting post id from intent
+        val postId = intent.getStringExtra(Constants.POST_ID)!!
         UserPostsViewModel.userPostsScrollToIndex = true
 
+        //getting post index from post id
+        val postIndex = viewModel.userPosts.value?.indexOfFirst { it.postId == postId }!!
         getUserPosts(postIndex)
     }
 
