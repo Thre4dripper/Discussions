@@ -183,4 +183,8 @@
     <string name="notification_options_mark_as_read">Mark as Read</string>
     <string name="notification_options_cancel">Cancel</string>
 
+
+    //Post Details Activity
+    <string name="post_details_label">Post Details</string>
+    <string name="post_details_comments_label">Comments</string>
 </resources>
