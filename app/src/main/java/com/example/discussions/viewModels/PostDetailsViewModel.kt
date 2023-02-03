@@ -1,6 +1,8 @@
 package com.example.discussions.viewModels
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
+import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.CommentsRepository
 import com.example.discussions.repositories.PostRepository
@@ -24,5 +26,12 @@ class PostDetailsViewModel : ViewModel() {
     fun getPostFromPostRepository(postId: String) {
         _post = PostRepository.allPostsList.value?.find { it.postId == postId }
             ?: PostRepository.userPostsList.value?.find { it.postId == postId }!!
+    }
+
+    fun likePost(context: Context, postId: String) {
+        PostRepository.likePost(context, postId, object : ResponseCallback {
+            override fun onSuccess(response: String) {}
+            override fun onError(response: String) {}
+        })
     }
 }

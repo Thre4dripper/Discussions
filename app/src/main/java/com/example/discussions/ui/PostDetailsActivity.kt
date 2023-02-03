@@ -23,6 +23,10 @@ class PostDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPostDetailsBinding
     private lateinit var viewModel: PostDetailsViewModel
 
+    private var postId: String? = null
+    private var postLikeStatus = false
+    private var likeBtnStatus = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_post_details)
@@ -30,12 +34,12 @@ class PostDetailsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this)[PostDetailsViewModel::class.java]
 
         //get post id from intent
-        val postId = intent.getStringExtra(Constants.POST_ID)!!
+        postId = intent.getStringExtra(Constants.POST_ID)!!
 
         binding.postDetailsBackBtn.setOnClickListener {
-            finish()
+            onBackPressed()
         }
-        getPost(postId)
+        getPost(postId!!)
     }
 
     private fun getPost(postId: String) {
@@ -116,11 +120,11 @@ class PostDetailsActivity : AppCompatActivity() {
         //setting like and comment button click listeners
         binding.postDetailsLikeBtn.apply {
             setOnClickListener {
-                //post like logic
-                likePost(post.postId, post.isLiked, postIsLiked)
-
                 //changing the like button icon every time it is clicked
                 postIsLiked = !postIsLiked
+                //post like logic
+                likePost(post.isLiked, postIsLiked)
+
                 setCompoundDrawablesWithIntrinsicBounds(
                     if (postIsLiked) {
                         R.drawable.ic_like_filled
@@ -149,6 +153,16 @@ class PostDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun likePost(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+    private fun likePost(isLiked: Boolean, btnLikeStatus: Boolean) {
+        postLikeStatus = isLiked
+        likeBtnStatus = btnLikeStatus
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (postLikeStatus != likeBtnStatus) {
+            viewModel.likePost(this, postId!!)
+        }
+        finish()
     }
 }
