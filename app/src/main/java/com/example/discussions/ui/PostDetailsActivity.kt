@@ -3,7 +3,6 @@ package com.example.discussions.ui
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +22,7 @@ import com.example.discussions.viewModels.PostDetailsViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PostDetailsActivity : AppCompatActivity(),CommentInterface {
+class PostDetailsActivity : AppCompatActivity(), CommentInterface {
     private val TAG = "PostDetailsActivity"
 
     private lateinit var binding: ActivityPostDetailsBinding
@@ -67,6 +66,15 @@ class PostDetailsActivity : AppCompatActivity(),CommentInterface {
         setUserInfo(post)
         setPostData(post)
         initLikeButton(post)
+
+        binding.postDetailsCommentsRv.apply {
+            commentsAdapter = CommentsRecyclerAdapter(this@PostDetailsActivity)
+            adapter = commentsAdapter
+        }
+
+        binding.postDetailsSwipeRefresh.setOnRefreshListener {
+            getComments(post)
+        }
         getComments(post)
     }
 
@@ -168,12 +176,8 @@ class PostDetailsActivity : AppCompatActivity(),CommentInterface {
     }
 
     private fun getComments(post: PostModel) {
-
-        binding.postDetailsCommentsRv.apply {
-            commentsAdapter = CommentsRecyclerAdapter(this@PostDetailsActivity)
-            adapter = commentsAdapter
-        }
-
+        binding.postDetailsCommentsPb.visibility = View.VISIBLE
+        binding.postDetailsCommentsRv.visibility = View.GONE
         viewModel.postComments.observe(this) {
             if (it != null) {
                 commentsAdapter.submitList(it) {
@@ -181,14 +185,16 @@ class PostDetailsActivity : AppCompatActivity(),CommentInterface {
                         binding.postDetailsCommentsRv.scrollToPosition(0)
                 }
                 //hiding all loading
-//                binding.commentsSwipeLayout.isRefreshing = false
-//                binding.commentsProgressBar.visibility = View.GONE
-//                binding.itemCommentLottie.visibility = View.GONE
+                binding.postDetailsSwipeRefresh.isRefreshing = false
+                binding.postDetailsCommentsPb.visibility = View.GONE
+                binding.postDetailsCommentsLottie.visibility = View.GONE
+                binding.postDetailsCommentsRv.visibility = View.VISIBLE
 
-                Log.d(TAG, "getComments: $it")
                 //when empty list is loaded
                 if (it.isEmpty()) {
-//                    binding.itemCommentLottie.visibility = View.VISIBLE
+                    binding.postDetailsCommentsLottie.visibility = View.VISIBLE
+                    binding.postDetailsCommentsRv.visibility = View.GONE
+
                     val error = viewModel.isCommentsFetched.value
 
                     //when empty list is due to network error
