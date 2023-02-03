@@ -69,9 +69,9 @@
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_marginTop="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp">
 
                     <ImageView
                         android:id="@+id/post_details_user_image"
@@ -222,8 +222,10 @@
                     android:textStyle="bold" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/post_details_comments_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_comment" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

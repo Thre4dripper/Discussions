@@ -3,7 +3,9 @@ package com.example.discussions.ui
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -11,19 +13,25 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.CommentsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.ActivityPostDetailsBinding
+import com.example.discussions.models.CommentModel
 import com.example.discussions.models.PostModel
+import com.example.discussions.viewModels.CommentsViewModel
 import com.example.discussions.viewModels.PostDetailsViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PostDetailsActivity : AppCompatActivity() {
+class PostDetailsActivity : AppCompatActivity(),CommentInterface {
     private val TAG = "PostDetailsActivity"
 
     private lateinit var binding: ActivityPostDetailsBinding
     private lateinit var viewModel: PostDetailsViewModel
 
-    private var postId: String? = null
+    private lateinit var commentsAdapter: CommentsRecyclerAdapter
+
+    private var postId = ""
     private var postLikeStatus = false
     private var likeBtnStatus = false
 
@@ -39,7 +47,7 @@ class PostDetailsActivity : AppCompatActivity() {
         binding.postDetailsBackBtn.setOnClickListener {
             onBackPressed()
         }
-        getPost(postId!!)
+        getPost(postId)
     }
 
     private fun getPost(postId: String) {
@@ -59,6 +67,7 @@ class PostDetailsActivity : AppCompatActivity() {
         setUserInfo(post)
         setPostData(post)
         initLikeButton(post)
+        getComments(post)
     }
 
     private fun setUserInfo(post: PostModel) {
@@ -158,11 +167,70 @@ class PostDetailsActivity : AppCompatActivity() {
         likeBtnStatus = btnLikeStatus
     }
 
+    private fun getComments(post: PostModel) {
+
+        binding.postDetailsCommentsRv.apply {
+            commentsAdapter = CommentsRecyclerAdapter(this@PostDetailsActivity)
+            adapter = commentsAdapter
+        }
+
+        viewModel.postComments.observe(this) {
+            if (it != null) {
+                commentsAdapter.submitList(it) {
+                    if (CommentsViewModel.commentsScrollToTop)
+                        binding.postDetailsCommentsRv.scrollToPosition(0)
+                }
+                //hiding all loading
+//                binding.commentsSwipeLayout.isRefreshing = false
+//                binding.commentsProgressBar.visibility = View.GONE
+//                binding.itemCommentLottie.visibility = View.GONE
+
+                Log.d(TAG, "getComments: $it")
+                //when empty list is loaded
+                if (it.isEmpty()) {
+//                    binding.itemCommentLottie.visibility = View.VISIBLE
+                    val error = viewModel.isCommentsFetched.value
+
+                    //when empty list is due to network error
+                    if (error != Constants.API_SUCCESS && error != null) {
+                        Toast.makeText(
+                            this, error, Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    if (error == Constants.AUTH_FAILURE_ERROR) {
+                        setResult(Constants.RESULT_LOGOUT)
+                        finish()
+                    }
+                }
+            }
+        }
+
+        viewModel.getComments(this, post.postId)
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (postLikeStatus != likeBtnStatus) {
-            viewModel.likePost(this, postId!!)
+            viewModel.likePost(this, postId)
         }
         finish()
+    }
+
+    override fun onCommentLikeChanged(commentId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+    }
+
+    override fun onCommentDeleted(comment: CommentModel) {
+    }
+
+    override fun onCommentReply(commentId: String, username: String) {
+    }
+
+    override fun onCommentEdit(commentId: String, content: String) {
+    }
+
+    override fun onCommentCopy(content: String) {
+    }
+
+    override fun onCommentLongClick(comment: CommentModel) {
     }
 }

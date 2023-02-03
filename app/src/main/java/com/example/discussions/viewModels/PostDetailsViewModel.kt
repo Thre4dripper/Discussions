@@ -1,7 +1,10 @@
 package com.example.discussions.viewModels
 
 import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.CommentsRepository
@@ -13,6 +16,10 @@ class PostDetailsViewModel : ViewModel() {
         get() = _post!!
 
     var postComments = CommentsRepository.commentsList
+
+    private var _isCommentsFetched = MutableLiveData<String?>(null)
+    val isCommentsFetched: LiveData<String?>
+        get() = _isCommentsFetched
 
     fun isPostInAlreadyFetched(postId: String): Boolean {
         //check if post is in post list
@@ -32,6 +39,22 @@ class PostDetailsViewModel : ViewModel() {
         PostRepository.likePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {}
             override fun onError(response: String) {}
+        })
+    }
+
+    fun getComments(context: Context, postId: String) {
+        _isCommentsFetched.value = null
+        CommentsRepository.commentsList.value = null
+        CommentsViewModel.commentsScrollToTop = true
+        CommentsRepository.getAllComments(context, postId, null, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isCommentsFetched.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isCommentsFetched.value = response
+                postComments.value = null
+            }
         })
     }
 }
