@@ -17,6 +17,8 @@ import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.ActivityPostDetailsBinding
 import com.example.discussions.models.CommentModel
 import com.example.discussions.models.PostModel
+import com.example.discussions.ui.bottomSheets.comments.CommentControllers
+import com.example.discussions.ui.bottomSheets.comments.OptionsBS
 import com.example.discussions.viewModels.CommentsViewModel
 import com.example.discussions.viewModels.PostDetailsViewModel
 import java.text.SimpleDateFormat
@@ -235,8 +237,11 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
     }
 
     override fun onCommentCopy(content: String) {
+        CommentControllers.commentCopyHandler(this, content)
     }
 
     override fun onCommentLongClick(comment: CommentModel) {
+        val optionsBS = OptionsBS(comment, this@PostDetailsActivity)
+        optionsBS.show(supportFragmentManager, optionsBS.tag)
     }
 }
