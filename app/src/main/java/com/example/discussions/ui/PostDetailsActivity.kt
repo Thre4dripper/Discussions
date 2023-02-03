@@ -1,7 +1,12 @@
 package com.example.discussions.ui
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.format.DateUtils
 import android.view.View
 import android.widget.Toast
@@ -29,8 +34,12 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
 
     private lateinit var binding: ActivityPostDetailsBinding
     private lateinit var viewModel: PostDetailsViewModel
+    private lateinit var commentsViewModel: CommentsViewModel
 
     private lateinit var commentsAdapter: CommentsRecyclerAdapter
+    private var commentLikeHandler = Handler(Looper.getMainLooper())
+    private var commentType = Constants.COMMENT_TYPE_POST
+    private var commentId: String? = null
 
     private var postId = ""
     private var postLikeStatus = false
@@ -41,6 +50,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_post_details)
 
         viewModel = ViewModelProvider(this)[PostDetailsViewModel::class.java]
+        commentsViewModel = ViewModelProvider(this)[CommentsViewModel::class.java]
 
         //get post id from intent
         postId = intent.getStringExtra(Constants.POST_ID)!!
@@ -68,6 +78,8 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
         setUserInfo(post)
         setPostData(post)
         initLikeButton(post)
+
+        addCommentHandler()
 
         binding.postDetailsCommentsRv.apply {
             commentsAdapter = CommentsRecyclerAdapter(this@PostDetailsActivity)
@@ -177,10 +189,59 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
         likeBtnStatus = btnLikeStatus
     }
 
+    private fun addCommentHandler() {
+        //preconfiguring add comment button
+        binding.postDetailsAddCommentBtn.apply {
+            isEnabled = false
+            drawable.alpha = 100
+            setOnClickListener {
+                createEditComment(binding.postDetailsAddCommentEt.text.toString())
+                binding.postDetailsAddCommentEt.text.clear()
+            }
+        }
+
+        //controlling add comment button based on text
+        binding.postDetailsAddCommentEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (s.isNullOrEmpty()) {
+                    binding.postDetailsAddCommentBtn.apply {
+                        isEnabled = false
+                        drawable.alpha = 100
+                    }
+                } else {
+                    binding.postDetailsAddCommentBtn.apply {
+                        isEnabled = true
+                        drawable.alpha = 255
+                    }
+                }
+            }
+
+        })
+    }
+
+    private fun createEditComment(content: String) {
+        binding.postDetailsCommentAddProgressBar.visibility = View.VISIBLE
+        binding.postDetailsAddCommentBtn.visibility = View.GONE
+
+        when (commentType) {
+            Constants.COMMENT_TYPE_POST -> commentsViewModel.createComment(
+                this, postId = postId, null, null, content
+            )
+            Constants.COMMENT_TYPE_REPLY -> commentsViewModel.createComment(
+                this, null, null, commentId = commentId, content
+            )
+            Constants.COMMENT_TYPE_EDIT -> commentsViewModel.editComment(
+                this, commentId!!, content
+            )
+        }
+    }
+
     private fun getComments(post: PostModel) {
         binding.postDetailsCommentsPb.visibility = View.VISIBLE
         binding.postDetailsCommentsRv.visibility = View.GONE
-        viewModel.postComments.observe(this) {
+        commentsViewModel.commentsList.observe(this) {
             if (it != null) {
                 commentsAdapter.submitList(it) {
                     if (CommentsViewModel.commentsScrollToTop)
@@ -197,7 +258,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
                     binding.postDetailsCommentsLottie.visibility = View.VISIBLE
                     binding.postDetailsCommentsRv.visibility = View.GONE
 
-                    val error = viewModel.isCommentsFetched.value
+                    val error = commentsViewModel.isCommentsFetched.value
 
                     //when empty list is due to network error
                     if (error != Constants.API_SUCCESS && error != null) {
@@ -213,7 +274,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
             }
         }
 
-        viewModel.getComments(this, post.postId)
+        commentsViewModel.getComments(this, post.postId,null)
     }
 
     @Deprecated("Deprecated in Java")
@@ -225,15 +286,53 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
     }
 
     override fun onCommentLikeChanged(commentId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            commentLikeHandler.removeCallbacksAndMessages(commentId)
+            commentLikeHandler.postDelayed({
+                if (isLiked == btnLikeStatus) {
+                    commentsViewModel.likeComment(this, commentId)
+                }
+            }, commentId, Constants.LIKE_DEBOUNCE_TIME)
+        } else {
+            commentLikeHandler.removeCallbacksAndMessages(null)
+            commentLikeHandler.postDelayed({
+                if (isLiked == btnLikeStatus) {
+                    commentsViewModel.likeComment(this, commentId)
+                }
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
     }
 
     override fun onCommentDeleted(comment: CommentModel) {
+        CommentControllers.commentDeleteHandler(this, commentsViewModel, comment)
     }
 
     override fun onCommentReply(commentId: String, username: String) {
+        this.commentId = commentId
+        commentType = Constants.COMMENT_TYPE_REPLY
+
+        binding.postDetailsCommentActionsCv.visibility = View.VISIBLE
+        binding.postDetailsCommentActionTypeTv.text = getString(R.string.comment_action_label_reply)
+        binding.postDetailsCommentActionContentTv.text = username
+        binding.postDetailsCommentReplyCancelBtn.setOnClickListener {
+            binding.postDetailsCommentActionsCv.visibility = View.GONE
+            //restoring comment type
+            commentType = Constants.COMMENT_TYPE_POST
+        }
     }
 
     override fun onCommentEdit(commentId: String, content: String) {
+        this.commentId = commentId
+        commentType = Constants.COMMENT_TYPE_REPLY
+
+        binding.postDetailsCommentActionsCv.visibility = View.VISIBLE
+        binding.postDetailsCommentActionTypeTv.text = getString(R.string.comment_action_label_edit)
+        binding.postDetailsCommentActionContentTv.text = content
+        binding.postDetailsCommentReplyCancelBtn.setOnClickListener {
+            binding.postDetailsCommentActionsCv.visibility = View.GONE
+            //restoring comment type
+            commentType = Constants.COMMENT_TYPE_POST
+        }
     }
 
     override fun onCommentCopy(content: String) {
