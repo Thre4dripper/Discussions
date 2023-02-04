@@ -8,6 +8,7 @@ import android.os.Looper
 import android.text.format.DateUtils
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -18,12 +19,14 @@ import com.example.discussions.R
 import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.ActivityPostDetailsBinding
+import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.models.CommentModel
 import com.example.discussions.models.PostModel
 import com.example.discussions.ui.bottomSheets.comments.CommentControllers
 import com.example.discussions.ui.bottomSheets.comments.OptionsBS
 import com.example.discussions.viewModels.CommentsViewModel
 import com.example.discussions.viewModels.PostDetailsViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -41,6 +44,9 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
     private var postLikeStatus = false
     private var likeBtnStatus = false
 
+    private lateinit var loadingDialog: AlertDialog
+    private lateinit var retryDialog: AlertDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_post_details)
@@ -51,26 +57,67 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
         //get post id from intent
         postId = intent.getStringExtra(Constants.POST_ID)!!
 
+        initDialogs(postId)
         binding.postDetailsBackBtn.setOnClickListener {
             onBackPressed()
         }
         getPost(postId)
     }
 
+    /**
+     * METHOD TO INITIALIZE DIALOGS
+     */
+    private fun initDialogs(postId: String) {
+        val dialogBinding = LoadingDialogBinding.inflate(layoutInflater)
+        loadingDialog = MaterialAlertDialogBuilder(this).setView(dialogBinding.root)
+            .setCancelable(false).show()
+        loadingDialog.dismiss()
+
+        retryDialog = MaterialAlertDialogBuilder(this)
+            .setTitle("Oops!")
+            .setMessage("Error getting profile")
+            .setCancelable(false)
+            .setPositiveButton("Retry") { dialog, _ ->
+                dialog.dismiss()
+                getPost(postId)
+            }
+            .setNegativeButton("Cancel") { _, _ ->
+                setResult(Constants.RESULT_CLOSE)
+                finish()
+            }
+            .show()
+        retryDialog.dismiss()
+    }
+
+    /**
+     * METHOD TO GET POST DETAILS
+     */
     private fun getPost(postId: String) {
+        loadingDialog.show()
+        viewModel.isPostFetched.observe(this) {
+            if (it != null) {
+                loadingDialog.dismiss()
+
+                if (it == Constants.API_SUCCESS) {
+                    setDetails()
+                } else {
+                    retryDialog.show()
+                }
+            }
+        }
+
         //check if post is in post list
         if (viewModel.isPostInAlreadyFetched(postId)) {
             //if yes, get post from post repository
             viewModel.getPostFromPostRepository(postId)
-            setDetails()
         } else {
             //if not, get post from server
-//            viewModel.getPostFromServer(postId)
+            viewModel.getPostFromApi(this, postId)
         }
     }
 
     private fun setDetails() {
-        val post = viewModel.post
+        val post = viewModel.post.value!!
         setUserInfo(post)
         setPostData(post)
         initLikeButton(post)
@@ -117,7 +164,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
             .into(binding.postDetailsUserImage)
 
         //set user name and time
-        binding.postDetailsUsername.text = viewModel.post.username
+        binding.postDetailsUsername.text = post.username
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
         val date = dateFormat.parse(post.createdAt)
