@@ -36,7 +36,12 @@ class DiscussionsRecyclerAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val post = getItem(position)
-        (holder as PostViewHolder).bind(holder.binding, post, likeCommentInterface,postClickInterface)
+        (holder as PostViewHolder).bind(
+            holder.binding,
+            post,
+            likeCommentInterface,
+            postClickInterface
+        )
     }
 
     class PostViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -151,7 +156,7 @@ class DiscussionsRecyclerAdapter(
                 visibility = if (postModel.allowComments) View.VISIBLE else View.GONE
             }
 
-            binding.root.setOnClickListener {
+            binding.itemPostUserInfoCl.setOnClickListener {
                 postClickInterface.onPostClick(postModel.postId)
             }
         }
