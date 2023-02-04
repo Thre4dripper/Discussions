@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,7 +31,7 @@ class CommentsBS(
     private var commentCount: Int,
 ) : BottomSheetDialogFragment(), CommentInterface {
 
-    private val TAG = "CommentBottomSheet"
+    private val TAG = "CommentsBS"
 
     private lateinit var binding: BsCommentsBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
@@ -191,6 +192,12 @@ class CommentsBS(
         if (bsParentLikeStatus != bsLikeBtnStatus) {
             bsLikeTrigger()
         }
+
+        commentLikeHandler.removeCallbacksAndMessages(null)
+        if (CommentControllers.commentId != null) {
+            viewModel.likeComment(requireContext(), CommentControllers.commentId!!)
+            CommentControllers.commentId = null
+        }
     }
 
     private fun getAllComments() {
@@ -236,6 +243,7 @@ class CommentsBS(
     }
 
     override fun onCommentLikeChanged(commentId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+        CommentControllers.commentId = commentId
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             commentLikeHandler.removeCallbacksAndMessages(commentId)
             commentLikeHandler.postDelayed({
