@@ -321,13 +321,13 @@
                         android:layout_marginTop="16dp"
                         android:text="@string/poll_list_item_view_result"
                         app:cornerRadius="50dp"
-                        app:layout_constraintBottom_toTopOf="@+id/post_details_likes_count"
+                        app:layout_constraintBottom_toTopOf="@+id/poll_details_likes_count"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/poll_Details_options_ll" />
 
                     <TextView
-                        android:id="@+id/post_details_likes_count"
+                        android:id="@+id/poll_details_likes_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
@@ -337,13 +337,13 @@
                         android:gravity="center"
                         android:textColor="@color/dark_gray"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@+id/post_details_like_btn"
+                        app:layout_constraintBottom_toTopOf="@+id/poll_details_like_btn"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/poll_Details_view_results_btn"
-                        tools:text="@string/post_list_item_like_count" />
+                        tools:text="@string/poll_list_item_like_count" />
 
                     <TextView
-                        android:id="@+id/post_details_comments_count"
+                        android:id="@+id/poll_details_comments_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="24dp"
@@ -351,13 +351,13 @@
                         android:gravity="center"
                         android:textColor="@color/dark_gray"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toBottomOf="@+id/post_details_likes_count"
+                        app:layout_constraintBottom_toBottomOf="@+id/poll_details_likes_count"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/post_details_likes_count"
-                        tools:text="@string/post_list_item_comment_count" />
+                        app:layout_constraintTop_toTopOf="@+id/poll_details_likes_count"
+                        tools:text="@string/poll_list_item_comment_count" />
 
                     <TextView
-                        android:id="@+id/post_details_like_btn"
+                        android:id="@+id/poll_details_like_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -366,29 +366,29 @@
                         android:gravity="center"
                         android:paddingTop="4dp"
                         android:paddingBottom="4dp"
-                        android:text="@string/post_list_item_like"
+                        android:text="@string/poll_list_item_like"
                         android:textColor="@color/dark_gray"
                         android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_like"
-                        app:layout_constraintBottom_toTopOf="@+id/post_details_comments_divider1"
-                        app:layout_constraintStart_toStartOf="@+id/post_details_likes_count"
-                        app:layout_constraintTop_toBottomOf="@+id/post_details_likes_count" />
+                        app:layout_constraintBottom_toTopOf="@+id/poll_details_comments_divider1"
+                        app:layout_constraintStart_toStartOf="@+id/poll_details_likes_count"
+                        app:layout_constraintTop_toBottomOf="@+id/poll_details_likes_count" />
 
 
                     <View
-                        android:id="@+id/post_details_comments_divider1"
+                        android:id="@+id/poll_details_comments_divider1"
                         android:layout_width="0dp"
                         android:layout_height="0.5dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginBottom="4dp"
                         android:background="@color/light_gray"
-                        app:layout_constraintBottom_toTopOf="@+id/post_details_comment_label"
+                        app:layout_constraintBottom_toTopOf="@+id/poll_details_comment_label"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/post_details_like_btn" />
+                        app:layout_constraintTop_toBottomOf="@+id/poll_details_like_btn" />
 
                     <TextView
-                        android:id="@+id/post_details_comment_label"
+                        android:id="@+id/poll_details_comment_label"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
@@ -396,27 +396,27 @@
                         android:gravity="center"
                         android:paddingTop="4dp"
                         android:paddingBottom="4dp"
-                        android:text="@string/post_details_comments_label"
+                        android:text="@string/poll_details_comments_label"
                         android:textColor="@color/dark_gray"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        app:layout_constraintBottom_toTopOf="@+id/post_details_comments_container"
+                        app:layout_constraintBottom_toTopOf="@+id/poll_details_comments_container"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/post_details_comments_divider1" />
+                        app:layout_constraintTop_toBottomOf="@+id/poll_details_comments_divider1" />
 
                     <FrameLayout
-                        android:id="@+id/post_details_comments_container"
+                        android:id="@+id/poll_details_comments_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/post_details_comment_label">
+                        app:layout_constraintTop_toBottomOf="@+id/poll_details_comment_label">
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/post_details_comments_rv"
+                            android:id="@+id/poll_details_comments_rv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:visibility="gone"
@@ -424,7 +424,7 @@
                             tools:listitem="@layout/item_comment" />
 
                         <ProgressBar
-                            android:id="@+id/post_details_comments_pb"
+                            android:id="@+id/poll_details_comments_pb"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -434,7 +434,7 @@
                             android:indeterminateTint="@color/login_header_color" />
 
                         <com.airbnb.lottie.LottieAnimationView
-                            android:id="@+id/post_details_comments_lottie"
+                            android:id="@+id/poll_details_comments_lottie"
                             android:layout_width="150dp"
                             android:layout_height="150dp"
                             android:layout_gravity="center"

@@ -56,7 +56,7 @@ class PollDetailsActivity : AppCompatActivity() {
     /**
      * METHOD TO INITIALIZE DIALOGS
      */
-    private fun initDialogs(postId: String) {
+    private fun initDialogs(pollId: String) {
         val dialogBinding = LoadingDialogBinding.inflate(layoutInflater)
         loadingDialog = MaterialAlertDialogBuilder(this).setView(dialogBinding.root)
             .setCancelable(false).show()
@@ -68,7 +68,7 @@ class PollDetailsActivity : AppCompatActivity() {
             .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
-                getPollDetails(postId)
+                getPollDetails(pollId)
             }
             .setNegativeButton("Cancel") { _, _ ->
                 setResult(Constants.RESULT_CLOSE)
@@ -79,19 +79,20 @@ class PollDetailsActivity : AppCompatActivity() {
     }
 
     private fun getPollDetails(pollId: String) {
-        //check if post is in post list
+        //check if poll is in poll list
         if (viewModel.isPollInAlreadyFetched(pollId)) {
-            //if yes, get post from post repository
+            //if yes, get poll from poll repository
             viewModel.getPollFromPollRepository(pollId)
             setDetails()
         } else {
-            //if not, get post from server
+            //if not, get poll from server
         }
     }
 
     private fun setDetails() {
         val poll = viewModel.poll.value!!
         setUserInfo(poll)
+        initLikeButton(poll)
 
     }
 
@@ -116,10 +117,56 @@ class PollDetailsActivity : AppCompatActivity() {
         )
     }
 
+    private fun initLikeButton(poll: PollModel) {
+        //set poll like count
+        binding.pollDetailsLikesCount.text = poll.likes.toString()
+        //local variable for realtime like button change
+        var pollIsLiked = poll.isLiked
+        //setting like and comment button click listeners
+        binding.pollDetailsLikeBtn.apply {
+            setOnClickListener {
+                //changing the like button icon every time it is clicked
+                pollIsLiked = !pollIsLiked
+                //poll like logic
+                likePoll(poll.isLiked, pollIsLiked)
+
+                setCompoundDrawablesWithIntrinsicBounds(
+                    if (pollIsLiked) {
+                        R.drawable.ic_like_filled
+                    } else R.drawable.ic_like,
+                    0,
+                    0,
+                    0
+                )
+                //changing the likes count every time the like button is clicked based on the current state of the poll
+                binding.pollDetailsLikesCount.text =
+                    if (pollIsLiked) {
+                        binding.pollDetailsLikesCount.text.toString().toInt().plus(1).toString()
+                    } else {
+                        binding.pollDetailsLikesCount.text.toString().toInt().minus(1).toString()
+                    }
+            }
+            //checking if the current user has liked the poll
+            setCompoundDrawablesWithIntrinsicBounds(
+                if (pollIsLiked) {
+                    R.drawable.ic_like_filled
+                } else R.drawable.ic_like,
+                0,
+                0,
+                0
+            )
+        }
+    }
+
+    private fun likePoll(isLiked: Boolean, btnLikeStatus: Boolean) {
+        pollLikeStatus = isLiked
+        likeBtnStatus = btnLikeStatus
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (pollLikeStatus != likeBtnStatus) {
-//            viewModel.likePoll(this, pollId)
+            viewModel.likePoll(this, pollId)
         }
         finish()
     }

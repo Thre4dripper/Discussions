@@ -1,8 +1,10 @@
 package com.example.discussions.viewModels
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PollModel
 import com.example.discussions.repositories.PollRepository
 
@@ -27,5 +29,12 @@ class PollDetailsViewModel : ViewModel() {
     fun getPollFromPollRepository(pollId: String) {
         _poll.value = PollRepository.allPollsList.value?.find { it.pollId == pollId }
             ?: PollRepository.userPollsList.value?.find { it.pollId == pollId }!!
+    }
+
+    fun likePoll(context: Context, postId: String) {
+        PollRepository.likePoll(context, postId, object : ResponseCallback {
+            override fun onSuccess(response: String) {}
+            override fun onError(response: String) {}
+        })
     }
 }
