@@ -286,10 +286,13 @@ class NotificationFragment : Fragment(), NotificationInterface {
             }
         }
 
-        //manually update the notification item
-        val position =
-            notificationAdapter.currentList.indexOfFirst { it.notificationId == notificationId }
-        notificationAdapter.notifyItemChanged(position)
+        //manually update the notification item but only if it is already read
+        val notification =
+            notificationAdapter.currentList.find { it.notificationId == notificationId }!!
+        if (notification.isRead) {
+            val position = notificationAdapter.currentList.indexOf(notification)
+            notificationAdapter.notifyItemChanged(position)
+        }
 
         homeViewModel.readNotification(requireContext(), notificationId)
     }
