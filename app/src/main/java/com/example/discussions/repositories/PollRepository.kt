@@ -12,7 +12,10 @@ class PollRepository {
     companion object {
         private const val TAG = "PollRepository"
 
+        //TODO all polls list fetched from master api
+        val allPollsList = MutableLiveData<MutableList<PollModel>?>(null)
         val userPollsList = MutableLiveData<MutableList<PollModel>?>(null)
+        val singlePoll = MutableLiveData<PollModel?>(null)
 
         fun createPoll(
             context: Context,

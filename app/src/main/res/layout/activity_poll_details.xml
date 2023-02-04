@@ -74,19 +74,19 @@
                     android:layout_height="wrap_content">
 
                     <ImageView
-                        android:id="@+id/item_poll_user_image"
+                        android:id="@+id/poll_Details_user_image"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:contentDescription="@string/profile_image_desc"
-                        app:layout_constraintBottom_toTopOf="@+id/item_poll_title"
+                        app:layout_constraintBottom_toTopOf="@+id/poll_Details_title"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:src="@tools:sample/avatars" />
 
                     <TextView
-                        android:id="@+id/item_poll_username"
+                        android:id="@+id/poll_Details_username"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -95,206 +95,206 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/item_poll_user_image"
-                        app:layout_constraintTop_toTopOf="@+id/item_poll_user_image"
+                        app:layout_constraintStart_toEndOf="@+id/poll_Details_user_image"
+                        app:layout_constraintTop_toTopOf="@+id/poll_Details_user_image"
                         tools:text="@string/username" />
 
                     <TextView
-                        android:id="@+id/item_poll_time"
+                        android:id="@+id/poll_Details_time"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginEnd="16dp"
                         android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="@+id/item_poll_user_image"
+                        app:layout_constraintBottom_toBottomOf="@+id/poll_Details_user_image"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/item_poll_user_image"
-                        app:layout_constraintTop_toBottomOf="@+id/item_poll_username"
+                        app:layout_constraintStart_toEndOf="@+id/poll_Details_user_image"
+                        app:layout_constraintTop_toBottomOf="@+id/poll_Details_username"
                         tools:text="@string/poll_list_item_time" />
 
                     <TextView
-                        android:id="@+id/item_poll_title"
+                        android:id="@+id/poll_Details_title"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         android:textColor="@color/black"
                         android:textSize="20sp"
-                        app:layout_constraintBottom_toTopOf="@+id/item_poll_content"
+                        app:layout_constraintBottom_toTopOf="@+id/poll_Details_content"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="@+id/item_poll_user_image"
-                        app:layout_constraintTop_toBottomOf="@+id/item_poll_user_image"
+                        app:layout_constraintStart_toStartOf="@+id/poll_Details_user_image"
+                        app:layout_constraintTop_toBottomOf="@+id/poll_Details_user_image"
                         tools:text="@string/poll_list_item_title" />
 
                     <TextView
-                        android:id="@+id/item_poll_content"
+                        android:id="@+id/poll_Details_content"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:textColor="@color/dark_gray"
                         android:textSize="16sp"
-                        app:layout_constraintBottom_toTopOf="@+id/item_poll_options_ll"
-                        app:layout_constraintEnd_toEndOf="@+id/item_poll_title"
-                        app:layout_constraintStart_toStartOf="@+id/item_poll_title"
-                        app:layout_constraintTop_toBottomOf="@+id/item_poll_title"
+                        app:layout_constraintBottom_toTopOf="@+id/poll_Details_options_ll"
+                        app:layout_constraintEnd_toEndOf="@+id/poll_Details_title"
+                        app:layout_constraintStart_toStartOf="@+id/poll_Details_title"
+                        app:layout_constraintTop_toBottomOf="@+id/poll_Details_title"
                         tools:text="@string/poll_list_item_content" />
 
                     <LinearLayout
-                        android:id="@+id/item_poll_options_ll"
+                        android:id="@+id/poll_Details_options_ll"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:orientation="vertical"
-                        app:layout_constraintBottom_toTopOf="@+id/item_poll_view_results_btn"
+                        app:layout_constraintBottom_toTopOf="@+id/poll_Details_view_results_btn"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/item_poll_content">
+                        app:layout_constraintTop_toBottomOf="@+id/poll_Details_content">
 
                         <TextView
-                            android:id="@+id/item_poll_option1_tv"
+                            android:id="@+id/poll_Details_option1_tv"
                             style="@style/ItemPollOptionTvStyle"
                             app:drawableStartCompat="@drawable/ic_circle_unchecked"
                             tools:text="Option 1" />
 
                         <LinearLayout
-                            android:id="@+id/item_poll_option1_ll"
+                            android:id="@+id/poll_Details_option1_ll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/item_poll_option1_votes"
+                                android:id="@+id/poll_Details_option1_votes"
                                 style="@style/ItemPollVotesTvStyle"
                                 tools:text="24%" />
 
                             <ProgressBar
-                                android:id="@+id/item_poll_option1_progress"
+                                android:id="@+id/poll_Details_option1_progress"
                                 style="@style/ItemPollOptionProgress"
                                 android:progress="24" />
 
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/item_poll_option2_tv"
+                            android:id="@+id/poll_Details_option2_tv"
                             style="@style/ItemPollOptionTvStyle"
                             app:drawableStartCompat="@drawable/ic_circle_unchecked"
                             tools:text="Option 2" />
 
                         <LinearLayout
-                            android:id="@+id/item_poll_option2_ll"
+                            android:id="@+id/poll_Details_option2_ll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/item_poll_option2_votes"
+                                android:id="@+id/poll_Details_option2_votes"
                                 style="@style/ItemPollVotesTvStyle"
                                 tools:text="15%" />
 
                             <ProgressBar
-                                android:id="@+id/item_poll_option2_progress"
+                                android:id="@+id/poll_Details_option2_progress"
                                 style="@style/ItemPollOptionProgress"
                                 android:progress="15" />
 
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/item_poll_option3_tv"
+                            android:id="@+id/poll_Details_option3_tv"
                             style="@style/ItemPollOptionTvStyle"
                             app:drawableStartCompat="@drawable/ic_circle_unchecked"
                             tools:text="Option 3" />
 
                         <LinearLayout
-                            android:id="@+id/item_poll_option3_ll"
+                            android:id="@+id/poll_Details_option3_ll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/item_poll_option3_votes"
+                                android:id="@+id/poll_Details_option3_votes"
                                 style="@style/ItemPollVotesTvStyle"
                                 tools:text="12%" />
 
                             <ProgressBar
-                                android:id="@+id/item_poll_option3_progress"
+                                android:id="@+id/poll_Details_option3_progress"
                                 style="@style/ItemPollOptionProgress"
                                 android:progress="12" />
 
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/item_poll_option4_tv"
+                            android:id="@+id/poll_Details_option4_tv"
                             style="@style/ItemPollOptionTvStyle"
                             app:drawableStartCompat="@drawable/ic_circle_unchecked"
                             tools:text="Option 4" />
 
                         <LinearLayout
-                            android:id="@+id/item_poll_option4_ll"
+                            android:id="@+id/poll_Details_option4_ll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/item_poll_option4_votes"
+                                android:id="@+id/poll_Details_option4_votes"
                                 style="@style/ItemPollVotesTvStyle"
                                 tools:text="16%" />
 
                             <ProgressBar
-                                android:id="@+id/item_poll_option4_progress"
+                                android:id="@+id/poll_Details_option4_progress"
                                 style="@style/ItemPollOptionProgress"
                                 android:progress="16" />
 
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/item_poll_option5_tv"
+                            android:id="@+id/poll_Details_option5_tv"
                             style="@style/ItemPollOptionTvStyle"
                             app:drawableStartCompat="@drawable/ic_circle_unchecked"
                             tools:text="Option 5" />
 
                         <LinearLayout
-                            android:id="@+id/item_poll_option5_ll"
+                            android:id="@+id/poll_Details_option5_ll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/item_poll_option5_votes"
+                                android:id="@+id/poll_Details_option5_votes"
                                 style="@style/ItemPollVotesTvStyle"
                                 tools:text="30%" />
 
                             <ProgressBar
-                                android:id="@+id/item_poll_option5_progress"
+                                android:id="@+id/poll_Details_option5_progress"
                                 style="@style/ItemPollOptionProgress"
                                 android:progress="30" />
 
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/item_poll_option6_tv"
+                            android:id="@+id/poll_Details_option6_tv"
                             style="@style/ItemPollOptionTvStyle"
                             app:drawableStartCompat="@drawable/ic_circle_unchecked"
                             tools:text="Option 6" />
 
                         <LinearLayout
-                            android:id="@+id/item_poll_option6_ll"
+                            android:id="@+id/poll_Details_option6_ll"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/item_poll_option6_votes"
+                                android:id="@+id/poll_Details_option6_votes"
                                 style="@style/ItemPollVotesTvStyle"
                                 tools:text="2%" />
 
                             <ProgressBar
-                                android:id="@+id/item_poll_option6_progress"
+                                android:id="@+id/poll_Details_option6_progress"
                                 style="@style/ItemPollOptionProgress"
                                 android:progress="2" />
 
@@ -302,20 +302,20 @@
                     </LinearLayout>
 
                     <com.airbnb.lottie.LottieAnimationView
-                        android:id="@+id/item_poll_lottie_loading"
+                        android:id="@+id/poll_Details_lottie_loading"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
                         android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="@+id/item_poll_options_ll"
+                        app:layout_constraintBottom_toBottomOf="@+id/poll_Details_options_ll"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/item_poll_options_ll"
+                        app:layout_constraintTop_toTopOf="@+id/poll_Details_options_ll"
                         app:lottie_autoPlay="true"
                         app:lottie_loop="true"
                         app:lottie_rawRes="@raw/loading" />
 
                     <com.google.android.material.button.MaterialButton
-                        android:id="@+id/item_poll_view_results_btn"
+                        android:id="@+id/poll_Details_view_results_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
@@ -324,7 +324,7 @@
                         app:layout_constraintBottom_toTopOf="@+id/post_details_likes_count"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/item_poll_options_ll" />
+                        app:layout_constraintTop_toBottomOf="@+id/poll_Details_options_ll" />
 
                     <TextView
                         android:id="@+id/post_details_likes_count"
@@ -339,7 +339,7 @@
                         android:textStyle="bold"
                         app:layout_constraintBottom_toTopOf="@+id/post_details_like_btn"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/item_poll_view_results_btn"
+                        app:layout_constraintTop_toBottomOf="@+id/poll_Details_view_results_btn"
                         tools:text="@string/post_list_item_like_count" />
 
                     <TextView
