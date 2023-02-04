@@ -96,7 +96,12 @@ class PollRepository {
             context: Context, pollId: String, pollOptionId: String, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
-            val newPollsList = userPollsList.value!!.toMutableList()
+
+            //create a new list to update the live data even if this doest not exist
+            //single poll is opened from outside and polls list is empty
+            val newPollsList =
+                if (userPollsList.value != null) userPollsList.value!!.toMutableList()
+                else mutableListOf()
 
             PollVoteApi.pollVoteJson(
                 context,
@@ -106,6 +111,9 @@ class PollRepository {
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
                         val votedPoll = PollVoteApi.parseVoteJson(response)
+
+                        //single poll live data should be updated on main thread
+                        singlePoll.value = votedPoll
 
                         val pollIndex = newPollsList.indexOfFirst { it.pollId == votedPoll.pollId }
 

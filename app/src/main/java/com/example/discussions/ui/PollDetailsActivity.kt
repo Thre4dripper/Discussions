@@ -1,5 +1,6 @@
 package com.example.discussions.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,6 +11,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -151,7 +153,12 @@ class PollDetailsActivity : AppCompatActivity() {
     private fun setDetails() {
         val poll = viewModel.poll.value!!
         setUserInfo(poll)
-        setPollData(poll)
+        viewModel.isPollVoted.observe(this) {
+            setPollData()
+            if (it != null && it != Constants.API_SUCCESS)
+                Toast.makeText(this, "Error voting", Toast.LENGTH_SHORT).show()
+        }
+
         initLikeButton(poll)
 
     }
@@ -177,7 +184,10 @@ class PollDetailsActivity : AppCompatActivity() {
         )
     }
 
-    private fun setPollData(poll: PollModel) {
+    private fun setPollData() {
+        //for fetching latest poll data
+        val poll = viewModel.poll.value!!
+
         binding.pollDetailsTitle.apply {
             text = poll.title
             visibility = if (poll.title.isEmpty()) View.GONE else View.VISIBLE
@@ -236,8 +246,8 @@ class PollDetailsActivity : AppCompatActivity() {
 
                 setOnClickListener {
                     //checking if the current user has already voted
-//                    if (!poll.isVoted)
-//                        pollClickInterface.onPollVote(pollModel.pollId, pollOptions[i].id)
+                    if (!poll.isVoted)
+                        viewModel.pollVote(this@PollDetailsActivity, poll.pollId, pollOptions[i].id)
                 }
             }
 
@@ -266,7 +276,9 @@ class PollDetailsActivity : AppCompatActivity() {
             visibility =
                 if (poll.pollOptions.any { it.votedBy.isNotEmpty() } && poll.isVoted) View.VISIBLE else View.GONE
             setOnClickListener {
-//                pollClickInterface.onPollResult(pollModel.pollId)
+                val intent = Intent(this@PollDetailsActivity, PollResultsActivity::class.java)
+                intent.putExtra(Constants.POLL_ID, poll.pollId)
+                startActivity(intent)
             }
         }
     }
