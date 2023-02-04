@@ -187,4 +187,10 @@
     //Post Details Activity
     <string name="post_details_label">Post Details</string>
     <string name="post_details_comments_label">Comments</string>
+    <string name="post_details_more_options">More Options</string>
+
+    //Poll Details Activity
+    <string name="poll_details_label">Poll Details</string>
+    <string name="poll_details_comments_label">Comments</string>
+    <string name="poll_details_more_options">More Options</string>
 </resources>

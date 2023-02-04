@@ -19,6 +19,9 @@
         tools:replace="android:fullBackupContent"
         tools:targetApi="31">
         <activity
+            android:name=".ui.PollDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.PostDetailsActivity"
             android:exported="false" />
         <activity
