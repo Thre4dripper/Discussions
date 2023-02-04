@@ -8,7 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.discussions.Constants
 import com.example.discussions.R
-import com.example.discussions.ui.home.HomeActivity
+import com.example.discussions.ui.PostDetailsActivity
 import org.json.JSONObject
 
 class PostNotifications {
@@ -29,9 +29,10 @@ class PostNotifications {
             val notificationUserImage = FCMConfig.getBitmapFromUrl(notifierImage)
             val notificationPostImage = FCMConfig.getBitmapFromUrl(postImage)
 
-            val intent = Intent(context, HomeActivity::class.java).apply {
+            val intent = Intent(context, PostDetailsActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
+            intent.putExtra(Constants.POST_ID, postId)
             val pendingIntent: PendingIntent =
                 PendingIntent.getActivity(
                     context,
@@ -76,9 +77,10 @@ class PostNotifications {
 
             val notificationUserImage = FCMConfig.getBitmapFromUrl(notifierImage)
 
-            val intent = Intent(context, HomeActivity::class.java).apply {
+            val intent = Intent(context, PostDetailsActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
+            intent.putExtra(Constants.POST_ID, postId)
             val pendingIntent: PendingIntent =
                 PendingIntent.getActivity(
                     context,

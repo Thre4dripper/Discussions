@@ -1,5 +1,6 @@
 package com.example.discussions.ui.home
 
+import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -22,6 +23,7 @@ import com.example.discussions.adapters.NotificationRecyclerAdapter
 import com.example.discussions.adapters.interfaces.NotificationInterface
 import com.example.discussions.databinding.FragmentNotificationBinding
 import com.example.discussions.models.NotificationModel
+import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.NotificationOptionsBS
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -247,7 +249,21 @@ class NotificationFragment : Fragment(), NotificationInterface {
         }
 
     override fun onNotificationClick(notification: NotificationModel) {
-
+        when (notification.category) {
+            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POST -> {
+                val intent = Intent(requireContext(), PostDetailsActivity::class.java)
+                val postId = notification.post!!.id
+                intent.putExtra(Constants.POST_ID, postId)
+                startActivity(intent)
+                onNotificationMarkAsRead(notification.notificationId)
+            }
+            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POLL -> {
+                //TODO open poll detail activity
+            }
+            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_COMMENT -> {
+                //TODO open post or poll detail activity which has the comment
+            }
+        }
     }
 
     override fun onNotificationOptionsClick(notification: NotificationModel) {

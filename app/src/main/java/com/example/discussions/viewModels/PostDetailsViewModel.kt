@@ -28,7 +28,6 @@ class PostDetailsViewModel : ViewModel() {
     }
 
     fun getPostFromPostRepository(postId: String) {
-        _isPostFetched.value = Constants.API_SUCCESS
         _post.value = PostRepository.allPostsList.value?.find { it.postId == postId }
             ?: PostRepository.userPostsList.value?.find { it.postId == postId }!!
     }
