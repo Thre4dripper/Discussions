@@ -6,8 +6,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,9 +38,6 @@ class CommentsBS(
     private lateinit var viewModel: CommentsViewModel
     private lateinit var commentsAdapter: CommentsRecyclerAdapter
 
-    private var commentType = type
-    private var commentId: String? = null
-
     private var commentLikeHandler = Handler(Looper.getMainLooper())
     private var bsLikeHandler = Handler(Looper.getMainLooper())
 
@@ -68,6 +63,9 @@ class CommentsBS(
         binding.commentsCl.layoutParams.height =
             Resources.getSystem().displayMetrics.heightPixels / 2 + 400
 
+        handleBottomSheetLike()
+
+        //setting up comments recycler view
         binding.commentsRv.apply {
             commentsAdapter = CommentsRecyclerAdapter(this@CommentsBS)
             adapter = commentsAdapter
@@ -81,17 +79,34 @@ class CommentsBS(
             })
         }
 
+        //setting up swipe to refresh
         binding.commentsSwipeLayout.setOnRefreshListener { getAllComments() }
-        binding.commentsProgressBar.visibility = View.VISIBLE
+        //getting all comments
         getAllComments()
-        handleBottomSheetLike()
 
-        setupCommentObservers()
-        addCommentHandler()
+        //setting all the comment observers that will restore comment type every time new comment is added or edited
+        CommentControllers.setupCommentObservers(
+            requireContext(),
+            viewModel,
+            binding.commentActionsCv,
+            binding.commentAddProgressBar,
+            binding.commentAddBtn,
+            viewLifecycleOwner,
+        ) { CommentControllers.commentType = type }
+
+        //setting comment add button click handlers
+        CommentControllers.addCommentHandler(
+            requireContext(),
+            binding.commentAddProgressBar,
+            binding.commentAddBtn,
+            binding.addCommentEt,
+            id,
+            viewModel
+        )
     }
 
     private fun handleBottomSheetLike() {
-        if (commentType == Constants.COMMENT_TYPE_POST) {
+        if (CommentControllers.commentType == Constants.COMMENT_TYPE_POST) {
             initLikeButton(likeStatus = { viewModel.getPostLikeStatus(id) })
 
             //setting like trigger for bottom sheet
@@ -101,7 +116,7 @@ class CommentsBS(
                 )
             }
 
-        } else if (commentType == Constants.COMMENT_TYPE_POLL) {
+        } else if (CommentControllers.commentType == Constants.COMMENT_TYPE_POLL) {
             initLikeButton(likeStatus = { viewModel.getPollLikeStatus(id) })
 
             //setting like trigger for bottom sheet
@@ -178,32 +193,11 @@ class CommentsBS(
         }
     }
 
-    private fun setupCommentObservers() {
-        //setting add comment observer only once
-        CommentControllers.addCommentObserver(
-            requireContext(), viewModel, binding, viewLifecycleOwner
-        ) { this.commentType = type }
-
-        //setting edit comment observer only once
-        CommentControllers.editCommentObserver(
-            requireContext(), viewModel, binding, viewLifecycleOwner
-        ) { this.commentType = type }
-
-        //setting delete comment observer only once
-        CommentControllers.deleteCommentObserver(
-            requireContext(), viewModel, viewLifecycleOwner
-        )
-
-        //setting like comment observer only once
-        CommentControllers.likeCommentObserver(
-            requireContext(), viewModel, viewLifecycleOwner
-        )
-    }
-
     private fun getAllComments() {
         //resetting fetch comment type on refresh all comments
-        commentType = type
+        CommentControllers.commentType = type
 
+        binding.commentsProgressBar.visibility = View.VISIBLE
         viewModel.commentsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 commentsAdapter.submitList(it) {
@@ -233,64 +227,12 @@ class CommentsBS(
             }
         }
 
-        if (commentType == Constants.COMMENT_TYPE_POST) viewModel.getComments(
+        if (CommentControllers.commentType == Constants.COMMENT_TYPE_POST) viewModel.getComments(
             requireContext(), id, null
         )
-        else if (commentType == Constants.COMMENT_TYPE_POLL) viewModel.getComments(
+        else if (CommentControllers.commentType == Constants.COMMENT_TYPE_POLL) viewModel.getComments(
             requireContext(), null, id
         )
-    }
-
-    private fun addCommentHandler() {
-        //preconfiguring add comment button
-        binding.addCommentBtn.apply {
-            isEnabled = false
-            drawable.alpha = 100
-            setOnClickListener {
-                createEditComment(binding.addCommentEt.text.toString())
-                binding.addCommentEt.text.clear()
-            }
-        }
-
-        //controlling add comment button based on text
-        binding.addCommentEt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-            override fun afterTextChanged(s: Editable?) {
-                if (s.isNullOrEmpty()) {
-                    binding.addCommentBtn.apply {
-                        isEnabled = false
-                        drawable.alpha = 100
-                    }
-                } else {
-                    binding.addCommentBtn.apply {
-                        isEnabled = true
-                        drawable.alpha = 255
-                    }
-                }
-            }
-
-        })
-    }
-
-    private fun createEditComment(content: String) {
-        binding.commentAddProgressBar.visibility = View.VISIBLE
-        binding.addCommentBtn.visibility = View.GONE
-
-        when (commentType) {
-            Constants.COMMENT_TYPE_POST -> viewModel.createComment(
-                requireContext(), postId = id, null, null, content
-            )
-            Constants.COMMENT_TYPE_POLL -> viewModel.createComment(
-                requireContext(), null, pollId = id, null, content
-            )
-            Constants.COMMENT_TYPE_REPLY -> viewModel.createComment(
-                requireContext(), null, null, commentId = commentId, content
-            )
-            Constants.COMMENT_TYPE_EDIT -> viewModel.editComment(
-                requireContext(), commentId!!, content
-            )
-        }
     }
 
     override fun onCommentLikeChanged(commentId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
@@ -316,8 +258,8 @@ class CommentsBS(
     }
 
     override fun onCommentReply(commentId: String, username: String) {
-        this.commentId = commentId
-        commentType = Constants.COMMENT_TYPE_REPLY
+        CommentControllers.commentId = commentId
+        CommentControllers.commentType = Constants.COMMENT_TYPE_REPLY
 
         binding.commentActionsCv.visibility = View.VISIBLE
         binding.commentActionTypeTv.text = getString(R.string.comment_action_label_reply)
@@ -325,13 +267,13 @@ class CommentsBS(
         binding.commentReplyCancelBtn.setOnClickListener {
             binding.commentActionsCv.visibility = View.GONE
             //restoring comment type
-            commentType = type
+            CommentControllers.commentType = type
         }
     }
 
     override fun onCommentEdit(commentId: String, content: String) {
-        this.commentId = commentId
-        commentType = Constants.COMMENT_TYPE_EDIT
+        CommentControllers.commentId = commentId
+        CommentControllers.commentType = Constants.COMMENT_TYPE_EDIT
 
         binding.commentActionsCv.visibility = View.VISIBLE
         binding.commentActionTypeTv.text = getString(R.string.comment_action_label_edit)
@@ -339,7 +281,7 @@ class CommentsBS(
         binding.commentReplyCancelBtn.setOnClickListener {
             binding.commentActionsCv.visibility = View.GONE
             //restoring comment type
-            commentType = type
+            CommentControllers.commentType = type
         }
     }
 

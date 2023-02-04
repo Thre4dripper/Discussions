@@ -377,7 +377,7 @@
             app:layout_constraintTop_toBottomOf="@+id/post_details_comment_actions_ll">
 
             <ImageView
-                android:id="@+id/post_details_add_comment_btn"
+                android:id="@+id/post_details_comment_add_btn"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="?attr/selectableItemBackgroundBorderless"
