@@ -71,7 +71,7 @@ class PollVoteApi {
                     votedByList.add(
                         PollVotedByModel(
                             votedByObject.getString("id"),
-                            votedByObject.getString("username"),
+                            "@" + votedByObject.getString("username"),
                             votedByObject.getString("image")
                         )
                     )
