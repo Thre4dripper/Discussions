@@ -15,6 +15,8 @@ import com.example.discussions.adapters.UserPostsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PostMenuInterface
 import com.example.discussions.databinding.ActivityUserPostsBinding
+import com.example.discussions.repositories.PostRepository
+import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.UserPostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -141,6 +143,9 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
     }
 
     override fun onComment(id: String, type: String) {
+        val count = PostRepository.allPostsList.value?.find { it.postId == id }?.comments ?: 0
 
+        val commentsBS = CommentsBS(this, id, type, count)
+        commentsBS.show(this.supportFragmentManager, commentsBS.tag)
     }
 }

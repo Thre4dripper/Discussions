@@ -16,7 +16,9 @@ import com.example.discussions.adapters.PollsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.FragmentPollsBinding
+import com.example.discussions.repositories.PollRepository
 import com.example.discussions.ui.PollResultsActivity
+import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.UserPollsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -174,6 +176,9 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
     }
 
     override fun onComment(id: String, type: String) {
+        val count = PollRepository.userPollsList.value?.find { it.pollId == id }?.comments ?: 0
 
+        val commentsBS = CommentsBS(requireContext(), id, type, count)
+        commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
     }
 }
