@@ -93,25 +93,26 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
      * METHOD TO GET POST DETAILS
      */
     private fun getPost(postId: String) {
-        loadingDialog.show()
-        viewModel.isPostFetched.observe(this) {
-            if (it != null) {
-                loadingDialog.dismiss()
-
-                if (it == Constants.API_SUCCESS) {
-                    setDetails()
-                } else {
-                    retryDialog.show()
-                }
-            }
-        }
-
         //check if post is in post list
         if (viewModel.isPostInAlreadyFetched(postId)) {
             //if yes, get post from post repository
             viewModel.getPostFromPostRepository(postId)
+            setDetails()
         } else {
             //if not, get post from server
+            loadingDialog.show()
+            viewModel.isPostFetched.observe(this) {
+                if (it != null) {
+                    loadingDialog.dismiss()
+
+                    if (it == Constants.API_SUCCESS) {
+                        setDetails()
+                    } else {
+                        retryDialog.show()
+                    }
+                }
+            }
+
             viewModel.getPostFromApi(this, postId)
         }
     }
