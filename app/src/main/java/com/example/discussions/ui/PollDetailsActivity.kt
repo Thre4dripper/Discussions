@@ -3,10 +3,12 @@ package com.example.discussions.ui
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.format.DateUtils
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -21,16 +23,20 @@ import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.CommentsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.ActivityPollDetailsBinding
 import com.example.discussions.databinding.LoadingDialogBinding
+import com.example.discussions.models.CommentModel
 import com.example.discussions.models.PollModel
+import com.example.discussions.ui.bottomSheets.comments.CommentControllers
+import com.example.discussions.ui.bottomSheets.comments.OptionsBS
 import com.example.discussions.viewModels.CommentsViewModel
 import com.example.discussions.viewModels.PollDetailsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PollDetailsActivity : AppCompatActivity() {
+class PollDetailsActivity : AppCompatActivity(), CommentInterface {
     private val TAG = "PollDetailsActivity"
 
     private lateinit var binding: ActivityPollDetailsBinding
@@ -153,6 +159,8 @@ class PollDetailsActivity : AppCompatActivity() {
     private fun setDetails() {
         val poll = viewModel.poll.value!!
         setUserInfo(poll)
+
+        //set poll data by observer, because of poll vote functionality, this is called after vote
         viewModel.isPollVoted.observe(this) {
             setPollData()
             if (it != null && it != Constants.API_SUCCESS)
@@ -161,6 +169,38 @@ class PollDetailsActivity : AppCompatActivity() {
 
         initLikeButton(poll)
 
+
+        /*Comments Logic Starts Here*/
+        //set comments recycler view
+        binding.pollDetailsCommentsRv.apply {
+            commentsAdapter = CommentsRecyclerAdapter(this@PollDetailsActivity)
+            adapter = commentsAdapter
+        }
+
+        //set swipe refresh
+        binding.pollDetailsSwipeRefresh.setOnRefreshListener { getComments(poll) }
+        //get comments
+        getComments(poll)
+
+        //setting all the comment observers that will restore comment type every time new comment is added or edited
+        CommentControllers.setupCommentObservers(
+            this,
+            commentsViewModel,
+            binding.pollDetailsCommentActionsCv,
+            binding.pollDetailsCommentAddProgressBar,
+            binding.pollDetailsCommentAddBtn,
+            this@PollDetailsActivity
+        ) { CommentControllers.commentType = Constants.COMMENT_TYPE_POLL }
+
+        //setting comment add button click handlers
+        CommentControllers.addCommentHandler(
+            this,
+            binding.pollDetailsCommentAddProgressBar,
+            binding.pollDetailsCommentAddBtn,
+            binding.pollDetailsAddCommentEt,
+            pollId,
+            commentsViewModel
+        )
     }
 
     private fun setUserInfo(poll: PollModel) {
@@ -329,11 +369,113 @@ class PollDetailsActivity : AppCompatActivity() {
         likeBtnStatus = btnLikeStatus
     }
 
+    private fun getComments(poll: PollModel) {
+        //resetting fetch comment type on refresh all comments
+        CommentControllers.commentType = Constants.COMMENT_TYPE_POLL
+
+        binding.pollDetailsCommentsPb.visibility = View.VISIBLE
+        binding.pollDetailsCommentsRv.visibility = View.GONE
+        commentsViewModel.commentsList.observe(this) {
+            if (it != null) {
+                commentsAdapter.submitList(it) {
+                    if (CommentsViewModel.commentsScrollToTop)
+                        binding.pollDetailsCommentsRv.scrollToPosition(0)
+                }
+                //hiding all loading
+                binding.pollDetailsSwipeRefresh.isRefreshing = false
+                binding.pollDetailsCommentsPb.visibility = View.GONE
+                binding.pollDetailsCommentsLottie.visibility = View.GONE
+                binding.pollDetailsCommentsRv.visibility = View.VISIBLE
+
+                Log.d(TAG, "getComments: $it")
+                //when empty list is loaded
+                if (it.isEmpty()) {
+                    binding.pollDetailsCommentsLottie.visibility = View.VISIBLE
+                    binding.pollDetailsCommentsRv.visibility = View.GONE
+
+                    val error = commentsViewModel.isCommentsFetched.value
+
+                    //when empty list is due to network error
+                    if (error != Constants.API_SUCCESS && error != null) {
+                        Toast.makeText(
+                            this, error, Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    if (error == Constants.AUTH_FAILURE_ERROR) {
+                        setResult(Constants.RESULT_LOGOUT)
+                        finish()
+                    }
+                }
+            }
+        }
+
+        commentsViewModel.getComments(this, null, poll.pollId)
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (pollLikeStatus != likeBtnStatus) {
             viewModel.likePoll(this, pollId)
         }
         finish()
+    }
+
+    override fun onCommentLikeChanged(commentId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            commentLikeHandler.removeCallbacksAndMessages(commentId)
+            commentLikeHandler.postDelayed({
+                if (isLiked == btnLikeStatus) {
+                    commentsViewModel.likeComment(this, commentId)
+                }
+            }, commentId, Constants.LIKE_DEBOUNCE_TIME)
+        } else {
+            commentLikeHandler.removeCallbacksAndMessages(null)
+            commentLikeHandler.postDelayed({
+                if (isLiked == btnLikeStatus) {
+                    commentsViewModel.likeComment(this, commentId)
+                }
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
+    }
+
+    override fun onCommentDeleted(comment: CommentModel) {
+        CommentControllers.commentDeleteHandler(this, commentsViewModel, comment)
+    }
+
+    override fun onCommentReply(commentId: String, username: String) {
+        CommentControllers.commentId = commentId
+        CommentControllers.commentType = Constants.COMMENT_TYPE_REPLY
+
+        binding.pollDetailsCommentActionsCv.visibility = View.VISIBLE
+        binding.pollDetailsCommentActionTypeTv.text = getString(R.string.comment_action_label_reply)
+        binding.pollDetailsCommentActionContentTv.text = username
+        binding.pollDetailsCommentReplyCancelBtn.setOnClickListener {
+            binding.pollDetailsCommentActionsCv.visibility = View.GONE
+            //restoring comment type
+            CommentControllers.commentType = Constants.COMMENT_TYPE_POLL
+        }
+    }
+
+    override fun onCommentEdit(commentId: String, content: String) {
+        CommentControllers.commentId = commentId
+        CommentControllers.commentType = Constants.COMMENT_TYPE_EDIT
+
+        binding.pollDetailsCommentActionsCv.visibility = View.VISIBLE
+        binding.pollDetailsCommentActionTypeTv.text = getString(R.string.comment_action_label_edit)
+        binding.pollDetailsCommentActionContentTv.text = content
+        binding.pollDetailsCommentReplyCancelBtn.setOnClickListener {
+            binding.pollDetailsCommentActionsCv.visibility = View.GONE
+            //restoring comment type
+            CommentControllers.commentType = Constants.COMMENT_TYPE_POLL
+        }
+    }
+
+    override fun onCommentCopy(content: String) {
+        CommentControllers.commentCopyHandler(this, content)
+    }
+
+    override fun onCommentLongClick(comment: CommentModel) {
+        val optionsBS = OptionsBS(comment, this@PollDetailsActivity)
+        optionsBS.show(supportFragmentManager, optionsBS.tag)
     }
 }
