@@ -59,9 +59,10 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
 
         initDialogs(postId)
         binding.postDetailsBackBtn.setOnClickListener {
+            @Suppress("DEPRECATION")
             onBackPressed()
         }
-        getPost(postId)
+        getPostDetails(postId)
     }
 
     /**
@@ -79,7 +80,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
             .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
-                getPost(postId)
+                getPostDetails(postId)
             }
             .setNegativeButton("Cancel") { _, _ ->
                 setResult(Constants.RESULT_CLOSE)
@@ -92,7 +93,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
     /**
      * METHOD TO GET POST DETAILS
      */
-    private fun getPost(postId: String) {
+    private fun getPostDetails(postId: String) {
         //check if post is in post list
         if (viewModel.isPostInAlreadyFetched(postId)) {
             //if yes, get post from post repository

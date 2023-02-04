@@ -70,7 +70,10 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface {
 
         initDialogs(pollId)
         initPollOptionLayouts()
-        binding.pollDetailsBackBtn.setOnClickListener { onBackPressed() }
+        binding.pollDetailsBackBtn.setOnClickListener {
+            @Suppress("DEPRECATION")
+            onBackPressed()
+        }
         getPollDetails(pollId)
     }
 
@@ -152,7 +155,21 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface {
             viewModel.getPollFromPollRepository(pollId)
             setDetails()
         } else {
-            //if not, get poll from server
+            //if not, get post from server
+            loadingDialog.show()
+            viewModel.isPollFetched.observe(this) {
+                if (it != null) {
+                    loadingDialog.dismiss()
+
+                    if (it == Constants.API_SUCCESS) {
+                        setDetails()
+                    } else {
+                        retryDialog.show()
+                    }
+                }
+            }
+
+            viewModel.getPollFromApi(this, pollId)
         }
     }
 
