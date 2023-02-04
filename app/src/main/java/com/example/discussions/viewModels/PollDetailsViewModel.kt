@@ -51,6 +51,7 @@ class PollDetailsViewModel : ViewModel() {
             override fun onSuccess(response: String) {
                 _isPollVoted.value = Constants.API_SUCCESS
             }
+
             override fun onError(response: String) {
                 _isPollVoted.value = response
             }
@@ -61,6 +62,19 @@ class PollDetailsViewModel : ViewModel() {
         PollRepository.likePoll(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {}
             override fun onError(response: String) {}
+        })
+    }
+
+    fun getPollFromApi(context: Context, pollId: String) {
+        _isPollFetched.value = null
+        PollRepository.getPollByID(context, pollId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPollFetched.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isPollFetched.value = response
+            }
         })
     }
 }
