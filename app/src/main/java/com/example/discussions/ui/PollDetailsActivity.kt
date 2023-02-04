@@ -157,9 +157,11 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface {
         } else {
             //if not, get post from server
             loadingDialog.show()
+            binding.pollDetailsSwipeRefresh.visibility = View.GONE
             viewModel.isPollFetched.observe(this) {
                 if (it != null) {
                     loadingDialog.dismiss()
+                    binding.pollDetailsSwipeRefresh.visibility = View.VISIBLE
 
                     if (it == Constants.API_SUCCESS) {
                         setDetails()

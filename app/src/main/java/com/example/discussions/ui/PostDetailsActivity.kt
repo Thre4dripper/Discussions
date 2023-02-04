@@ -102,9 +102,11 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
         } else {
             //if not, get post from server
             loadingDialog.show()
+            binding.postDetailsSwipeRefresh.visibility = View.GONE
             viewModel.isPostFetched.observe(this) {
                 if (it != null) {
                     loadingDialog.dismiss()
+                    binding.postDetailsSwipeRefresh.visibility = View.VISIBLE
 
                     if (it == Constants.API_SUCCESS) {
                         setDetails()
