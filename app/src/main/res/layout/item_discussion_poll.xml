@@ -10,82 +10,102 @@
         android:layout_marginBottom="8dp"
         android:background="@color/white">
 
-        <ImageView
-            android:id="@+id/item_poll_delete_btn"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/item_poll_user_info_cl"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="12dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="?attr/selectableItemBackground"
             android:clickable="true"
-            android:contentDescription="@string/poll_list_item_more_options"
             android:focusable="true"
-            android:padding="4dp"
-            android:src="@drawable/ic_delete"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/item_poll_user_image"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:contentDescription="@string/profile_image_desc"
             app:layout_constraintBottom_toTopOf="@+id/item_poll_title"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:src="@tools:sample/avatars" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/item_poll_username"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:textColor="@color/dark_gray"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/item_poll_delete_btn"
-            app:layout_constraintStart_toEndOf="@+id/item_poll_user_image"
-            app:layout_constraintTop_toTopOf="@+id/item_poll_user_image"
-            tools:text="@string/username" />
 
-        <TextView
-            android:id="@+id/item_poll_time"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/item_poll_user_image"
-            app:layout_constraintEnd_toEndOf="@+id/item_poll_username"
-            app:layout_constraintStart_toStartOf="@+id/item_poll_username"
-            app:layout_constraintTop_toBottomOf="@+id/item_poll_username"
-            tools:text="@string/poll_list_item_time" />
+            <ImageView
+                android:id="@+id/item_poll_user_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:contentDescription="@string/profile_image_desc"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/item_poll_username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/dark_gray"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/item_poll_delete_btn"
+                app:layout_constraintStart_toEndOf="@+id/item_poll_user_image"
+                app:layout_constraintTop_toTopOf="@+id/item_poll_user_image"
+                tools:text="@string/username" />
+
+            <TextView
+                android:id="@+id/item_poll_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/item_poll_user_image"
+                app:layout_constraintEnd_toStartOf="@+id/item_poll_delete_btn"
+                app:layout_constraintStart_toEndOf="@+id/item_poll_user_image"
+                app:layout_constraintTop_toBottomOf="@+id/item_poll_username"
+                tools:text="@string/post_list_item_time" />
+
+            <ImageView
+                android:id="@+id/item_poll_delete_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@string/user_post_more_options"
+                android:focusable="true"
+                android:padding="4dp"
+                android:src="@drawable/ic_delete"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/item_poll_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/item_poll_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/item_poll_user_image"
-            app:layout_constraintTop_toBottomOf="@+id/item_poll_user_image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/item_poll_user_info_cl"
             tools:text="@string/poll_list_item_title" />
 
         <TextView
             android:id="@+id/item_poll_content"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:textColor="@color/dark_gray"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/item_poll_options_ll"
-            app:layout_constraintEnd_toEndOf="@+id/item_poll_title"
-            app:layout_constraintStart_toStartOf="@+id/item_poll_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_poll_title"
             tools:text="@string/poll_list_item_content" />
 
