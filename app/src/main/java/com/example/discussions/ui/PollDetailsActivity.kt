@@ -1,11 +1,18 @@
 package com.example.discussions.ui
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.format.DateUtils
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -38,6 +45,11 @@ class PollDetailsActivity : AppCompatActivity() {
     private lateinit var loadingDialog: AlertDialog
     private lateinit var retryDialog: AlertDialog
 
+    private val pollOptionsTvList = mutableListOf<TextView>()
+    private val pollOptionsResultLayoutList = mutableListOf<LinearLayout>()
+    private val pollOptionsVotesTvList = mutableListOf<TextView>()
+    private val pollOptionsProgressList = mutableListOf<ProgressBar>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_poll_details)
@@ -49,8 +61,55 @@ class PollDetailsActivity : AppCompatActivity() {
         pollId = intent.getStringExtra(Constants.POLL_ID)!!
 
         initDialogs(pollId)
+        initPollOptionLayouts()
         binding.pollDetailsBackBtn.setOnClickListener { onBackPressed() }
         getPollDetails(pollId)
+    }
+
+    private fun initPollOptionLayouts() {
+        pollOptionsTvList.addAll(
+            listOf(
+                binding.pollDetailsOption1Tv,
+                binding.pollDetailsOption2Tv,
+                binding.pollDetailsOption3Tv,
+                binding.pollDetailsOption4Tv,
+                binding.pollDetailsOption5Tv,
+                binding.pollDetailsOption6Tv,
+            )
+        )
+
+        pollOptionsResultLayoutList.addAll(
+            listOf(
+                binding.pollDetailsOption1Ll,
+                binding.pollDetailsOption2Ll,
+                binding.pollDetailsOption3Ll,
+                binding.pollDetailsOption4Ll,
+                binding.pollDetailsOption5Ll,
+                binding.pollDetailsOption6Ll,
+            )
+        )
+
+        pollOptionsVotesTvList.addAll(
+            listOf(
+                binding.pollDetailsOption1Votes,
+                binding.pollDetailsOption2Votes,
+                binding.pollDetailsOption3Votes,
+                binding.pollDetailsOption4Votes,
+                binding.pollDetailsOption5Votes,
+                binding.pollDetailsOption6Votes,
+            )
+        )
+
+        pollOptionsProgressList.addAll(
+            listOf(
+                binding.pollDetailsOption1Progress,
+                binding.pollDetailsOption2Progress,
+                binding.pollDetailsOption3Progress,
+                binding.pollDetailsOption4Progress,
+                binding.pollDetailsOption5Progress,
+                binding.pollDetailsOption6Progress,
+            )
+        )
     }
 
     /**
@@ -92,6 +151,7 @@ class PollDetailsActivity : AppCompatActivity() {
     private fun setDetails() {
         val poll = viewModel.poll.value!!
         setUserInfo(poll)
+        setPollData(poll)
         initLikeButton(poll)
 
     }
@@ -115,6 +175,100 @@ class PollDetailsActivity : AppCompatActivity() {
             System.currentTimeMillis(),
             DateUtils.MINUTE_IN_MILLIS
         )
+    }
+
+    private fun setPollData(poll: PollModel) {
+        binding.pollDetailsTitle.apply {
+            text = poll.title
+            visibility = if (poll.title.isEmpty()) View.GONE else View.VISIBLE
+        }
+        binding.pollDetailsContent.apply {
+            text = poll.content
+            visibility = if (poll.content.isEmpty()) View.GONE else View.VISIBLE
+        }
+
+
+        //hiding loading progress bar and showing poll options
+        binding.pollDetailsLottieLoading.visibility =
+            if (poll.isVoting) View.VISIBLE else View.GONE
+        binding.pollDetailsOptionsLl.foreground =
+            if (poll.isVoting) ColorDrawable(Color.WHITE) else ColorDrawable(Color.TRANSPARENT)
+
+
+        //setting the poll options
+        val pollOptions = poll.pollOptions
+        val maxVotes = pollOptions.maxOf { it.votes }
+
+        //hiding all the poll options first
+        for (i in 0 until 6) {
+            pollOptionsTvList[i].visibility = View.GONE
+            pollOptionsResultLayoutList[i].visibility = View.GONE
+        }
+
+        for (i in pollOptions.indices) {
+
+            //set poll option text
+            pollOptionsTvList[i].apply {
+                text = pollOptions[i].content
+                visibility = View.VISIBLE
+
+                //setting start drawable in text view
+                setCompoundDrawablesWithIntrinsicBounds(
+                    //checking if the current user has voted for this option
+                    //AND
+                    //checking if any votedBy list contains the current user's username
+                    if (poll.isVoted && pollOptions[i].votedBy.any { it.username == poll.username }) {
+                        ResourcesCompat.getDrawable(
+                            resources,
+                            R.drawable.ic_circle_checked,
+                            null
+                        )
+                    } else {
+                        ResourcesCompat.getDrawable(
+                            resources,
+                            R.drawable.ic_circle_unchecked,
+                            null
+                        )
+                    },
+                    null, null, null
+                )
+
+
+                setOnClickListener {
+                    //checking if the current user has already voted
+//                    if (!poll.isVoted)
+//                        pollClickInterface.onPollVote(pollModel.pollId, pollOptions[i].id)
+                }
+            }
+
+            //result layout visibility
+            pollOptionsResultLayoutList[i].visibility =
+                if (poll.isVoted) View.VISIBLE else View.GONE
+
+            if (poll.isVoted) {
+                //setting votes percentage
+                pollOptionsVotesTvList[i].text =
+                    String.format(
+                        "%d%%",
+                        (pollOptions[i].votes * 100) / poll.totalVotes
+                    )
+
+                //setting votes progress
+                pollOptionsProgressList[i].apply {
+                    max = maxVotes
+                    progress = pollOptions[i].votes
+                }
+            }
+        }
+
+        //view results button
+        binding.pollDetailsViewResultsBtn.apply {
+            visibility =
+                if (poll.pollOptions.any { it.votedBy.isNotEmpty() } && poll.isVoted) View.VISIBLE else View.GONE
+            setOnClickListener {
+//                pollClickInterface.onPollResult(pollModel.pollId)
+            }
+        }
     }
 
     private fun initLikeButton(poll: PollModel) {
