@@ -4,4 +4,5 @@ interface PollClickInterface {
     fun onPollDelete(pollId: String)
     fun onPollVote(pollId: String, optionId: String)
     fun onPollResult(pollId: String)
+    fun onPollClick(pollId: String)
 }

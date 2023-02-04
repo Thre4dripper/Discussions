@@ -17,6 +17,7 @@ import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.FragmentPollsBinding
 import com.example.discussions.repositories.PollRepository
+import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PollResultsActivity
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
@@ -139,6 +140,12 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
 
     override fun onPollResult(pollId: String) {
         val intent = Intent(requireContext(), PollResultsActivity::class.java)
+        intent.putExtra(Constants.POLL_ID, pollId)
+        startActivity(intent)
+    }
+
+    override fun onPollClick(pollId: String) {
+        val intent = Intent(requireContext(), PollDetailsActivity::class.java)
         intent.putExtra(Constants.POLL_ID, pollId)
         startActivity(intent)
     }

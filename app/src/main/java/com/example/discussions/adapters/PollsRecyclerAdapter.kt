@@ -272,6 +272,10 @@ class PollsRecyclerAdapter(
                 visibility = if (pollModel.allowComments) View.VISIBLE else View.GONE
             }
 
+            binding.itemPollUserInfoCl.setOnClickListener {
+                pollClickInterface.onPollClick(pollModel.pollId)
+            }
+
         }
     }
 
