@@ -21,7 +21,7 @@ import com.example.discussions.ui.ZoomImageActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DiscussionsRecyclerAdapter(
+class PostsRecyclerAdapter(
     private var likeCommentInterface: LikeCommentInterface,
     private var postClickInterface: PostClickInterface
 ) :

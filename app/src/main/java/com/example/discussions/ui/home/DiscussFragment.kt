@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
-import com.example.discussions.adapters.DiscussionsRecyclerAdapter
+import com.example.discussions.adapters.PostsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
@@ -27,7 +28,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface {
     private lateinit var binding: FragmentDiscussBinding
     private lateinit var homeViewModel: HomeViewModel
 
-    private lateinit var discussAdapter: DiscussionsRecyclerAdapter
+    private lateinit var discussAdapter: PostsRecyclerAdapter
     private var handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
@@ -39,7 +40,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface {
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         binding.discussionRv.apply {
-            discussAdapter = DiscussionsRecyclerAdapter(this@DiscussFragment, this@DiscussFragment)
+            discussAdapter = PostsRecyclerAdapter(this@DiscussFragment, this@DiscussFragment)
             adapter = discussAdapter
         }
 
@@ -48,7 +49,8 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface {
                 requireContext()
             )
         }
-        getAllPosts()
+//        getAllPosts()
+        getAllDiscussions()
         return binding.root
     }
 
@@ -88,6 +90,14 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface {
         }
 
         homeViewModel.getAllPosts(requireContext())
+    }
+
+    private fun getAllDiscussions() {
+
+        homeViewModel.discussions.observe(viewLifecycleOwner){
+            Log.d(TAG, "getAllDiscussions: $it")
+        }
+        homeViewModel.getAllDiscussions(requireContext(),1)
     }
 
     override fun onLike(postOrPollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
