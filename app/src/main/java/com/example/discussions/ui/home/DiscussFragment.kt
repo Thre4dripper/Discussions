@@ -125,7 +125,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface {
     override fun onComment(id: String, type: String) {
         val count = PostRepository.allPostsList.value?.find { it.postId == id }?.comments ?: 0
 
-        val commentsBS = CommentsBS(requireContext(), id, type, count)
+        val commentsBS = CommentsBS(id, type, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
     }
 

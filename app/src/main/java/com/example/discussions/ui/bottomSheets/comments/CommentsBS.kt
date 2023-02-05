@@ -1,12 +1,10 @@
 package com.example.discussions.ui.bottomSheets.comments
 
-import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +23,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class CommentsBS(
-    private var parentContext: Context,
     var id: String,
     var type: String,
     private var commentCount: Int,
@@ -40,18 +37,18 @@ class CommentsBS(
     private lateinit var commentsAdapter: CommentsRecyclerAdapter
 
     private var commentLikeHandler = Handler(Looper.getMainLooper())
-    private var bsLikeHandler = Handler(Looper.getMainLooper())
 
     //variables for realtime update of like button in bs and parent post or poll
-    private var bsParentLikeStatus = false
+    private var postOrPollLikeStatus = false
     private var bsLikeBtnStatus = false
-    private var bsLikeTrigger: () -> Unit = {}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = BsCommentsBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[CommentsViewModel::class.java]
+
+        CommentControllers.commentType = type
         return binding.root
     }
 
@@ -108,39 +105,22 @@ class CommentsBS(
 
     private fun handleBottomSheetLike() {
         if (CommentControllers.commentType == Constants.COMMENT_TYPE_POST) {
-            initLikeButton(likeStatus = { viewModel.getPostLikeStatus(id) })
-
-            //setting like trigger for bottom sheet
-            bsLikeTrigger = {
-                viewModel.likePost(
-                    this@CommentsBS.parentContext, this@CommentsBS.id
-                )
-            }
-
+            postOrPollLikeStatus = viewModel.getPostLikeStatus(id)
         } else if (CommentControllers.commentType == Constants.COMMENT_TYPE_POLL) {
-            initLikeButton(likeStatus = { viewModel.getPollLikeStatus(id) })
-
-            //setting like trigger for bottom sheet
-            bsLikeTrigger = {
-                viewModel.likePoll(
-                    this@CommentsBS.parentContext, this@CommentsBS.id
-                )
-            }
-
+            postOrPollLikeStatus = viewModel.getPollLikeStatus(id)
         }
+
+        bsLikeBtnStatus = postOrPollLikeStatus
+        initLikeButton()
     }
 
-    private fun initLikeButton(
-        likeStatus: () -> Boolean
-    ) {
-        //getting like status of parent post or poll
-        bsParentLikeStatus = likeStatus()
-        bsLikeBtnStatus = bsParentLikeStatus
+    private fun initLikeButton() {
+
         binding.commentBsLikeBtn.apply {
             setImageDrawable(
                 ResourcesCompat.getDrawable(
                     resources,
-                    if (bsLikeBtnStatus) R.drawable.ic_like_filled else R.drawable.ic_like,
+                    if (postOrPollLikeStatus) R.drawable.ic_like_filled else R.drawable.ic_like,
                     null
                 )
             )
@@ -148,28 +128,6 @@ class CommentsBS(
             setOnClickListener {
                 //switching like status of button on every click
                 bsLikeBtnStatus = !bsLikeBtnStatus
-
-                //getting latest like status of parent post or poll
-                bsParentLikeStatus = likeStatus()
-
-                //removing previous callbacks and adding new callback
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    bsLikeHandler.removeCallbacksAndMessages(this@CommentsBS.id)
-                    bsLikeHandler.postDelayed({
-                        //like will only be triggered if the like status of parent post or poll is changed
-                        if (bsParentLikeStatus != bsLikeBtnStatus) {
-                            bsLikeTrigger()
-                        }
-                    }, this@CommentsBS.id, Constants.LIKE_DEBOUNCE_TIME)
-                } else {
-                    bsLikeHandler.removeCallbacksAndMessages(null)
-                    bsLikeHandler.postDelayed({
-                        //like will only be triggered if the like status of parent post or poll is changed
-                        if (bsParentLikeStatus != bsLikeBtnStatus) {
-                            bsLikeTrigger()
-                        }
-                    }, Constants.LIKE_DEBOUNCE_TIME)
-                }
 
                 //setting like button drawable according to "bsLikeBtnStatus"
                 setImageDrawable(
@@ -188,9 +146,13 @@ class CommentsBS(
      */
     override fun onDestroyView() {
         super.onDestroyView()
-        bsLikeHandler.removeCallbacksAndMessages(null)
-        if (bsParentLikeStatus != bsLikeBtnStatus) {
-            bsLikeTrigger()
+
+        if (postOrPollLikeStatus != bsLikeBtnStatus) {
+            if (CommentControllers.commentType == Constants.COMMENT_TYPE_POST) {
+                viewModel.likePost(requireContext(), id)
+            } else if (CommentControllers.commentType == Constants.COMMENT_TYPE_POLL) {
+                viewModel.likePoll(requireContext(), id)
+            }
         }
 
         commentLikeHandler.removeCallbacksAndMessages(null)

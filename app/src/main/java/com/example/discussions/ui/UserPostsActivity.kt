@@ -145,7 +145,7 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
     override fun onComment(id: String, type: String) {
         val count = PostRepository.allPostsList.value?.find { it.postId == id }?.comments ?: 0
 
-        val commentsBS = CommentsBS(this, id, type, count)
+        val commentsBS = CommentsBS(id, type, count)
         commentsBS.show(this.supportFragmentManager, commentsBS.tag)
     }
 }

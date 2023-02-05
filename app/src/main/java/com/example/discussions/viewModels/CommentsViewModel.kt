@@ -153,30 +153,18 @@ class CommentsViewModel : ViewModel() {
     }
 
     fun likePost(context: Context, postId: String) {
-        _isCommentLikedChanged.value = null
-        commentsScrollToTop = false
+        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
         PostRepository.likePost(context, postId, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isCommentLikedChanged.value = Constants.API_SUCCESS
-            }
-
-            override fun onError(response: String) {
-                _isCommentLikedChanged.value = response
-            }
+            override fun onSuccess(response: String) {}
+            override fun onError(response: String) {}
         })
     }
 
     fun likePoll(context: Context, pollId: String) {
-        _isCommentLikedChanged.value = null
-        commentsScrollToTop = false
+        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
         PollRepository.likePoll(context, pollId, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isCommentLikedChanged.value = Constants.API_SUCCESS
-            }
-
-            override fun onError(response: String) {
-                _isCommentLikedChanged.value = response
-            }
+            override fun onSuccess(response: String) {}
+            override fun onError(response: String) {}
         })
     }
 }
