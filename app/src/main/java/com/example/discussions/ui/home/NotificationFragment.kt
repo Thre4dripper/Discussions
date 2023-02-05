@@ -23,6 +23,7 @@ import com.example.discussions.adapters.NotificationRecyclerAdapter
 import com.example.discussions.adapters.interfaces.NotificationInterface
 import com.example.discussions.databinding.FragmentNotificationBinding
 import com.example.discussions.models.NotificationModel
+import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.NotificationOptionsBS
 import com.example.discussions.viewModels.HomeViewModel
@@ -258,7 +259,11 @@ class NotificationFragment : Fragment(), NotificationInterface {
                 onNotificationMarkAsRead(notification.notificationId)
             }
             NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POLL -> {
-                //TODO open poll detail activity
+                val intent = Intent(requireContext(), PollDetailsActivity::class.java)
+                val pollId = notification.poll!!.id
+                intent.putExtra(Constants.POLL_ID, pollId)
+                startActivity(intent)
+                onNotificationMarkAsRead(notification.notificationId)
             }
             NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_COMMENT -> {
                 //TODO open post or poll detail activity which has the comment

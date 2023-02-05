@@ -8,7 +8,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.example.discussions.Constants
 import com.example.discussions.R
-import com.example.discussions.ui.home.HomeActivity
+import com.example.discussions.ui.PollDetailsActivity
 import org.json.JSONObject
 
 class PollNotifications {
@@ -28,9 +28,10 @@ class PollNotifications {
                 if (pollTitle.isEmpty() && pollContent.isEmpty()) "Tap to view poll" else "$pollTitle $pollContent"
             val notificationUserImage = FCMConfig.getBitmapFromUrl(notifierImage)
 
-            val intent = Intent(context, HomeActivity::class.java).apply {
+            val intent = Intent(context, PollDetailsActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
+            intent.putExtra(Constants.POLL_ID, pollId)
             val pendingIntent: PendingIntent =
                 PendingIntent.getActivity(
                     context,
@@ -73,9 +74,10 @@ class PollNotifications {
 
             val notificationUserImage = FCMConfig.getBitmapFromUrl(notifierImage)
 
-            val intent = Intent(context, HomeActivity::class.java).apply {
+            val intent = Intent(context, PollDetailsActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
+            intent.putExtra(Constants.POLL_ID, pollId)
             val pendingIntent: PendingIntent =
                 PendingIntent.getActivity(
                     context,
