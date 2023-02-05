@@ -96,6 +96,11 @@ class HomeViewModel : ViewModel() {
         })
     }
 
+    fun refreshAllDiscussions(context: Context) {
+        _isDiscussionsFetched.value = null
+        getAllDiscussions(context, 1)
+    }
+
     fun getProfile(context: Context) {
         if (_isProfileFetched.value == Constants.API_SUCCESS) return
         else _isProfileFetched.value = null

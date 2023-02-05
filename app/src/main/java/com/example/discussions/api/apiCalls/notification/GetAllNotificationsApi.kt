@@ -4,7 +4,7 @@ import android.content.Context
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
-import com.example.discussions.adapters.NotificationRecyclerAdapter
+import com.example.discussions.Constants
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.CommentNotificationModel
@@ -61,12 +61,14 @@ class GetAllNotificationsApi {
                 val comment = notificationObject.get("comment")
 
                 val category = if (post is JSONObject) {
-                    NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POST
+                    Constants.NOTIFICATION_CATEGORY_POST
                 } else if (poll is JSONObject) {
-                    NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POLL
+                    Constants.NOTIFICATION_CATEGORY_POLL
                 } else if (comment is JSONObject) {
-                    NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_COMMENT
-                } else -1
+                    Constants.NOTIFICATION_CATEGORY_COMMENT
+                } else {
+                    Constants.NOTIFICATION_CATEGORY_INVALID
+                }
 
 
                 notificationsList.add(
