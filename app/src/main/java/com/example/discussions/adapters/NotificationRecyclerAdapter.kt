@@ -34,23 +34,23 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        when (viewType) {
+        return when (viewType) {
             NOTIFICATION_ITEM_TYPE_POST -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_notification_post, parent, false)
-                return PostNotificationViewHolder(view)
+                PostNotificationViewHolder(view)
             }
             NOTIFICATION_ITEM_TYPE_POLL -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_notification_poll, parent, false)
-                return PollNotificationViewHolder(view)
+                PollNotificationViewHolder(view)
             }
             NOTIFICATION_ITEM_TYPE_COMMENT -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_notification_comment, parent, false)
-                return CommentNotificationViewHolder(view)
+                CommentNotificationViewHolder(view)
             }
-            else -> return null!!
+            else -> null!!
         }
     }
 
@@ -98,7 +98,13 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
     }
 
     override fun getItemViewType(position: Int): Int {
-        return getItem(position).category
+        val notification = getItem(position)
+        return when (notification.category) {
+            Constants.NOTIFICATION_CATEGORY_POST -> NOTIFICATION_ITEM_TYPE_POST
+            Constants.NOTIFICATION_CATEGORY_POLL -> NOTIFICATION_ITEM_TYPE_POLL
+            Constants.NOTIFICATION_CATEGORY_COMMENT -> NOTIFICATION_ITEM_TYPE_COMMENT
+            else -> null!!
+        }
     }
 
     class PostNotificationViewHolder(itemView: View) : ViewHolder(itemView) {

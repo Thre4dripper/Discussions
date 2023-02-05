@@ -25,7 +25,7 @@ class PostsRecyclerAdapter(
     private var likeCommentInterface: LikeCommentInterface,
     private var postClickInterface: PostClickInterface
 ) :
-    ListAdapter<PostModel, ViewHolder>(DiscussionDiffCallback()) {
+    ListAdapter<PostModel, ViewHolder>(PostsDiffCallback()) {
     private val TAG = "DiscussionsRecyclerAdap"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -162,7 +162,7 @@ class PostsRecyclerAdapter(
         }
     }
 
-    class DiscussionDiffCallback : DiffUtil.ItemCallback<PostModel>() {
+    class PostsDiffCallback : DiffUtil.ItemCallback<PostModel>() {
         override fun areItemsTheSame(oldItem: PostModel, newItem: PostModel) =
             oldItem.postId == newItem.postId
 

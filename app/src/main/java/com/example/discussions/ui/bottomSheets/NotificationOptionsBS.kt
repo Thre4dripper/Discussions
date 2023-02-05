@@ -10,7 +10,6 @@ import androidx.core.text.HtmlCompat
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.R
-import com.example.discussions.adapters.NotificationRecyclerAdapter
 import com.example.discussions.adapters.interfaces.NotificationInterface
 import com.example.discussions.databinding.BsNotificationOptionsBinding
 import com.example.discussions.models.CommentNotificationModel
@@ -44,7 +43,7 @@ class NotificationOptionsBS(
         val notificationTitle = SpannableStringBuilder()
 
         when (notification.category) {
-            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POST -> {
+            Constants.NOTIFICATION_CATEGORY_POST -> {
 
                 notificationTypeCvBgColor = R.color.notification_post_item_bg_color
                 notificationTypeIv = R.drawable.ic_image
@@ -53,13 +52,13 @@ class NotificationOptionsBS(
 
                 binding.optionNotificationTitle.text = notificationTitle
             }
-            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POLL -> {
+            Constants.NOTIFICATION_CATEGORY_POLL -> {
                 notificationTypeCvBgColor = R.color.notification_poll_item_bg_color
                 notificationTypeIv = R.drawable.create_poll_shortcut
 
                 setPollNotificationDetails(notificationTitle)
             }
-            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_COMMENT -> {
+            Constants.NOTIFICATION_CATEGORY_COMMENT -> {
                 notificationTypeCvBgColor = R.color.notification_comment_item_bg_color
                 notificationTypeIv = R.drawable.ic_faq
 

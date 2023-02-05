@@ -251,21 +251,21 @@ class NotificationFragment : Fragment(), NotificationInterface {
 
     override fun onNotificationClick(notification: NotificationModel) {
         when (notification.category) {
-            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POST -> {
+            Constants.NOTIFICATION_CATEGORY_POST -> {
                 val intent = Intent(requireContext(), PostDetailsActivity::class.java)
                 val postId = notification.post!!.id
                 intent.putExtra(Constants.POST_ID, postId)
                 startActivity(intent)
                 onNotificationMarkAsRead(notification.notificationId)
             }
-            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_POLL -> {
+            Constants.NOTIFICATION_CATEGORY_POLL -> {
                 val intent = Intent(requireContext(), PollDetailsActivity::class.java)
                 val pollId = notification.poll!!.id
                 intent.putExtra(Constants.POLL_ID, pollId)
                 startActivity(intent)
                 onNotificationMarkAsRead(notification.notificationId)
             }
-            NotificationRecyclerAdapter.NOTIFICATION_ITEM_TYPE_COMMENT -> {
+            Constants.NOTIFICATION_CATEGORY_COMMENT -> {
                 //TODO open post or poll detail activity which has the comment
             }
         }
