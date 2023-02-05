@@ -7,15 +7,14 @@ import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.ProfileDataModel
-import com.example.discussions.repositories.NotificationRepository
-import com.example.discussions.repositories.PollRepository
-import com.example.discussions.repositories.PostRepository
-import com.example.discussions.repositories.UserRepository
+import com.example.discussions.repositories.*
 
 class HomeViewModel : ViewModel() {
     private val TAG = "HomeViewModel"
 
     lateinit var profileDataModel: ProfileDataModel
+
+    var discussions = DiscussionRepository.discussions
 
     //get posts list directly from repository live data
     var postsList = PostRepository.allPostsList
@@ -28,6 +27,10 @@ class HomeViewModel : ViewModel() {
 
     //get notifications list directly from repository live data
     var notificationsList = NotificationRepository.notificationsList
+
+    private var _isDiscussionsFetched = MutableLiveData<String?>(null)
+    val isDiscussionsFetched: LiveData<String?>
+        get() = _isDiscussionsFetched
 
     private var _isPostsFetched = MutableLiveData<String?>(null)
     val isPostsFetched: LiveData<String?>
@@ -77,6 +80,21 @@ class HomeViewModel : ViewModel() {
         var postsOrPollsOrNotificationsScrollToTop = false
     }
 
+    fun getAllDiscussions(context: Context, page: Int) {
+        if (_isDiscussionsFetched.value == Constants.API_SUCCESS) return
+        else _isDiscussionsFetched.value = null
+
+        DiscussionRepository.getAllDiscussions(context, page, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isDiscussionsFetched.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isDiscussionsFetched.value = response
+                discussions.value = mutableListOf()
+            }
+        })
+    }
 
     fun getProfile(context: Context) {
         if (_isProfileFetched.value == Constants.API_SUCCESS) return
@@ -119,6 +137,7 @@ class HomeViewModel : ViewModel() {
         else {
             _isPostsFetched.value = null
         }
+        postsOrPollsOrNotificationsScrollToTop = true
 
         PostRepository.getAllPosts(context, object : ResponseCallback {
             override fun onSuccess(response: String) {

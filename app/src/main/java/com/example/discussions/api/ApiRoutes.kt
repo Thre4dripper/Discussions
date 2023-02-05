@@ -43,5 +43,8 @@ class ApiRoutes {
         const val NOTIFICATION_DELETE_BY_ID = "/api/notification/delete/"
         const val NOTIFICATION_DELETE_ALL = "/api/notification/delete_all/"
         const val NOTIFICATION_MARK_AS_READ = "/api/notification/set/"
+
+        //DISCUSSIONS
+        const val DISCUSSIONS_GET_ALL = "/api/discussion/get/"
     }
 }
