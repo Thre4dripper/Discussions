@@ -184,7 +184,11 @@ class DiscussionsRecyclerAdapter(
             //setting like and comment button click listeners
             binding.itemPostLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onLike(postModel.postId, postModel.isLiked, postIsLiked)
+                    likeCommentInterface.onPostLike(
+                        postModel.postId,
+                        postModel.isLiked,
+                        postIsLiked
+                    )
                     //changing the like button icon every time it is clicked
                     postIsLiked = !postIsLiked
                     setCompoundDrawablesWithIntrinsicBounds(
@@ -216,7 +220,7 @@ class DiscussionsRecyclerAdapter(
 
             binding.itemPostCommentBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onComment(postModel.postId, Constants.COMMENT_TYPE_POST)
+                    likeCommentInterface.onPostComment(postModel.postId)
                 }
                 visibility = if (postModel.allowComments) View.VISIBLE else View.GONE
             }
@@ -419,7 +423,11 @@ class DiscussionsRecyclerAdapter(
             //setting like and comment button click listeners
             binding.itemPollLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onLike(pollModel.pollId, pollModel.isLiked, pollIsLiked)
+                    likeCommentInterface.onPollLike(
+                        pollModel.pollId,
+                        pollModel.isLiked,
+                        pollIsLiked
+                    )
                     //changing the like button icon every time it is clicked
                     pollIsLiked = !pollIsLiked
                     setCompoundDrawablesWithIntrinsicBounds(
@@ -451,7 +459,7 @@ class DiscussionsRecyclerAdapter(
 
             binding.itemPollCommentBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onComment(pollModel.pollId, Constants.COMMENT_TYPE_POLL)
+                    likeCommentInterface.onPollComment(pollModel.pollId)
                 }
                 visibility = if (pollModel.allowComments) View.VISIBLE else View.GONE
             }
@@ -488,14 +496,14 @@ class DiscussionsRecyclerAdapter(
                 R.id.menu_option_edit -> {
                     //edit only available for posts
                     if (postModel != null)
-                        discussionMenuInterface.onEdit(postModel.postId)
+                        discussionMenuInterface.onPostEdit(postModel.postId)
                     true
                 }
                 R.id.menu_option_delete -> {
                     if (postModel != null)
-                        discussionMenuInterface.onDelete(postModel.postId)
+                        discussionMenuInterface.onPostDelete(postModel.postId)
                     else if (pollModel != null)
-                        discussionMenuInterface.onDelete(pollModel.pollId)
+                        discussionMenuInterface.onPollDelete(pollModel.pollId)
                     true
                 }
                 else -> false

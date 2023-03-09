@@ -103,9 +103,9 @@ class PollsRecyclerAdapter(
             likeCommentInterface: LikeCommentInterface
         ) {
             //poll delete button
-            binding.itemPollMenuOptions.setOnClickListener {
-                pollClickInterface.onPollDelete(pollModel.pollId)
-            }
+//            binding.itemPollMenuOptions.setOnClickListener {
+//                pollClickInterface.onPollDelete(pollModel.pollId)
+//            }
 
             //setting the profile image of current poll's user
             Glide.with(itemView.context)
@@ -235,7 +235,7 @@ class PollsRecyclerAdapter(
             //setting like and comment button click listeners
             binding.itemPollLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onLike(pollModel.pollId, pollModel.isLiked, pollIsLiked)
+                    likeCommentInterface.onPollLike(pollModel.pollId, pollModel.isLiked, pollIsLiked)
                     //changing the like button icon every time it is clicked
                     pollIsLiked = !pollIsLiked
                     setCompoundDrawablesWithIntrinsicBounds(
@@ -267,7 +267,7 @@ class PollsRecyclerAdapter(
 
             binding.itemPollCommentBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onComment(pollModel.pollId, Constants.COMMENT_TYPE_POLL)
+                    likeCommentInterface.onPollComment(pollModel.pollId)
                 }
                 visibility = if (pollModel.allowComments) View.VISIBLE else View.GONE
             }

@@ -72,24 +72,25 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
         }
     }
 
+    //TODO implement bottom sheet for these operations
 
-    override fun onEdit(postOrPollId: String) {
+    override fun onPostEdit(postId: String) {
         val intent = Intent(this, CreateEditPostActivity::class.java)
         intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
-        intent.putExtra(Constants.POST_ID, postOrPollId)
-        val post = viewModel.userPosts.value?.find { it.post!!.postId == postOrPollId }!!.post!!
+        intent.putExtra(Constants.POST_ID, postId)
+        val post = viewModel.userPosts.value?.find { it.post!!.postId == postId }!!.post!!
         intent.putExtra(Constants.POST_TITLE, post.title)
         intent.putExtra(Constants.POST_CONTENT, post.content)
         intent.putExtra(Constants.POST_IMAGE, post.postImage)
         startActivity(intent)
     }
 
-    override fun onDelete(postOrPollId: String) {
+    override fun onPostDelete(postId: String) {
         MaterialAlertDialogBuilder(this).setTitle("Delete")
             .setMessage("Are you sure you want to delete this post?")
             .setPositiveButton("Confirm") { dialog, _ ->
                 dialog.dismiss()
-                deletePost(postOrPollId)
+                deletePost(postId)
             }.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }.show()
@@ -117,7 +118,7 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
         viewModel.deletePost(this, postId)
     }
 
-    override fun onLike(postOrPollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+    override fun onPostLike(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
         viewModel.isPostLikedChanged.observe(this) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
@@ -131,29 +132,29 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
 
         //debouncing the like button above android P
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            handler.removeCallbacksAndMessages(postOrPollId)
+            handler.removeCallbacksAndMessages(postId)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    viewModel.likePost(this, postOrPollId)
+                    viewModel.likePost(this, postId)
 
-            }, postOrPollId, Constants.LIKE_DEBOUNCE_TIME)
+            }, postId, Constants.LIKE_DEBOUNCE_TIME)
         }
         //debouncing the like button below android P
         else {
             handler.removeCallbacksAndMessages(null)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    viewModel.likePost(this, postOrPollId)
+                    viewModel.likePost(this, postId)
 
             }, Constants.LIKE_DEBOUNCE_TIME)
         }
     }
 
-    override fun onComment(id: String, type: String) {
+    override fun onPostComment(postId: String) {
         val count =
-            DiscussionRepository.discussions.value?.find { it.post!!.postId == id }?.count ?: 0
+            DiscussionRepository.discussions.value?.find { it.post!!.postId == postId }?.count ?: 0
 
-        val commentsBS = CommentsBS(id, type, count)
+        val commentsBS = CommentsBS(postId, Constants.COMMENT_TYPE_POST, count)
         commentsBS.show(this.supportFragmentManager, commentsBS.tag)
     }
 

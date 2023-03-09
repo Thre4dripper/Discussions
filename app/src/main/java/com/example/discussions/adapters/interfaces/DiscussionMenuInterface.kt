@@ -1,6 +1,7 @@
 package com.example.discussions.adapters.interfaces
 
 interface DiscussionMenuInterface {
-    fun onEdit(postOrPollId: String)
-    fun onDelete(postOrPollId: String)
+    fun onPostEdit(postId: String) {}
+    fun onPostDelete(postId: String) {}
+    fun onPollDelete(pollId: String) {}
 }

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.adapters.PollsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.FragmentPollsBinding
@@ -24,7 +25,8 @@ import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.UserPollsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
+class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
+    DiscussionMenuInterface {
     private val TAG = "PollsFragment"
 
     private lateinit var binding: FragmentPollsBinding
@@ -95,20 +97,6 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
         homeViewModel.getAllUserPolls(requireContext())
     }
 
-    override fun onPollDelete(pollId: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Delete")
-            .setMessage("Are you sure you want to delete this poll?")
-            .setPositiveButton("Confirm") { dialog, _ ->
-                dialog.dismiss()
-                deletePoll(pollId)
-            }
-            .setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }
-            .show()
-    }
-
     /**
      * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
      */
@@ -150,7 +138,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
         startActivity(intent)
     }
 
-    override fun onLike(postOrPollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+    override fun onPollLike(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
         homeViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
@@ -164,28 +152,42 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface {
 
         //debouncing the like button above android P
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            handler.removeCallbacksAndMessages(postOrPollId)
+            handler.removeCallbacksAndMessages(pollId)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePoll(requireContext(), postOrPollId)
+                    homeViewModel.likePoll(requireContext(), pollId)
 
-            }, postOrPollId, Constants.LIKE_DEBOUNCE_TIME)
+            }, pollId, Constants.LIKE_DEBOUNCE_TIME)
         }
         //debouncing the like button below android P
         else {
             handler.removeCallbacksAndMessages(null)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePoll(requireContext(), postOrPollId)
+                    homeViewModel.likePoll(requireContext(), pollId)
 
             }, Constants.LIKE_DEBOUNCE_TIME)
         }
     }
 
-    override fun onComment(id: String, type: String) {
-        val count = PollRepository.userPollsList.value?.find { it.pollId == id }?.comments ?: 0
+    override fun onPollComment(pollId: String) {
+        val count = PollRepository.userPollsList.value?.find { it.pollId == pollId }?.comments ?: 0
 
-        val commentsBS = CommentsBS(id, type, count)
+        val commentsBS = CommentsBS(pollId, Constants.COMMENT_TYPE_POLL, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
+    }
+
+    override fun onPollDelete(pollId: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Delete")
+            .setMessage("Are you sure you want to delete this poll?")
+            .setPositiveButton("Confirm") { dialog, _ ->
+                dialog.dismiss()
+                deletePoll(pollId)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

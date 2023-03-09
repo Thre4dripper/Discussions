@@ -99,8 +99,8 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         homeViewModel.getAllDiscussions(requireContext(), 1)
     }
 
-    override fun onLike(postOrPollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        val id = postOrPollId.substring(postOrPollId.indexOf("_") + 1)
+    override fun onPostLike(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+        val id = postId.substring(postId.indexOf("_") + 1)
         homeViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
@@ -132,11 +132,12 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         }
     }
 
-    override fun onComment(id: String, type: String) {
+    override fun onPostComment(postId: String) {
+        val id = postId.substring(postId.indexOf("_") + 1)
         val count =
-            DiscussionRepository.discussions.value?.find { it.post!!.postId == id }?.count ?: 0
+            DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.count ?: 0
 
-        val commentsBS = CommentsBS(id, type, count)
+        val commentsBS = CommentsBS(id, Constants.COMMENT_TYPE_POST, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
     }
 
@@ -144,10 +145,6 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         val intent = Intent(requireContext(), PostDetailsActivity::class.java)
         intent.putExtra(Constants.POST_ID, postId)
         startActivity(intent)
-    }
-
-    override fun onPollDelete(pollId: String) {
-        TODO("Not yet implemented")
     }
 
     override fun onPollVote(pollId: String, optionId: String) {
