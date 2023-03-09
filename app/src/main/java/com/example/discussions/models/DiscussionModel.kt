@@ -7,4 +7,5 @@ data class DiscussionModel(
     val previous: String?,
     val post: PostModel?,
     val poll: PollModel?,
+    val type: Int
 )

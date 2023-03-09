@@ -33,8 +33,8 @@ import java.util.*
 
 class DiscussionsRecyclerAdapter(
     private var likeCommentInterface: LikeCommentInterface,
-    private var postClickInterface: PostClickInterface,
-    private var pollClickInterface: PollClickInterface
+    private var postClickInterface: PostClickInterface?,
+    private var pollClickInterface: PollClickInterface?
 ) :
     ListAdapter<DiscussionModel, ViewHolder>(DiscussionsDiffCallback()) {
 
@@ -68,7 +68,7 @@ class DiscussionsRecyclerAdapter(
                     holder.binding,
                     discussion.post!!,
                     likeCommentInterface,
-                    postClickInterface
+                    postClickInterface!!
                 )
             }
             DISCUSSION_TYPE_POLL -> {
@@ -79,7 +79,7 @@ class DiscussionsRecyclerAdapter(
                     holder.pollOptionsVotesTvList,
                     holder.pollOptionsProgressList,
                     discussion.poll!!,
-                    pollClickInterface,
+                    pollClickInterface!!,
                     likeCommentInterface
                 )
             }
@@ -88,11 +88,7 @@ class DiscussionsRecyclerAdapter(
 
     override fun getItemViewType(position: Int): Int {
         val item = getItem(position)
-        return if (item.id.contains("post")) {
-            DISCUSSION_TYPE_POST
-        } else {
-            DISCUSSION_TYPE_POLL
-        }
+        return item.type
     }
 
     class PostViewHolder(itemView: View) : ViewHolder(itemView) {

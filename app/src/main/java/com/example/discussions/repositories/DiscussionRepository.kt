@@ -11,7 +11,7 @@ class DiscussionRepository {
     companion object {
         private const val TAG = "DiscussionRepository"
 
-        val discussions = MutableLiveData<MutableList<DiscussionModel>?>()
+        val discussions = MutableLiveData<MutableList<DiscussionModel>?>(null)
 
         fun getAllDiscussions(
             context: Context,

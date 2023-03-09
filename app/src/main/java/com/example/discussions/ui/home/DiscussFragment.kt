@@ -17,7 +17,7 @@ import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
-import com.example.discussions.repositories.PostRepository
+import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
@@ -53,48 +53,10 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                 requireContext()
             )
         }
-//        getAllPosts()
+
         getAllDiscussions()
         return binding.root
     }
-
-//    private fun getAllPosts() {
-//        binding.discussionProgressBar.visibility = View.VISIBLE
-//        homeViewModel.postsList.observe(viewLifecycleOwner) {
-//            if (it != null) {
-//                discussAdapter.submitList(it) {
-//                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop)
-//                        binding.discussionRv.scrollToPosition(0)
-//                }
-//                //hiding all loading
-//                binding.discussSwipeLayout.isRefreshing = false
-//                binding.discussionProgressBar.visibility = View.GONE
-//                binding.discussLottieNoData.visibility = View.GONE
-//
-//                //when empty list is loaded
-//                if (it.isEmpty()) {
-//                    binding.discussLottieNoData.visibility = View.VISIBLE
-//                    val error = homeViewModel.isPostsFetched.value
-//
-//                    //when empty list is due to network error
-//                    if (error != Constants.API_SUCCESS) {
-//                        Toast.makeText(
-//                            requireContext(),
-//                            homeViewModel.isPostsFetched.value,
-//                            Toast.LENGTH_SHORT
-//                        )
-//                            .show()
-//                    }
-//                    if (error == Constants.AUTH_FAILURE_ERROR) {
-//                        requireActivity().setResult(Constants.RESULT_LOGOUT)
-//                        requireActivity().finish()
-//                    }
-//                }
-//            }
-//        }
-//
-//        homeViewModel.getAllPosts(requireContext())
-//    }
 
     private fun getAllDiscussions() {
         binding.discussionProgressBar.visibility = View.VISIBLE
@@ -168,7 +130,8 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     }
 
     override fun onComment(id: String, type: String) {
-        val count = PostRepository.allPostsList.value?.find { it.postId == id }?.comments ?: 0
+        val count =
+            DiscussionRepository.discussions.value?.find { it.post!!.postId == id }?.count ?: 0
 
         val commentsBS = CommentsBS(id, type, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)

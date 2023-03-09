@@ -4,6 +4,7 @@ import android.content.Context
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.poll.GetPollByIdApi
@@ -59,12 +60,15 @@ class GetAllDiscussionsApi {
 
                 var post: PostModel? = null
                 var poll: PollModel? = null
+                var type: Int
                 if (id.substring(0, 4) == "post") {
                     post =
                         GetPostByIdApi.parsePostByIdJson(resultsArray.getJSONObject(i).toString())
+                    type = DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST
                 } else {
                     poll =
                         GetPollByIdApi.parsePollByIdJson(resultsArray.getJSONObject(i).toString())
+                    type = DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL
                 }
                 discussionsList.add(
                     DiscussionModel(
@@ -73,7 +77,8 @@ class GetAllDiscussionsApi {
                         if (next == "null") null else next,
                         if (previous == "null") null else previous,
                         post,
-                        poll
+                        poll,
+                        type
                     )
                 )
             }
