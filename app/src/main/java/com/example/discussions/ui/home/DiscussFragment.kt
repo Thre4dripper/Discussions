@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
+import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
@@ -22,7 +23,8 @@ import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
 
-class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, PollClickInterface {
+class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, PollClickInterface,
+    DiscussionMenuInterface {
     private val TAG = "DiscussFragment"
 
     private lateinit var binding: FragmentDiscussBinding
@@ -43,7 +45,8 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
             discussAdapter = DiscussionsRecyclerAdapter(
                 this@DiscussFragment,
                 this@DiscussFragment,
-                this@DiscussFragment
+                this@DiscussFragment,
+                this@DiscussFragment,
             )
             adapter = discussAdapter
         }
@@ -156,6 +159,14 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     }
 
     override fun onPollClick(pollId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onEdit(postOrPollId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onDelete(postOrPollId: String) {
         TODO("Not yet implemented")
     }
 }

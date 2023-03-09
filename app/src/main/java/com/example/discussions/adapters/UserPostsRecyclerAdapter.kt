@@ -14,8 +14,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
-import com.example.discussions.adapters.interfaces.ItemMenuInterface
 import com.example.discussions.databinding.ItemDiscussionPostBinding
 import com.example.discussions.models.PostModel
 import com.example.discussions.ui.ZoomImageActivity
@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class UserPostsRecyclerAdapter(
-    private var itemMenuInterface: ItemMenuInterface,
+    private var itemMenuInterface: DiscussionMenuInterface,
     private var likeCommentInterface: LikeCommentInterface
 ) :
     ListAdapter<PostModel, UserPostsRecyclerAdapter.UserPostsViewHolder>(UserPostsDiffCallback()) {
@@ -47,12 +47,12 @@ class UserPostsRecyclerAdapter(
         fun bind(
             binding: ItemDiscussionPostBinding,
             postModel: PostModel,
-            postInterface: ItemMenuInterface,
+            postInterface: DiscussionMenuInterface,
             likeCommentInterface: LikeCommentInterface
         ) {
             //setting post popup menu
             val popupMenu = PopupMenu(binding.root.context, binding.itemPostMenuOptions)
-            popupMenu.inflate(R.menu.post_options_menu)
+            popupMenu.inflate(R.menu.discussion_options_menu)
 
             binding.itemPostMenuOptions.setOnClickListener {
                 popupMenu.show()
@@ -61,12 +61,12 @@ class UserPostsRecyclerAdapter(
             //setting post menu options
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
-                    R.id.post_options_menu_edit -> {
-                        postInterface.onItemEdit(postModel.postId)
+                    R.id.menu_option_edit -> {
+                        postInterface.onEdit(postModel.postId)
                         true
                     }
-                    R.id.post_options_menu_delete -> {
-                        postInterface.onItemDelete(postModel.postId)
+                    R.id.menu_option_delete -> {
+                        postInterface.onDelete(postModel.postId)
                         true
                     }
                     else -> false

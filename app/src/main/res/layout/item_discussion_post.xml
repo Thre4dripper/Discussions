@@ -45,7 +45,7 @@
                 android:textColor="@color/dark_gray"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/posts_more_options"
+                app:layout_constraintEnd_toStartOf="@+id/item_post_menu_options"
                 app:layout_constraintStart_toEndOf="@+id/item_post_user_image"
                 app:layout_constraintTop_toTopOf="@+id/item_post_user_image"
                 tools:text="@string/username" />
@@ -58,13 +58,13 @@
                 android:layout_marginEnd="16dp"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="@+id/item_post_user_image"
-                app:layout_constraintEnd_toStartOf="@+id/posts_more_options"
+                app:layout_constraintEnd_toStartOf="@+id/item_post_menu_options"
                 app:layout_constraintStart_toEndOf="@+id/item_post_user_image"
                 app:layout_constraintTop_toBottomOf="@+id/item_post_username"
                 tools:text="@string/post_list_item_time" />
 
             <ImageView
-                android:id="@+id/posts_more_options"
+                android:id="@+id/item_post_menu_options"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"

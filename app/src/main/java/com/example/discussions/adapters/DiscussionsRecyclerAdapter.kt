@@ -1,5 +1,6 @@
 package com.example.discussions.adapters
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
@@ -18,7 +20,9 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
+import com.example.discussions.MyApplication
 import com.example.discussions.R
+import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
@@ -34,7 +38,8 @@ import java.util.*
 class DiscussionsRecyclerAdapter(
     private var likeCommentInterface: LikeCommentInterface,
     private var postClickInterface: PostClickInterface?,
-    private var pollClickInterface: PollClickInterface?
+    private var pollClickInterface: PollClickInterface?,
+    private var discussionMenuInterface: DiscussionMenuInterface
 ) :
     ListAdapter<DiscussionModel, ViewHolder>(DiscussionsDiffCallback()) {
 
@@ -68,7 +73,8 @@ class DiscussionsRecyclerAdapter(
                     holder.binding,
                     discussion.post!!,
                     likeCommentInterface,
-                    postClickInterface!!
+                    postClickInterface!!,
+                    discussionMenuInterface
                 )
             }
             DISCUSSION_TYPE_POLL -> {
@@ -80,7 +86,8 @@ class DiscussionsRecyclerAdapter(
                     holder.pollOptionsProgressList,
                     discussion.poll!!,
                     pollClickInterface!!,
-                    likeCommentInterface
+                    likeCommentInterface,
+                    discussionMenuInterface
                 )
             }
         }
@@ -91,18 +98,29 @@ class DiscussionsRecyclerAdapter(
         return item.type
     }
 
-    class PostViewHolder(itemView: View) : ViewHolder(itemView) {
+    inner class PostViewHolder(itemView: View) : ViewHolder(itemView) {
         var binding = DataBindingUtil.bind<ItemDiscussionPostBinding>(itemView)!!
 
         fun bind(
             binding: ItemDiscussionPostBinding,
             postModel: PostModel,
             likeCommentInterface: LikeCommentInterface,
-            postClickInterface: PostClickInterface
+            postClickInterface: PostClickInterface,
+            discussionMenuInterface: DiscussionMenuInterface
         ) {
 
-            //hiding more options button on discussion posts
-            binding.postsMoreOptions.visibility = View.GONE
+            //setting up more options menu for post
+            binding.itemPostMenuOptions.visibility =
+                if (postModel.username == "@${MyApplication.username}") View.VISIBLE else View.GONE
+
+            //setting up the more options menu
+            setupMenuOptions(
+                binding.root.context,
+                binding.itemPostMenuOptions,
+                postModel,
+                null,
+                discussionMenuInterface
+            )
 
             //setting the profile image of current post's user
             Glide.with(itemView.context)
@@ -209,7 +227,7 @@ class DiscussionsRecyclerAdapter(
         }
     }
 
-    class PollViewHolder(itemView: View) : ViewHolder(itemView) {
+    inner class PollViewHolder(itemView: View) : ViewHolder(itemView) {
         private val TAG = "PollsRecyclerAdapter"
 
         val binding = DataBindingUtil.bind<ItemDiscussionPollBinding>(itemView)!!
@@ -257,12 +275,21 @@ class DiscussionsRecyclerAdapter(
             pollOptionsProgressList: List<ProgressBar>,
             pollModel: PollModel,
             pollClickInterface: PollClickInterface,
-            likeCommentInterface: LikeCommentInterface
+            likeCommentInterface: LikeCommentInterface,
+            discussionMenuInterface: DiscussionMenuInterface
         ) {
-            //poll delete button
-            binding.itemPollDeleteBtn.setOnClickListener {
-                pollClickInterface.onPollDelete(pollModel.pollId)
-            }
+            //setting up more options menu for the poll
+            binding.itemPollMenuOptions.visibility =
+                if (pollModel.username == "@${MyApplication.username}") View.VISIBLE else View.GONE
+
+            //setting up the more options menu
+            setupMenuOptions(
+                binding.root.context,
+                binding.itemPollMenuOptions,
+                null,
+                pollModel,
+                discussionMenuInterface
+            )
 
             //setting the profile image of current poll's user
             Glide.with(itemView.context)
@@ -330,7 +357,7 @@ class DiscussionsRecyclerAdapter(
                         //checking if the current user has voted for this option
                         //AND
                         //checking if any votedBy list contains the current user's username
-                        if (pollModel.isVoted && pollOptions[i].votedBy.any { it.username == pollModel.username }) {
+                        if (pollModel.isVoted && pollOptions[i].votedBy.any { it.username == "@${MyApplication.username}" }) {
                             ResourcesCompat.getDrawable(
                                 resources,
                                 R.drawable.ic_circle_checked,
@@ -433,6 +460,46 @@ class DiscussionsRecyclerAdapter(
                 pollClickInterface.onPollClick(pollModel.pollId)
             }
 
+        }
+    }
+
+    private fun setupMenuOptions(
+        context: Context,
+        anchor: View,
+        postModel: PostModel?,
+        pollModel: PollModel?,
+        discussionMenuInterface: DiscussionMenuInterface
+    ) {
+        //setting post popup menu
+        val popupMenu = PopupMenu(context, anchor)
+        popupMenu.inflate(R.menu.discussion_options_menu)
+
+        //edit isn't available for polls
+        if (pollModel != null)
+            popupMenu.menu.findItem(R.id.menu_option_edit).isVisible = false
+
+        anchor.setOnClickListener {
+            popupMenu.show()
+        }
+
+        //setting post menu options
+        popupMenu.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.menu_option_edit -> {
+                    //edit only available for posts
+                    if (postModel != null)
+                        discussionMenuInterface.onEdit(postModel.postId)
+                    true
+                }
+                R.id.menu_option_delete -> {
+                    if (postModel != null)
+                        discussionMenuInterface.onDelete(postModel.postId)
+                    else if (pollModel != null)
+                        discussionMenuInterface.onDelete(pollModel.pollId)
+                    true
+                }
+                else -> false
+            }
         }
     }
 

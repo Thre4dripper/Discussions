@@ -103,7 +103,7 @@ class PollsRecyclerAdapter(
             likeCommentInterface: LikeCommentInterface
         ) {
             //poll delete button
-            binding.itemPollDeleteBtn.setOnClickListener {
+            binding.itemPollMenuOptions.setOnClickListener {
                 pollClickInterface.onPollDelete(pollModel.pollId)
             }
 

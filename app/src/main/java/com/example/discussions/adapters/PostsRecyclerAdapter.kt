@@ -55,7 +55,7 @@ class PostsRecyclerAdapter(
         ) {
 
             //hiding more options button on discussion posts
-            binding.postsMoreOptions.visibility = View.GONE
+            binding.itemPostMenuOptions.visibility = View.GONE
 
             //setting the profile image of current post's user
             Glide.with(itemView.context)
