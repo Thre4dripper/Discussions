@@ -1,6 +1,5 @@
 package com.example.discussions.ui
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -11,22 +10,21 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
 import com.example.discussions.R
-import com.example.discussions.adapters.UserPostsRecyclerAdapter
+import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
-import com.example.discussions.adapters.interfaces.PostMenuInterface
+import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.ActivityUserPostsBinding
-import com.example.discussions.repositories.PostRepository
+import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.UserPostsViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInterface {
+class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentInterface {
     private val TAG = "UserPostsActivity"
 
     private lateinit var binding: ActivityUserPostsBinding
     private lateinit var viewModel: UserPostsViewModel
 
-    private lateinit var userPostsAdapter: UserPostsRecyclerAdapter
+    private lateinit var userPostsAdapter: DiscussionsRecyclerAdapter
     private var handler = Handler(Looper.getMainLooper())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +33,7 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
 
         binding.userPostsRv.apply {
             userPostsAdapter =
-                UserPostsRecyclerAdapter(this@UserPostsActivity, this@UserPostsActivity)
+                DiscussionsRecyclerAdapter(this@UserPostsActivity, this@UserPostsActivity, null)
             adapter = userPostsAdapter
         }
 
@@ -48,7 +46,7 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
         UserPostsViewModel.userPostsScrollToIndex = true
 
         //getting post index from post id
-        val postIndex = viewModel.userPosts.value?.indexOfFirst { it.postId == postId }!!
+        val postIndex = viewModel.userPosts.value?.indexOfFirst { it.post!!.postId == postId }!!
         getUserPosts(postIndex)
     }
 
@@ -65,28 +63,28 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
         }
     }
 
-    override fun onPostEdit(postId: String) {
-        val intent = Intent(this, CreateEditPostActivity::class.java)
-        intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
-        intent.putExtra(Constants.POST_ID, postId)
-        val post = viewModel.userPosts.value?.find { it.postId == postId }!!
-        intent.putExtra(Constants.POST_TITLE, post.title)
-        intent.putExtra(Constants.POST_CONTENT, post.content)
-        intent.putExtra(Constants.POST_IMAGE, post.postImage)
-        startActivity(intent)
-    }
-
-    override fun onPostDelete(postId: String) {
-
-        MaterialAlertDialogBuilder(this).setTitle("Delete")
-            .setMessage("Are you sure you want to delete this post?")
-            .setPositiveButton("Confirm") { dialog, _ ->
-                dialog.dismiss()
-                deletePost(postId)
-            }.setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }.show()
-    }
+//    override fun onPostEdit(postId: String) {
+//        val intent = Intent(this, CreateEditPostActivity::class.java)
+//        intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
+//        intent.putExtra(Constants.POST_ID, postId)
+//        val post = viewModel.userPosts.value?.find { it.post!!.postId == postId }!!.post!!
+//        intent.putExtra(Constants.POST_TITLE, post.title)
+//        intent.putExtra(Constants.POST_CONTENT, post.content)
+//        intent.putExtra(Constants.POST_IMAGE, post.postImage)
+//        startActivity(intent)
+//    }
+//
+//    override fun onPostDelete(postId: String) {
+//
+//        MaterialAlertDialogBuilder(this).setTitle("Delete")
+//            .setMessage("Are you sure you want to delete this post?")
+//            .setPositiveButton("Confirm") { dialog, _ ->
+//                dialog.dismiss()
+//                deletePost(postId)
+//            }.setNegativeButton("Cancel") { dialog, _ ->
+//                dialog.dismiss()
+//            }.show()
+//    }
 
     /**
      * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
@@ -143,9 +141,14 @@ class UserPostsActivity : AppCompatActivity(), PostMenuInterface, LikeCommentInt
     }
 
     override fun onComment(id: String, type: String) {
-        val count = PostRepository.allPostsList.value?.find { it.postId == id }?.comments ?: 0
+        val count =
+            DiscussionRepository.discussions.value?.find { it.post!!.postId == id }?.count ?: 0
 
         val commentsBS = CommentsBS(id, type, count)
         commentsBS.show(this.supportFragmentManager, commentsBS.tag)
+    }
+
+    override fun onPostClick(postId: String) {
+
     }
 }

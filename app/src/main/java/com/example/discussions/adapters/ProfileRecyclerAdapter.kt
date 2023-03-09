@@ -13,10 +13,11 @@ import com.bumptech.glide.request.target.Target
 import com.example.discussions.R
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.ItemUserPostBinding
+import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.PostModel
 
 class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface) :
-    ListAdapter<PostModel, ProfileRecyclerAdapter.ProfilePostsViewHolder>(ProfileDiffCallback()) {
+    ListAdapter<DiscussionModel, ProfileRecyclerAdapter.ProfilePostsViewHolder>(ProfileDiffCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfilePostsViewHolder {
@@ -27,8 +28,8 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
     }
 
     override fun onBindViewHolder(holder: ProfilePostsViewHolder, position: Int) {
-        val post = getItem(position)
-        holder.bind(holder.binding, post, postClickInterface)
+        val discussionPost = getItem(position).post!!
+        holder.bind(holder.binding, discussionPost, postClickInterface)
     }
 
     class ProfilePostsViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -76,11 +77,11 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
         }
     }
 
-    class ProfileDiffCallback : DiffUtil.ItemCallback<PostModel>() {
-        override fun areItemsTheSame(oldItem: PostModel, newItem: PostModel) =
-            oldItem.postId == newItem.postId
+    class ProfileDiffCallback : DiffUtil.ItemCallback<DiscussionModel>() {
+        override fun areItemsTheSame(oldItem: DiscussionModel, newItem: DiscussionModel) =
+            oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: PostModel, newItem: PostModel) = oldItem == newItem
+        override fun areContentsTheSame(oldItem: DiscussionModel, newItem: DiscussionModel) = oldItem == newItem
     }
 
 }

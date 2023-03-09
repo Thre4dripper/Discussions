@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PostRepository
 import com.example.discussions.repositories.UserRepository
 
@@ -28,7 +29,7 @@ class CreateEditPostViewModel : ViewModel() {
     val isPostCreatedOrUpdated: LiveData<String?>
         get() = _isPostCreatedOrUpdated
 
-    private var _allPosts = PostRepository.allPostsList
+    private var _allPosts = DiscussionRepository.discussions
     private var _userPosts = PostRepository.userPostsList
 
 
@@ -78,30 +79,39 @@ class CreateEditPostViewModel : ViewModel() {
                 override fun onSuccess(response: String) {
                     _isPostCreatedOrUpdated.postValue(Constants.API_SUCCESS)
 
+                    //TODO its not necessary that user post is in all posts list
                     //getting old post from all posts list and user posts list
-                    val oldPost = _allPosts.value?.find { it.postId == postId }!!
-                    val oldUserPost = _userPosts.value?.find { it.postId == postId }!!
+                    val oldPost = _allPosts.value?.find { it.post?.postId == postId }!!
+                    val oldUserPost = _userPosts.value?.find { it.post?.postId == postId }!!
 
                     //creating copy of the post from all posts list
-                    val newPost = oldPost.copy(
+                    val newPost = oldPost.post!!.copy(
                         title = postTitle,
                         content = postContent,
                         postImage = postImage,
                     )
 
+                    val newDiscussionPost = oldPost.copy(
+                        post = newPost
+                    )
+
                     //creating copy of the post from user posts list
-                    val newUserPost = oldUserPost.copy(
+                    val newUserPost = oldUserPost.post!!.copy(
                         title = postTitle,
                         content = postContent,
                         postImage = postImage,
+                    )
+
+                    val newUserDiscussionPost = oldUserPost.copy(
+                        post = newUserPost
                     )
 
                     //updating the post in all posts list and user posts list for real time update in the UI
                     val newAllPosts = _allPosts.value?.toMutableList()
                     val newUserPosts = _userPosts.value?.toMutableList()
 
-                    newAllPosts?.set(newAllPosts.indexOf(oldPost), newPost)
-                    newUserPosts?.set(newUserPosts.indexOf(oldUserPost), newUserPost)
+                    newAllPosts?.set(newAllPosts.indexOf(oldPost), newDiscussionPost)
+                    newUserPosts?.set(newUserPosts.indexOf(oldUserPost), newUserDiscussionPost)
 
                     _allPosts.postValue(newAllPosts)
                     _userPosts.postValue(newUserPosts)

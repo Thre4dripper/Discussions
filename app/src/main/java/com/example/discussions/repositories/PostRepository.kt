@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.post.*
+import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.PostModel
 import com.example.discussions.store.LoginStore
 
@@ -11,8 +12,7 @@ class PostRepository {
     companion object {
         private const val TAG = "PostRepository"
 
-        var allPostsList = MutableLiveData<MutableList<PostModel>?>(null)
-        var userPostsList = MutableLiveData<MutableList<PostModel>?>(null)
+        var userPostsList = MutableLiveData<MutableList<DiscussionModel>?>(null)
         var singlePost = MutableLiveData<PostModel?>(null)
 
         fun createPost(
@@ -54,37 +54,6 @@ class PostRepository {
                         }
                     }
                 })
-        }
-
-        fun getAllPosts(
-            context: Context, callback: ResponseCallback
-        ) {
-            val token = LoginStore.getJWTToken(context)!!
-
-            GetAllPostsApi.getAllPostsJson(context, token, object : ResponseCallback {
-                override fun onSuccess(response: String) {
-                    allPostsList.postValue(GetAllPostsApi.parseAllPostsJson(response))
-                    callback.onSuccess(response)
-                }
-
-                override fun onError(response: String) {
-                    if (response.contains("com.android.volley.TimeoutError")) {
-                        callback.onError("Time Out")
-                    } else if (response.contains("com.android.volley.NoConnectionError")) {
-                        callback.onError("Please check your internet connection")
-                    } else if (response.contains("com.android.volley.AuthFailureError")) {
-                        callback.onError("Auth Error")
-                    } else if (response.contains("com.android.volley.NetworkError")) {
-                        callback.onError("Network Error")
-                    } else if (response.contains("com.android.volley.ServerError")) {
-                        callback.onError("Server Error")
-                    } else if (response.contains("com.android.volley.ParseError")) {
-                        callback.onError("Parse Error")
-                    } else {
-                        callback.onError("Something went wrong")
-                    }
-                }
-            })
         }
 
         fun getAllUserPosts(
@@ -225,11 +194,11 @@ class PostRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            val oldAllPostsList = allPostsList.value
+            val oldAllPostsList = DiscussionRepository.discussions.value
             val oldUserPostsList = userPostsList.value
 
             val updatedAllPostsList = likePostInData(oldAllPostsList, postId)
-            allPostsList.postValue(updatedAllPostsList)
+            DiscussionRepository.discussions.postValue(updatedAllPostsList)
 
             val updatedUserPostsList = likePostInData(oldUserPostsList, postId)
             userPostsList.postValue(updatedUserPostsList)
@@ -241,7 +210,7 @@ class PostRepository {
 
                 override fun onError(response: String) {
                     // Revert the changes
-                    allPostsList.postValue(oldAllPostsList)
+                    DiscussionRepository.discussions.postValue(oldAllPostsList)
                     userPostsList.postValue(oldUserPostsList)
 
                     if (response.contains("com.android.volley.TimeoutError")) {
@@ -269,23 +238,29 @@ class PostRepository {
          */
 
         private fun likePostInData(
-            postsList: MutableList<PostModel>?, postId: String
-        ): MutableList<PostModel>? {
-            val likedPost = postsList?.find { it.postId == postId }
+            postsList: MutableList<DiscussionModel>?, postId: String
+        ): MutableList<DiscussionModel>? {
+            val likedPost = postsList?.find { it.post?.postId == postId }
             val likedPostIndex: Int
-            var newPostsList: MutableList<PostModel>? = null
+            val newPostsList: MutableList<DiscussionModel>?
 
-            if (likedPost != null) {
+            return if (likedPost != null) {
                 likedPostIndex = postsList.indexOf(likedPost)
                 newPostsList = postsList.toMutableList()
-                val post = likedPost.copy(
-                    isLiked = !likedPost.isLiked,
-                    likes = likedPost.likes + if (!likedPost.isLiked) 1 else -1
+                val post = likedPost.post!!.copy(
+                    isLiked = !likedPost.post.isLiked,
+                    likes = likedPost.post.likes + if (!likedPost.post.isLiked) 1 else -1
                 )
-                newPostsList[likedPostIndex] = post
+
+                val discussionPost = likedPost.copy(post = post)
+                newPostsList[likedPostIndex] = discussionPost
+
+                newPostsList
+            } else {
+                postsList
             }
 
-            return newPostsList
+
         }
     }
 }

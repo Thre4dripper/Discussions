@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.example.discussions.Cloudinary
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.models.PostModel
+import com.example.discussions.models.DiscussionModel
+import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PostRepository
 
 class UserPostsViewModel : ViewModel() {
@@ -16,11 +17,11 @@ class UserPostsViewModel : ViewModel() {
 
     //get user list directly from repository live data
     private var _userPosts = PostRepository.userPostsList
-    val userPosts: LiveData<MutableList<PostModel>?>
+    val userPosts: LiveData<MutableList<DiscussionModel>?>
         get() = _userPosts
 
     //all posts list from repository
-    private var _allPosts = PostRepository.allPostsList
+    private var _allPosts = DiscussionRepository.discussions
 
     private var _isPostDeleted = MutableLiveData<String?>(null)
     val isPostDeleted: LiveData<String?>
@@ -38,9 +39,9 @@ class UserPostsViewModel : ViewModel() {
         _isPostDeleted.value = null
 
         //deleting post from all posts list
-        val deletedPost = _allPosts.value!!.find { it.postId == postId }
+        val deletedPost = _allPosts.value!!.find { it.post?.postId == postId }
         var deletedPostIndex = -1
-        var newPostsList: MutableList<PostModel>
+        var newPostsList: MutableList<DiscussionModel>
 
         //when all posts list is not updated yet after inserting new post then deleted post can only be found in user posts list
         if (deletedPost != null) {
@@ -51,7 +52,7 @@ class UserPostsViewModel : ViewModel() {
         }
 
         //deleting post from user posts list
-        val deletedUserPost = _userPosts.value!!.find { it.postId == postId }!!
+        val deletedUserPost = _userPosts.value!!.find { it.post?.postId == postId }!!
         val deletedUserPostIndex = _userPosts.value!!.indexOf(deletedUserPost)
         var newUserPostsList = _userPosts.value!!.toMutableList()
         newUserPostsList.removeAt(deletedUserPostIndex)
@@ -62,7 +63,7 @@ class UserPostsViewModel : ViewModel() {
             override fun onSuccess(response: String) {
                 _isPostDeleted.postValue(Constants.API_SUCCESS)
 
-                val imageUrl = deletedUserPost.postImage
+                val imageUrl = deletedUserPost.post!!.postImage
                 if (imageUrl.isNotEmpty()) Cloudinary.deleteImage(context, imageUrl)
             }
 

@@ -4,9 +4,11 @@ import android.content.Context
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
+import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.models.PostModel
+import com.example.discussions.models.DiscussionModel
+
 import org.json.JSONArray
 
 class GetUserPostsApi {
@@ -41,29 +43,23 @@ class GetUserPostsApi {
             queue.add(request)
         }
 
-        fun parseUserPostsJson(json: String): MutableList<PostModel> {
+        fun parseUserPostsJson(json: String): MutableList<DiscussionModel> {
             val rootObject = JSONArray(json)
-            val postsList = mutableListOf<PostModel>()
+            val postsList = mutableListOf<DiscussionModel>()
             for (i in 0 until rootObject.length()) {
                 val postObject = rootObject.getJSONObject(i)
-                val createdByObject = postObject.getJSONObject("created_by")
-                var username = createdByObject.getString("username")
-                val userImage = createdByObject.getString("image")
-                username = "@$username"
 
+                val post = GetPostByIdApi.parsePostByIdJson(postObject.toString())
+                val type = DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST
                 postsList.add(
-                    PostModel(
+                    DiscussionModel(
                         postObject.getString("id"),
-                        postObject.getString("title"),
-                        postObject.getString("content"),
-                        username,
-                        userImage,
-                        postObject.getString("created_at"),
-                        postObject.getString("post_image"),
-                        postObject.getBoolean("is_liked"),
-                        postObject.getInt("like_count"),
-                        postObject.getBoolean("allow_comments"),
-                        postObject.getInt("comment_count")
+                        0,
+                        null,
+                        null,
+                        post,
+                        null,
+                        type
                     )
                 )
             }

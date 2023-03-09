@@ -15,7 +15,7 @@ import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
-import com.example.discussions.adapters.interfaces.PostMenuInterface
+import com.example.discussions.adapters.interfaces.ItemMenuInterface
 import com.example.discussions.databinding.ItemDiscussionPostBinding
 import com.example.discussions.models.PostModel
 import com.example.discussions.ui.ZoomImageActivity
@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class UserPostsRecyclerAdapter(
-    private var postMenuInterface: PostMenuInterface,
+    private var itemMenuInterface: ItemMenuInterface,
     private var likeCommentInterface: LikeCommentInterface
 ) :
     ListAdapter<PostModel, UserPostsRecyclerAdapter.UserPostsViewHolder>(UserPostsDiffCallback()) {
@@ -38,7 +38,7 @@ class UserPostsRecyclerAdapter(
 
     override fun onBindViewHolder(holder: UserPostsViewHolder, position: Int) {
         val post = getItem(position)
-        holder.bind(holder.binding, post, postMenuInterface, likeCommentInterface)
+        holder.bind(holder.binding, post, itemMenuInterface, likeCommentInterface)
     }
 
     class UserPostsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -47,14 +47,14 @@ class UserPostsRecyclerAdapter(
         fun bind(
             binding: ItemDiscussionPostBinding,
             postModel: PostModel,
-            postInterface: PostMenuInterface,
+            postInterface: ItemMenuInterface,
             likeCommentInterface: LikeCommentInterface
         ) {
             //setting post popup menu
-            val popupMenu = PopupMenu(binding.root.context, binding.postsMoreOptions)
+            val popupMenu = PopupMenu(binding.root.context, binding.itemPostMenuOptions)
             popupMenu.inflate(R.menu.post_options_menu)
 
-            binding.postsMoreOptions.setOnClickListener {
+            binding.itemPostMenuOptions.setOnClickListener {
                 popupMenu.show()
             }
 
@@ -62,11 +62,11 @@ class UserPostsRecyclerAdapter(
             popupMenu.setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.post_options_menu_edit -> {
-                        postInterface.onPostEdit(postModel.postId)
+                        postInterface.onItemEdit(postModel.postId)
                         true
                     }
                     R.id.post_options_menu_delete -> {
-                        postInterface.onPostDelete(postModel.postId)
+                        postInterface.onItemDelete(postModel.postId)
                         true
                     }
                     else -> false

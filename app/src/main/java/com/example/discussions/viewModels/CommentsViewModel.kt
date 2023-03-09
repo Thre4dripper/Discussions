@@ -8,6 +8,7 @@ import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.CommentModel
 import com.example.discussions.repositories.CommentsRepository
+import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PollRepository
 import com.example.discussions.repositories.PostRepository
 
@@ -125,14 +126,14 @@ class CommentsViewModel : ViewModel() {
     }
 
     fun getPostLikeStatus(postId: String): Boolean {
-        PostRepository.allPostsList.value?.forEach {
-            if (it.postId == postId) {
-                return it.isLiked
+        DiscussionRepository.discussions.value?.forEach { it ->
+            if (it.post?.postId == postId) {
+                return it.post.isLiked
             }
         }
         PostRepository.userPostsList.value?.forEach {
-            if (it.postId == postId) {
-                return it.isLiked
+            if (it.post?.postId == postId) {
+                return it.post.isLiked
             }
         }
         return false

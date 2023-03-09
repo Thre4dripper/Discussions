@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PostModel
+import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PostRepository
 
 class PostDetailsViewModel : ViewModel() {
@@ -20,16 +21,16 @@ class PostDetailsViewModel : ViewModel() {
 
     fun isPostInAlreadyFetched(postId: String): Boolean {
         //check if post is in post list
-        return PostRepository.allPostsList.value?.any { it.postId == postId }
+        return DiscussionRepository.discussions.value?.any { it.post?.postId == postId }
         //if not, check if post is in user post list
-            ?: PostRepository.userPostsList.value?.any { it.postId == postId }
+            ?: PostRepository.userPostsList.value?.any { it.post?.postId == postId }
             //if not, then post is not in any list so far
             ?: false
     }
 
     fun getPostFromPostRepository(postId: String) {
-        _post.value = PostRepository.allPostsList.value?.find { it.postId == postId }
-            ?: PostRepository.userPostsList.value?.find { it.postId == postId }!!
+        _post.value = DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.post
+            ?: PostRepository.userPostsList.value!!.find { it.post!!.postId == postId }!!.post
     }
 
     fun likePost(context: Context, postId: String) {
