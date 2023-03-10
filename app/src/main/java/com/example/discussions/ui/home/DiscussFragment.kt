@@ -100,7 +100,6 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     }
 
     override fun onPostLike(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        val id = postId.substring(postId.indexOf("_") + 1)
         homeViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
@@ -114,31 +113,38 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
 
         //debouncing the like button above android P
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            handler.removeCallbacksAndMessages(id)
+            handler.removeCallbacksAndMessages(postId)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePost(requireContext(), id)
+                    homeViewModel.likePost(requireContext(), postId)
 
-            }, id, Constants.LIKE_DEBOUNCE_TIME)
+            }, postId, Constants.LIKE_DEBOUNCE_TIME)
         }
         //debouncing the like button below android P
         else {
             handler.removeCallbacksAndMessages(null)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePost(requireContext(), id)
+                    homeViewModel.likePost(requireContext(), postId)
 
             }, Constants.LIKE_DEBOUNCE_TIME)
         }
     }
 
     override fun onPostComment(postId: String) {
-        val id = postId.substring(postId.indexOf("_") + 1)
         val count =
             DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.count ?: 0
 
-        val commentsBS = CommentsBS(id, Constants.COMMENT_TYPE_POST, count)
+        val commentsBS = CommentsBS(postId, Constants.COMMENT_TYPE_POST, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
+    }
+
+    override fun onPollLike(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+        super.onPollLike(pollId, isLiked, btnLikeStatus)
+    }
+
+    override fun onPollComment(pollId: String) {
+        super.onPollComment(pollId)
     }
 
     override fun onPostClick(postId: String) {
@@ -159,11 +165,15 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         TODO("Not yet implemented")
     }
 
-    override fun onEdit(postOrPollId: String) {
+    override fun onPostEdit(postId: String) {
         TODO("Not yet implemented")
     }
 
-    override fun onDelete(postOrPollId: String) {
+    override fun onPostDelete(postId: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onPollDelete(pollId: String) {
         TODO("Not yet implemented")
     }
 }

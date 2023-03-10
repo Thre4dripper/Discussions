@@ -56,12 +56,14 @@ class GetAllDiscussionsApi {
 
             for (i in 0 until resultsArray.length()) {
                 val discussionObject = resultsArray.getJSONObject(i)
+
                 val id = discussionObject.getString("id")
+                val discussionType = discussionObject.getString("type")
 
                 var post: PostModel? = null
                 var poll: PollModel? = null
                 var type: Int
-                if (id.substring(0, 4) == "post") {
+                if (discussionType == "post") {
                     post =
                         GetPostByIdApi.parsePostByIdJson(resultsArray.getJSONObject(i).toString())
                     type = DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST
@@ -72,7 +74,7 @@ class GetAllDiscussionsApi {
                 }
                 discussionsList.add(
                     DiscussionModel(
-                        id,
+                        if(discussionType == "post") "post_$id" else "poll_$id",
                         rootObject.getInt("count"),
                         if (next == "null") null else next,
                         if (previous == "null") null else previous,

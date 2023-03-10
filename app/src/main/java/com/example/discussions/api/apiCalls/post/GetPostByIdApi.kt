@@ -51,11 +51,8 @@ class GetPostByIdApi {
             val userImage = createdByObject.getString("image")
             username = "@$username"
 
-            val id = rootObject.getString("id")
-
             return PostModel(
-                //TODO - remove this if statement when api is fixed
-                if(id.contains("post")) id.substring(5) else id,
+                rootObject.getString("id"),
                 rootObject.getString("title"),
                 rootObject.getString("content"),
                 username,
