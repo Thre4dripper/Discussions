@@ -12,7 +12,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.discussions.Constants
-import com.example.discussions.adapters.PollsRecyclerAdapter
+import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
@@ -33,7 +33,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var viewModel: UserPollsViewModel
 
-    private lateinit var pollsAdapter: PollsRecyclerAdapter
+    private lateinit var pollsAdapter: DiscussionsRecyclerAdapter
     private val handler = Handler(Looper.getMainLooper())
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +44,12 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
         viewModel = ViewModelProvider(requireActivity())[UserPollsViewModel::class.java]
 
         binding.pollsRv.apply {
-            pollsAdapter = PollsRecyclerAdapter(this@PollsFragment, this@PollsFragment)
+            pollsAdapter = DiscussionsRecyclerAdapter(
+                this@PollsFragment,
+                null,
+                this@PollsFragment,
+                this@PollsFragment
+            )
             adapter = pollsAdapter
         }
 
@@ -171,7 +176,8 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
     }
 
     override fun onPollComment(pollId: String) {
-        val count = PollRepository.userPollsList.value?.find { it.pollId == pollId }?.comments ?: 0
+        val count =
+            PollRepository.userPollsList.value?.find { it.poll!!.pollId == pollId }?.count ?: 0
 
         val commentsBS = CommentsBS(pollId, Constants.COMMENT_TYPE_POLL, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)

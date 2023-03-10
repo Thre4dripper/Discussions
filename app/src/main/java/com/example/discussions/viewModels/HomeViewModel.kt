@@ -16,9 +16,6 @@ class HomeViewModel : ViewModel() {
 
     var discussions = DiscussionRepository.discussions
 
-    //get posts list directly from repository live data
-    var postsList = PostRepository.allPostsList
-
     //get user posts list directly from repository live data
     var userPostsList = PostRepository.userPostsList
 
@@ -137,30 +134,6 @@ class HomeViewModel : ViewModel() {
         getAllUserPosts(context)
     }
 
-    fun getAllPosts(context: Context) {
-        if (_isPostsFetched.value == Constants.API_SUCCESS) return
-        else {
-            _isPostsFetched.value = null
-        }
-        postsOrPollsOrNotificationsScrollToTop = true
-
-        PostRepository.getAllPosts(context, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isPostsFetched.value = Constants.API_SUCCESS
-            }
-
-            override fun onError(response: String) {
-                _isPostsFetched.value = response
-                postsList.value = mutableListOf()
-            }
-        })
-    }
-
-    fun refreshAllPosts(context: Context) {
-        _isPostsFetched.value = null
-        getAllPosts(context)
-    }
-
     fun getAllUserPolls(context: Context) {
         if (_isUserPollsFetched.value == Constants.API_SUCCESS) return
         else {
@@ -190,12 +163,25 @@ class HomeViewModel : ViewModel() {
         postsOrPollsOrNotificationsScrollToTop = false
 
         //changing vote status to voting, this will trigger progress bar in recycler view
-        val newPollsList = userPollsList.value!!.toMutableList()
-        val pollIndex = newPollsList.indexOfFirst { it.pollId == pollId }
+        val newAllPollsList = discussions.value!!.toMutableList()
+        val allPollsIndex = newAllPollsList.indexOfFirst { it.poll?.pollId == pollId }
 
-        val votedPoll = newPollsList[pollIndex].copy(isVoting = true)
-        newPollsList[pollIndex] = votedPoll
-        userPollsList.value = newPollsList
+        val newUserPollsList = userPollsList.value!!.toMutableList()
+        val userPollIndex = newUserPollsList.indexOfFirst { it.poll?.pollId == pollId }
+
+        if (allPollsIndex != -1) {
+            val votedPoll = newAllPollsList[allPollsIndex].poll!!.copy(isVoting = true)
+            val newDiscussionPoll = newAllPollsList[allPollsIndex].copy(poll = votedPoll)
+            newAllPollsList[allPollsIndex] = newDiscussionPoll
+            discussions.value = newAllPollsList
+        }
+
+        if (userPollIndex != -1) {
+            val votedPoll = newUserPollsList[userPollIndex].poll!!.copy(isVoting = true)
+            val newDiscussionPoll = newUserPollsList[userPollIndex].copy(poll = votedPoll)
+            newUserPollsList[userPollIndex] = newDiscussionPoll
+            userPollsList.value = newUserPollsList
+        }
 
         PollRepository.pollVote(context, pollId, optionId, object : ResponseCallback {
             override fun onSuccess(response: String) {

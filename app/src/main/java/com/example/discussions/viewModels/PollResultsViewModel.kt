@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.discussions.models.PollModel
 import com.example.discussions.models.PollOptionModel
 import com.example.discussions.models.PollVotedByModel
+import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PollRepository
 
 class PollResultsViewModel : ViewModel() {
@@ -18,7 +19,10 @@ class PollResultsViewModel : ViewModel() {
         get() = _votedByList
 
     fun getPollDetails(pollId: String) {
-        poll = PollRepository.userPollsList.value!!.find { it.pollId == pollId }!!.copy()
+        //TODO handle all list ,  user list and single list case
+        poll =
+            DiscussionRepository.discussions.value?.find { it.poll?.pollId == pollId }?.poll?.copy()
+                ?: PollRepository.userPollsList.value?.find { it.poll!!.pollId == pollId }!!.poll!!.copy()
         pollQuestion = poll.content
         pollOptions = poll.pollOptions
     }

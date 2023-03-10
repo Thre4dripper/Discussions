@@ -89,8 +89,10 @@ class GetPollByIdApi {
                 )
             }
 
+            val id = rootObject.getString("id")
             return PollModel(
-                rootObject.getString("id"),
+                //TODO - remove this if statement when api is fixed
+                if(id.contains("poll")) id.substring(5) else id,
                 rootObject.getString("title"),
                 rootObject.getString("content"),
                 rootObject.getInt("total_votes"),

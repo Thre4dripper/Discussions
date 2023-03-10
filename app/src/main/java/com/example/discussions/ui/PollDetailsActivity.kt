@@ -152,7 +152,7 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface {
         //check if poll is in poll list
         if (viewModel.isPollInAlreadyFetched(pollId)) {
             //if yes, get poll from poll repository
-            viewModel.getPollFromPollRepository(pollId)
+            viewModel.getPollFromRepository(pollId)
             setDetails()
         } else {
             //if not, get post from server

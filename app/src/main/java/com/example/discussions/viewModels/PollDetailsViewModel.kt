@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PollModel
+import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PollRepository
 
 class PollDetailsViewModel : ViewModel() {
@@ -26,16 +27,17 @@ class PollDetailsViewModel : ViewModel() {
 
     fun isPollInAlreadyFetched(pollId: String): Boolean {
         //check if poll is in poll list
-        return PollRepository.allPollsList.value?.any { it.pollId == pollId }
+        return DiscussionRepository.discussions.value?.any { it.poll?.pollId == pollId }
         //if not, check if poll is in user poll list
-            ?: PollRepository.userPollsList.value?.any { it.pollId == pollId }
+            ?: PollRepository.userPollsList.value?.any { it.poll?.pollId == pollId }
             //if not, then poll is not in any list so far
             ?: false
     }
 
-    fun getPollFromPollRepository(pollId: String) {
-        _poll.value = PollRepository.allPollsList.value?.find { it.pollId == pollId }
-            ?: PollRepository.userPollsList.value?.find { it.pollId == pollId }!!
+    fun getPollFromRepository(pollId: String) {
+        _poll.value =
+            DiscussionRepository.discussions.value?.find { it.poll?.pollId == pollId }?.poll
+                ?: PollRepository.userPollsList.value?.find { it.poll!!.pollId == pollId }!!.poll
     }
 
     fun pollVote(context: Context, pollId: String, optionId: String) {

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.api.apiCalls.poll.*
+import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.PollModel
 import com.example.discussions.models.PollOptionModel
 import com.example.discussions.store.LoginStore
@@ -12,9 +13,8 @@ class PollRepository {
     companion object {
         private const val TAG = "PollRepository"
 
-        //TODO all polls list fetched from master api
-        val allPollsList = MutableLiveData<MutableList<PollModel>?>(null)
-        val userPollsList = MutableLiveData<MutableList<PollModel>?>(null)
+
+        val userPollsList = MutableLiveData<MutableList<DiscussionModel>?>(null)
         val singlePoll = MutableLiveData<PollModel?>(null)
 
         fun createPoll(
@@ -99,9 +99,13 @@ class PollRepository {
 
             //create a new list to update the live data even if this doest not exist
             //single poll is opened from outside and polls list is empty
-            val newPollsList =
-                if (userPollsList.value != null) userPollsList.value!!.toMutableList()
-                else mutableListOf()
+            val oldAllPollsList =
+                DiscussionRepository.discussions.value
+                    ?: mutableListOf()
+
+            val oldUserPollsList =
+                userPollsList.value?.toMutableList()
+                    ?: mutableListOf()
 
             PollVoteApi.pollVoteJson(
                 context,
@@ -115,22 +119,37 @@ class PollRepository {
                         //single poll live data should be updated on main thread
                         singlePoll.value = votedPoll
 
-                        val pollIndex = newPollsList.indexOfFirst { it.pollId == votedPoll.pollId }
+                        val newAllPollsList = oldAllPollsList.toMutableList()
+                        val newUserPollsList = oldUserPollsList.toMutableList()
 
-                        newPollsList[pollIndex] = votedPoll
-                        userPollsList.postValue(newPollsList)
+                        val allPollIndex =
+                            newAllPollsList.indexOfFirst { it.poll?.pollId == pollId }
+                        val userPollIndex =
+                            newUserPollsList.indexOfFirst { it.poll?.pollId == pollId }
+
+                        //update the polls list
+                        if (allPollIndex != -1) {
+                            val newDiscussionPoll =
+                                newAllPollsList[allPollIndex].copy(poll = votedPoll)
+                            newAllPollsList[allPollIndex] = newDiscussionPoll
+                            DiscussionRepository.discussions.postValue(newAllPollsList)
+                        }
+
+                        //update the user polls list
+                        if (userPollIndex != -1) {
+                            val newUserPoll = newUserPollsList[userPollIndex].copy(poll = votedPoll)
+                            newUserPollsList[userPollIndex] = newUserPoll
+                            userPollsList.postValue(newUserPollsList)
+                        }
 
                         callback.onSuccess(response)
                     }
 
                     override fun onError(response: String) {
 
-                        //on error simply return the old list by changing voting status to false
-                        val pollIndex = newPollsList.indexOfFirst { it.pollId == pollId }
-
-                        val votedPoll = newPollsList[pollIndex].copy(isVoting = false)
-                        newPollsList[pollIndex] = votedPoll
-                        userPollsList.postValue(newPollsList)
+                        //revert the changes if the vote was not successful
+                        DiscussionRepository.discussions.postValue(oldAllPollsList)
+                        userPollsList.postValue(oldUserPollsList)
 
                         if (response.contains("com.android.volley.TimeoutError")) {
                             callback.onError("Time Out")
@@ -215,9 +234,14 @@ class PollRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            val oldPollsList = userPollsList.value!!.toMutableList()
-            val updatedPollsList = likePollInData(oldPollsList, pollId)
-            userPollsList.postValue(updatedPollsList)
+            val oldAllPollsList = DiscussionRepository.discussions.value
+            val oldUserPollsList = userPollsList.value
+
+            val updatedAllPollsList = likePollInData(oldAllPollsList, pollId)
+            DiscussionRepository.discussions.postValue(updatedAllPollsList)
+
+            val updatedUserPollsList = likePollInData(oldUserPollsList, pollId)
+            userPollsList.postValue(updatedUserPollsList)
 
             PollLikeApi.likePoll(context, pollId, token, object : ResponseCallback {
                 override fun onSuccess(response: String) {
@@ -226,7 +250,8 @@ class PollRepository {
 
                 override fun onError(response: String) {
                     // Revert the changes
-                    userPollsList.postValue(oldPollsList)
+                    DiscussionRepository.discussions.postValue(oldAllPollsList)
+                    userPollsList.postValue(oldUserPollsList)
 
                     if (response.contains("com.android.volley.TimeoutError")) {
                         callback.onError("Time Out")
@@ -252,23 +277,27 @@ class PollRepository {
          */
 
         private fun likePollInData(
-            pollsList: MutableList<PollModel>?, pollId: String
-        ): MutableList<PollModel>? {
-            val likedPoll = pollsList?.find { it.pollId == pollId }
+            pollsList: MutableList<DiscussionModel>?, pollId: String
+        ): MutableList<DiscussionModel>? {
+            val likedPoll = pollsList?.find { it.poll?.pollId == pollId }
             val likedPollIndex: Int
-            var newPollsList: MutableList<PollModel>? = null
+            val newPollsList: MutableList<DiscussionModel>?
 
-            if (likedPoll != null) {
+            return if (likedPoll != null) {
                 likedPollIndex = pollsList.indexOf(likedPoll)
                 newPollsList = pollsList.toMutableList()
-                val poll = likedPoll.copy(
-                    isLiked = !likedPoll.isLiked,
-                    likes = likedPoll.likes + if (!likedPoll.isLiked) 1 else -1
+                val poll = likedPoll.poll!!.copy(
+                    isLiked = !likedPoll.poll.isLiked,
+                    likes = likedPoll.poll.likes + if (!likedPoll.poll.isLiked) 1 else -1
                 )
-                newPollsList[likedPollIndex] = poll
-            }
 
-            return newPollsList
+                val discussionPoll = likedPoll.copy(poll = poll)
+                newPollsList[likedPollIndex] = discussionPoll
+
+                newPollsList
+            } else {
+                pollsList
+            }
         }
     }
 }

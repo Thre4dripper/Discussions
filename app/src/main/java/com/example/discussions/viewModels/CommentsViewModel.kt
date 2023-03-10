@@ -140,14 +140,14 @@ class CommentsViewModel : ViewModel() {
     }
 
     fun getPollLikeStatus(pollId: String): Boolean {
-        PollRepository.userPollsList.value?.forEach {
-            if (it.pollId == pollId) {
-                return it.isLiked
+        DiscussionRepository.discussions.value?.forEach { it ->
+            if (it.poll?.pollId == pollId) {
+                return it.poll.isLiked
             }
         }
         PollRepository.userPollsList.value?.forEach {
-            if (it.pollId == pollId) {
-                return it.isLiked
+            if (it.poll?.pollId == pollId) {
+                return it.poll.isLiked
             }
         }
         return false
