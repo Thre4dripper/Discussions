@@ -177,7 +177,8 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
 
     override fun onPollComment(pollId: String) {
         val count =
-            PollRepository.userPollsList.value?.find { it.poll!!.pollId == pollId }?.count ?: 0
+            PollRepository.userPollsList.value?.find { it.poll!!.pollId == pollId }?.poll?.comments
+                ?: 0
 
         val commentsBS = CommentsBS(pollId, Constants.COMMENT_TYPE_POLL, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)

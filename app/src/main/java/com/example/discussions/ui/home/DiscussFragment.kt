@@ -133,18 +133,52 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
 
     override fun onPostComment(postId: String) {
         val count =
-            DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.count ?: 0
+            DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.post?.comments
+                ?: 0
 
         val commentsBS = CommentsBS(postId, Constants.COMMENT_TYPE_POST, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
     }
 
     override fun onPollLike(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        super.onPollLike(pollId, isLiked, btnLikeStatus)
+        homeViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_FAILED) {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                } else if (it == Constants.AUTH_FAILURE_ERROR) {
+                    requireActivity().setResult(Constants.RESULT_LOGOUT)
+                    requireActivity().finish()
+                }
+            }
+        }
+
+        //debouncing the like button above android P
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            handler.removeCallbacksAndMessages(pollId)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    homeViewModel.likePoll(requireContext(), pollId)
+
+            }, pollId, Constants.LIKE_DEBOUNCE_TIME)
+        }
+        //debouncing the like button below android P
+        else {
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    homeViewModel.likePoll(requireContext(), pollId)
+
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
     }
 
     override fun onPollComment(pollId: String) {
-        super.onPollComment(pollId)
+        val count =
+            DiscussionRepository.discussions.value?.find { it.poll?.pollId == pollId }?.poll?.comments
+                ?: 0
+
+        val commentsBS = CommentsBS(pollId, Constants.COMMENT_TYPE_POLL, count)
+        commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
     }
 
     override fun onPostClick(postId: String) {
