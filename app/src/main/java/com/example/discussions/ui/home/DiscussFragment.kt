@@ -19,6 +19,8 @@ import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
 import com.example.discussions.repositories.DiscussionRepository
+import com.example.discussions.ui.PollDetailsActivity
+import com.example.discussions.ui.PollResultsActivity
 import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
@@ -188,15 +190,27 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     }
 
     override fun onPollVote(pollId: String, optionId: String) {
-        TODO("Not yet implemented")
+        homeViewModel.isPollVoted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_FAILED)
+                    Toast.makeText(requireContext(), "Problem Voting Poll", Toast.LENGTH_SHORT)
+                        .show()
+            }
+        }
+
+        homeViewModel.pollVote(requireContext(), pollId, optionId)
     }
 
     override fun onPollResult(pollId: String) {
-        TODO("Not yet implemented")
+        val intent = Intent(requireContext(), PollResultsActivity::class.java)
+        intent.putExtra(Constants.POLL_ID, pollId)
+        startActivity(intent)
     }
 
     override fun onPollClick(pollId: String) {
-        TODO("Not yet implemented")
+        val intent = Intent(requireContext(), PollDetailsActivity::class.java)
+        intent.putExtra(Constants.POLL_ID, pollId)
+        startActivity(intent)
     }
 
     override fun onPostEdit(postId: String) {

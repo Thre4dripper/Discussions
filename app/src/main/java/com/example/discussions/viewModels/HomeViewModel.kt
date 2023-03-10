@@ -163,20 +163,20 @@ class HomeViewModel : ViewModel() {
         postsOrPollsOrNotificationsScrollToTop = false
 
         //changing vote status to voting, this will trigger progress bar in recycler view
-        val newAllPollsList = discussions.value!!.toMutableList()
-        val allPollsIndex = newAllPollsList.indexOfFirst { it.poll?.pollId == pollId }
+        val newAllPollsList = discussions.value?.toMutableList()
+        val allPollsIndex = newAllPollsList?.indexOfFirst { it.poll?.pollId == pollId }
 
-        val newUserPollsList = userPollsList.value!!.toMutableList()
-        val userPollIndex = newUserPollsList.indexOfFirst { it.poll?.pollId == pollId }
+        val newUserPollsList = userPollsList.value?.toMutableList()
+        val userPollIndex = newUserPollsList?.indexOfFirst { it.poll?.pollId == pollId }
 
-        if (allPollsIndex != -1) {
+        if (allPollsIndex != null && allPollsIndex != -1) {
             val votedPoll = newAllPollsList[allPollsIndex].poll!!.copy(isVoting = true)
             val newDiscussionPoll = newAllPollsList[allPollsIndex].copy(poll = votedPoll)
             newAllPollsList[allPollsIndex] = newDiscussionPoll
             discussions.value = newAllPollsList
         }
 
-        if (userPollIndex != -1) {
+        if (userPollIndex != null && userPollIndex != -1) {
             val votedPoll = newUserPollsList[userPollIndex].poll!!.copy(isVoting = true)
             val newDiscussionPoll = newUserPollsList[userPollIndex].copy(poll = votedPoll)
             newUserPollsList[userPollIndex] = newDiscussionPoll
