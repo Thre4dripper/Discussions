@@ -16,7 +16,7 @@ import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.ActivityUserPostsBinding
-import com.example.discussions.repositories.DiscussionRepository
+import com.example.discussions.repositories.PostRepository
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.UserPostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -152,7 +152,7 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
 
     override fun onPostComment(postId: String) {
         val count =
-            DiscussionRepository.discussions.value?.find { it.post!!.postId == postId }?.count ?: 0
+            PostRepository.userPostsList.value?.find { it.post!!.postId == postId }?.count ?: 0
 
         val commentsBS = CommentsBS(postId, Constants.COMMENT_TYPE_POST, count)
         commentsBS.show(this.supportFragmentManager, commentsBS.tag)

@@ -97,7 +97,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
         //check if post is in post list
         if (viewModel.isPostInAlreadyFetched(postId)) {
             //if yes, get post from post repository
-            viewModel.getPostFromPostRepository(postId)
+            viewModel.getPostFromRepository(postId)
             setDetails()
         } else {
             //if not, get post from server

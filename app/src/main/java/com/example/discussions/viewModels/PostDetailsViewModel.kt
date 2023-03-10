@@ -28,7 +28,7 @@ class PostDetailsViewModel : ViewModel() {
             ?: false
     }
 
-    fun getPostFromPostRepository(postId: String) {
+    fun getPostFromRepository(postId: String) {
         _post.value = DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.post
             ?: PostRepository.userPostsList.value!!.find { it.post!!.postId == postId }!!.post
     }
