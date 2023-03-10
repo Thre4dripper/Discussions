@@ -89,10 +89,25 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@+id/item_poll_content"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/item_poll_privacy_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_poll_user_info_cl"
             tools:text="@string/poll_list_item_title" />
+
+        <ImageView
+            android:id="@+id/item_poll_privacy_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:contentDescription="@string/poll_list_item_private_desc"
+            android:focusable="true"
+            android:src="@drawable/ic_security"
+            app:layout_constraintBottom_toBottomOf="@+id/item_poll_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/item_poll_title"
+            app:tint="@color/login_header_color" />
 
         <TextView
             android:id="@+id/item_poll_content"

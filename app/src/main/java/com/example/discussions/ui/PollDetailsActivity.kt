@@ -21,6 +21,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
+import com.example.discussions.MyApplication
 import com.example.discussions.R
 import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
@@ -330,10 +331,23 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface {
             }
         }
 
+        binding.pollDetailsPrivacyIcon.apply {
+            visibility =
+                if (poll.isPrivate && poll.username != "@${MyApplication.username}") View.VISIBLE else View.GONE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                tooltipText = "Private poll, only creator can see the stats"
+            }
+            setOnClickListener {
+                binding.pollDetailsPrivacyIcon.performLongClick()
+            }
+        }
         //view results button
         binding.pollDetailsViewResultsBtn.apply {
-            visibility =
-                if (poll.pollOptions.any { it.votedBy.isNotEmpty() } && poll.isVoted) View.VISIBLE else View.GONE
+            visibility = if (poll.isVoted) {
+                if (poll.isPrivate && poll.username != "@${MyApplication.username}")
+                    View.GONE
+                else View.VISIBLE
+            } else View.GONE
             setOnClickListener {
                 val intent = Intent(this@PollDetailsActivity, PollResultsActivity::class.java)
                 intent.putExtra(Constants.POLL_ID, poll.pollId)

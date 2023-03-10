@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -405,10 +406,24 @@ class DiscussionsRecyclerAdapter(
                 }
             }
 
+            binding.itemPollPrivacyIcon.apply {
+                visibility =
+                    if (pollModel.isPrivate && pollModel.username != "@${MyApplication.username}") View.VISIBLE else View.GONE
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    tooltipText = "Private poll, only creator can see the stats"
+                }
+                setOnClickListener {
+                    binding.itemPollPrivacyIcon.performLongClick()
+                }
+            }
+
             //view results button
             binding.itemPollViewResultsBtn.apply {
-                visibility =
-                    if (pollModel.pollOptions.any { it.votedBy.isNotEmpty() } && pollModel.isVoted) View.VISIBLE else View.GONE
+                visibility = if (pollModel.isVoted) {
+                    if (pollModel.isPrivate && pollModel.username != "@${MyApplication.username}")
+                        View.GONE
+                    else View.VISIBLE
+                } else View.GONE
                 setOnClickListener {
                     pollClickInterface.onPollResult(pollModel.pollId)
                 }
