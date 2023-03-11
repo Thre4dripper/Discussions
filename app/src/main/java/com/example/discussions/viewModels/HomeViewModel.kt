@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.discussions.Cloudinary
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
+import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.ProfileDataModel
 import com.example.discussions.repositories.*
 
@@ -25,6 +27,7 @@ class HomeViewModel : ViewModel() {
     //get notifications list directly from repository live data
     var notificationsList = NotificationRepository.notificationsList
 
+    //TODO fix this
     private var _isDiscussionsFetched = MutableLiveData<String?>(null)
     val isDiscussionsFetched: LiveData<String?>
         get() = _isDiscussionsFetched
@@ -32,6 +35,10 @@ class HomeViewModel : ViewModel() {
     private var _isPostsFetched = MutableLiveData<String?>(null)
     val isPostsFetched: LiveData<String?>
         get() = _isPostsFetched
+
+    private var _isPostDeleted = MutableLiveData<String?>(null)
+    val isPostDeleted: LiveData<String?>
+        get() = _isPostDeleted
 
     private var _isProfileFetched = MutableLiveData<String?>(null)
     val isProfileFetched: LiveData<String?>
@@ -44,6 +51,10 @@ class HomeViewModel : ViewModel() {
     private var _isUserPollsFetched = MutableLiveData<String?>(null)
     val isUserPollsFetched: LiveData<String?>
         get() = _isUserPollsFetched
+
+    private var _isPollDeleted = MutableLiveData<String?>(null)
+    val isPollDeleted: LiveData<String?>
+        get() = _isPollDeleted
 
     private var _isNotificationsFetched = MutableLiveData<String?>(null)
     val isNotificationsFetched: LiveData<String?>
@@ -124,6 +135,64 @@ class HomeViewModel : ViewModel() {
             override fun onError(response: String) {
                 _isUserPostsFetched.value = response
                 userPostsList.value = mutableListOf()
+            }
+        })
+    }
+
+    fun deletePost(context: Context, postId: String) {
+        _isPostDeleted.value = null
+
+        //deleting post from all posts list
+        val deletedPost = discussions.value!!.find { it.post?.postId == postId }
+        var deletedPostIndex = -1
+        var newPostsList: MutableList<DiscussionModel>
+
+        //when all posts list is not updated yet after inserting new post then deleted post can only be found in user posts list
+        if (deletedPost != null) {
+            deletedPostIndex = discussions.value!!.indexOf(deletedPost)
+            newPostsList = discussions.value!!.toMutableList()
+            newPostsList.removeAt(deletedPostIndex)
+            discussions.value = newPostsList
+        }
+
+        //deleting post from user posts list
+        val deletedUserPost = userPostsList.value?.find { it.post?.postId == postId }
+        var deletedUserPostIndex = -1
+        var newUserPostsList: MutableList<DiscussionModel>
+
+        if (deletedUserPost != null) {
+            deletedUserPostIndex = userPostsList.value!!.indexOf(deletedUserPost)
+            newUserPostsList = userPostsList.value!!.toMutableList()
+            newUserPostsList.removeAt(deletedUserPostIndex)
+            userPostsList.value = newUserPostsList
+        }
+
+
+        PostRepository.deletePost(context, postId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPostDeleted.postValue(Constants.API_SUCCESS)
+
+                val imageUrl =
+                    deletedPost?.post?.postImage ?: deletedUserPost?.post?.postImage ?: ""
+                if (imageUrl.isNotEmpty()) Cloudinary.deleteImage(context, imageUrl)
+            }
+
+            override fun onError(response: String) {
+                _isPostDeleted.postValue(Constants.API_FAILED)
+
+                if (deletedPost != null) {
+                    //re-adding post when error occurs
+                    newPostsList = discussions.value!!.toMutableList()
+                    newPostsList.add(deletedPostIndex, deletedPost)
+                    discussions.value = newPostsList
+                }
+
+                if (deletedUserPost != null) {
+                    //re-adding post when error occurs
+                    newUserPostsList = userPostsList.value!!.toMutableList()
+                    newUserPostsList.add(deletedUserPostIndex, deletedUserPost)
+                    userPostsList.value = newUserPostsList
+                }
             }
         })
     }
@@ -220,6 +289,60 @@ class HomeViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isPollLikedChanged.value = Constants.API_FAILED
+            }
+        })
+    }
+
+    fun deletePoll(context: Context, pollId: String) {
+        _isPollDeleted.value = null
+        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+
+        //deleting poll from all polls list
+        val deletedPoll = discussions.value?.find { it.poll!!.pollId == pollId }
+        var deletedPollIndex = -1
+        var newPollsList: MutableList<DiscussionModel>
+
+        //when all polls list is not updated yet after inserting new poll then deleted poll can only be found in user polls list
+        if (deletedPoll != null) {
+            deletedPollIndex = discussions.value!!.indexOf(deletedPoll)
+            newPollsList = discussions.value!!.toMutableList()
+            newPollsList.removeAt(deletedPollIndex)
+            discussions.value = newPollsList
+        }
+
+        //deleting poll from user polls list
+        val deletedUserPoll = userPollsList.value?.find { it.poll!!.pollId == pollId }
+        var deletedUserPollIndex = -1
+        var newUserPollsList: MutableList<DiscussionModel>
+
+        if (deletedUserPoll != null) {
+            deletedUserPollIndex = userPollsList.value!!.indexOf(deletedUserPoll)
+            newUserPollsList = userPollsList.value!!.toMutableList()
+            newUserPollsList.removeAt(deletedUserPollIndex)
+            userPollsList.value = newUserPollsList
+        }
+
+        PollRepository.deletePoll(context, pollId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPollDeleted.postValue(Constants.API_SUCCESS)
+            }
+
+            override fun onError(response: String) {
+                _isPollDeleted.postValue(Constants.API_FAILED)
+
+                if (deletedPoll != null) {
+                    //re-adding poll when error occurs
+                    newPollsList = discussions.value!!.toMutableList()
+                    newPollsList.add(deletedPollIndex, deletedPoll)
+                    discussions.value = newPollsList
+                }
+
+                if (deletedUserPoll != null) {
+                    //re-adding poll when error occurs
+                    newUserPollsList = userPollsList.value!!.toMutableList()
+                    newUserPollsList.add(deletedUserPollIndex, deletedUserPoll)
+                    userPollsList.value = newUserPollsList
+                }
             }
         })
     }

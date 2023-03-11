@@ -19,11 +19,13 @@ import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
 import com.example.discussions.repositories.DiscussionRepository
+import com.example.discussions.ui.CreateEditPostActivity
 import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PollResultsActivity
 import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, PollClickInterface,
     DiscussionMenuInterface {
@@ -214,14 +216,75 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     }
 
     override fun onPostEdit(postId: String) {
-        TODO("Not yet implemented")
+        val intent = Intent(requireContext(), CreateEditPostActivity::class.java)
+        intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
+        intent.putExtra(Constants.POST_ID, postId)
+        val post = homeViewModel.discussions.value?.find { it.post!!.postId == postId }!!.post!!
+        intent.putExtra(Constants.POST_TITLE, post.title)
+        intent.putExtra(Constants.POST_CONTENT, post.content)
+        intent.putExtra(Constants.POST_IMAGE, post.postImage)
+        startActivity(intent)
     }
 
     override fun onPostDelete(postId: String) {
-        TODO("Not yet implemented")
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Delete")
+            .setMessage("Are you sure you want to delete this post?")
+            .setPositiveButton("Confirm") { dialog, _ ->
+                dialog.dismiss()
+                deletePost(postId)
+            }.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }.show()
+    }
+
+    /**
+     * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
+     */
+    private fun deletePost(postId: String) {
+        //post delete api observer
+        homeViewModel.isPostDeleted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS) Toast.makeText(
+                    requireContext(),
+                    "Post Deleted",
+                    Toast.LENGTH_SHORT
+                ).show()
+                else if (it == Constants.API_FAILED) Toast.makeText(
+                    requireContext(),
+                    "Problem Deleting Post",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        homeViewModel.deletePost(requireContext(), postId)
     }
 
     override fun onPollDelete(pollId: String) {
-        TODO("Not yet implemented")
+        MaterialAlertDialogBuilder(requireContext()).setTitle("Delete")
+            .setMessage("Are you sure you want to delete this poll?")
+            .setPositiveButton("Confirm") { dialog, _ ->
+                dialog.dismiss()
+                deletePoll(pollId)
+            }.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }.show()
+    }
+
+    /**
+     * METHOD FOR SENDING DELETE POLL REQ TO THE VIEW MODEL
+     */
+
+    private fun deletePoll(pollId: String) {
+        //post delete api observer
+        homeViewModel.isPollDeleted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS)
+                    Toast.makeText(requireContext(), "Poll Deleted", Toast.LENGTH_SHORT).show()
+                else if (it == Constants.API_FAILED)
+                    Toast.makeText(requireContext(), "Problem Deleting Poll", Toast.LENGTH_SHORT)
+                        .show()
+            }
+        }
+        homeViewModel.deletePoll(requireContext(), pollId)
     }
 }
