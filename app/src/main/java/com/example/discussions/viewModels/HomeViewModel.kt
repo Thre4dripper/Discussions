@@ -27,14 +27,9 @@ class HomeViewModel : ViewModel() {
     //get notifications list directly from repository live data
     var notificationsList = NotificationRepository.notificationsList
 
-    //TODO fix this
     private var _isDiscussionsFetched = MutableLiveData<String?>(null)
     val isDiscussionsFetched: LiveData<String?>
         get() = _isDiscussionsFetched
-
-    private var _isPostsFetched = MutableLiveData<String?>(null)
-    val isPostsFetched: LiveData<String?>
-        get() = _isPostsFetched
 
     private var _isPostDeleted = MutableLiveData<String?>(null)
     val isPostDeleted: LiveData<String?>
@@ -295,7 +290,7 @@ class HomeViewModel : ViewModel() {
 
     fun deletePoll(context: Context, pollId: String) {
         _isPollDeleted.value = null
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        postsOrPollsOrNotificationsScrollToTop = false
 
         //deleting poll from all polls list
         val deletedPoll = discussions.value?.find { it.poll!!.pollId == pollId }

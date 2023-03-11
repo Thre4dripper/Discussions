@@ -81,13 +81,13 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                 //when empty list is loaded
                 if (it.isEmpty()) {
                     binding.discussLottieNoData.visibility = View.VISIBLE
-                    val error = homeViewModel.isPostsFetched.value
+                    val error = homeViewModel.isDiscussionsFetched.value
 
                     //when empty list is due to network error
                     if (error != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
-                            homeViewModel.isPostsFetched.value,
+                            homeViewModel.isDiscussionsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()
