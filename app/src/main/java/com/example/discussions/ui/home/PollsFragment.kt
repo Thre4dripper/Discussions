@@ -17,9 +17,11 @@ import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.FragmentPollsBinding
+import com.example.discussions.models.PollModel
 import com.example.discussions.repositories.PollRepository
 import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PollResultsActivity
+import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.UserPollsViewModel
@@ -182,6 +184,11 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
 
         val commentsBS = CommentsBS(pollId, Constants.COMMENT_TYPE_POLL, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
+    }
+
+    override fun onPollMenuClicked(poll: PollModel) {
+        val optionsBS = DiscussionOptionsBS(null, poll, this@PollsFragment)
+        optionsBS.show(requireActivity().supportFragmentManager, optionsBS.tag)
     }
 
     override fun onPollDelete(pollId: String) {

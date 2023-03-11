@@ -18,11 +18,14 @@ import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentDiscussBinding
+import com.example.discussions.models.PollModel
+import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.ui.CreateEditPostActivity
 import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PollResultsActivity
 import com.example.discussions.ui.PostDetailsActivity
+import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -213,6 +216,17 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         val intent = Intent(requireContext(), PollDetailsActivity::class.java)
         intent.putExtra(Constants.POLL_ID, pollId)
         startActivity(intent)
+    }
+
+
+    override fun onPostMenuClicked(post: PostModel) {
+        val optionsBs = DiscussionOptionsBS(post, null, this@DiscussFragment)
+        optionsBs.show(requireActivity().supportFragmentManager, optionsBs.tag)
+    }
+
+    override fun onPollMenuClicked(poll: PollModel) {
+        val optionsBs = DiscussionOptionsBS(null, poll, this@DiscussFragment)
+        optionsBs.show(requireActivity().supportFragmentManager, optionsBs.tag)
     }
 
     override fun onPostEdit(postId: String) {

@@ -16,7 +16,9 @@ import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.ActivityUserPostsBinding
+import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.PostRepository
+import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.UserPostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -72,7 +74,10 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
         }
     }
 
-    //TODO implement bottom sheet for these operations
+    override fun onPostMenuClicked(post: PostModel) {
+        val optionsBs = DiscussionOptionsBS(post, null, this@UserPostsActivity)
+        optionsBs.show(supportFragmentManager, optionsBs.tag)
+    }
 
     override fun onPostEdit(postId: String) {
         val intent = Intent(this, CreateEditPostActivity::class.java)

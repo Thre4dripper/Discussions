@@ -101,15 +101,20 @@
 
     //User Post Activity
     <string name="user_post_label">%s Posts</string>
-    <string name="user_post_more_options">More Options</string>
-    <string name="user_post_edit">Edit</string>
-    <string name="user_post_delete">Delete</string>
+
+    //Post/Poll More Options Bottom Sheet
+    <string name="post_poll_more_options">More Options</string>
+    <string name="post_poll_menu_edit">Edit</string>
+    <string name="post_poll_menu_delete">Delete</string>
+    <string name="post_poll_menu_bookmark">Bookmark</string>
+    <string name="post_poll_menu_report">Report</string>
+    <string name="post_poll_menu_cancel">Cancel</string>
 
     //Poll List Item
     <string name="poll_list_item_title">@string/post_list_item_title</string>
     <string name="poll_list_item_private_desc">This Poll is Private</string>
     <string name="poll_list_item_time">@string/post_list_item_time</string>
-    <string name="poll_list_item_more_options">@string/user_post_more_options</string>
+    <string name="poll_list_item_more_options">@string/post_poll_more_options</string>
     <string name="poll_list_item_content">@string/post_list_item_content</string>
     <string name="poll_list_item_like_count">@string/post_list_item_like_count</string>
     <string name="poll_list_item_comment_count">@string/post_list_item_comment_count</string>

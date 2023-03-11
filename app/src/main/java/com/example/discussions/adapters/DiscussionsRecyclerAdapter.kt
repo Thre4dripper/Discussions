@@ -1,6 +1,5 @@
 package com.example.discussions.adapters
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -12,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
@@ -110,18 +108,10 @@ class DiscussionsRecyclerAdapter(
             discussionMenuInterface: DiscussionMenuInterface
         ) {
 
-            //setting up more options menu for post
-            binding.itemPostMenuOptions.visibility =
-                if (postModel.username == "@${MyApplication.username}") View.VISIBLE else View.GONE
-
             //setting up the more options menu
-            setupMenuOptions(
-                binding.root.context,
-                binding.itemPostMenuOptions,
-                postModel,
-                null,
-                discussionMenuInterface
-            )
+            binding.itemPostMenuOptions.setOnClickListener {
+                discussionMenuInterface.onPostMenuClicked(postModel)
+            }
 
             //setting the profile image of current post's user
             Glide.with(itemView.context)
@@ -283,18 +273,10 @@ class DiscussionsRecyclerAdapter(
             likeCommentInterface: LikeCommentInterface,
             discussionMenuInterface: DiscussionMenuInterface
         ) {
-            //setting up more options menu for the poll
-            binding.itemPollMenuOptions.visibility =
-                if (pollModel.username == "@${MyApplication.username}") View.VISIBLE else View.GONE
-
             //setting up the more options menu
-            setupMenuOptions(
-                binding.root.context,
-                binding.itemPollMenuOptions,
-                null,
-                pollModel,
-                discussionMenuInterface
-            )
+            binding.itemPollMenuOptions.setOnClickListener {
+                discussionMenuInterface.onPollMenuClicked(pollModel)
+            }
 
             //setting the profile image of current poll's user
             Glide.with(itemView.context)
@@ -483,46 +465,6 @@ class DiscussionsRecyclerAdapter(
                 pollClickInterface.onPollClick(pollModel.pollId)
             }
 
-        }
-    }
-
-    private fun setupMenuOptions(
-        context: Context,
-        anchor: View,
-        postModel: PostModel?,
-        pollModel: PollModel?,
-        discussionMenuInterface: DiscussionMenuInterface
-    ) {
-        //setting post popup menu
-        val popupMenu = PopupMenu(context, anchor)
-        popupMenu.inflate(R.menu.discussion_options_menu)
-
-        //edit isn't available for polls
-        if (pollModel != null)
-            popupMenu.menu.findItem(R.id.menu_option_edit).isVisible = false
-
-        anchor.setOnClickListener {
-            popupMenu.show()
-        }
-
-        //setting post menu options
-        popupMenu.setOnMenuItemClickListener {
-            when (it.itemId) {
-                R.id.menu_option_edit -> {
-                    //edit only available for posts
-                    if (postModel != null)
-                        discussionMenuInterface.onPostEdit(postModel.postId)
-                    true
-                }
-                R.id.menu_option_delete -> {
-                    if (postModel != null)
-                        discussionMenuInterface.onPostDelete(postModel.postId)
-                    else if (pollModel != null)
-                        discussionMenuInterface.onPollDelete(pollModel.pollId)
-                    true
-                }
-                else -> false
-            }
         }
     }
 
