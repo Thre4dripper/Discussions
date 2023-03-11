@@ -3,12 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- TODO  make universal options bs component-->
-    <!-- TODO  make bar at the top of the bottom sheet-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="16dp">
+
+        <View
+            android:id="@+id/comments_bs_control"
+            android:layout_width="70dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center"
+            android:background="@color/dark_gray" />
 
         <TextView
             android:id="@+id/option_edit_discussion_tv"
