@@ -8,13 +8,14 @@ import com.example.discussions.Cloudinary
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.DiscussionModel
-import com.example.discussions.models.ProfileDataModel
-import com.example.discussions.repositories.*
+import com.example.discussions.repositories.DiscussionRepository
+import com.example.discussions.repositories.NotificationRepository
+import com.example.discussions.repositories.PollRepository
+import com.example.discussions.repositories.PostRepository
 
 class HomeViewModel : ViewModel() {
     private val TAG = "HomeViewModel"
 
-    lateinit var profileDataModel: ProfileDataModel
 
     var discussions = DiscussionRepository.discussions
 
@@ -35,13 +36,6 @@ class HomeViewModel : ViewModel() {
     val isPostDeleted: LiveData<String?>
         get() = _isPostDeleted
 
-    private var _isProfileFetched = MutableLiveData<String?>(null)
-    val isProfileFetched: LiveData<String?>
-        get() = _isProfileFetched
-
-    private var _isUserPostsFetched = MutableLiveData<String?>(null)
-    val isUserPostsFetched: LiveData<String?>
-        get() = _isUserPostsFetched
 
     private var _isUserPollsFetched = MutableLiveData<String?>(null)
     val isUserPollsFetched: LiveData<String?>
@@ -104,35 +98,6 @@ class HomeViewModel : ViewModel() {
         getAllDiscussions(context, 1)
     }
 
-    fun getProfile(context: Context) {
-        if (_isProfileFetched.value == Constants.API_SUCCESS) return
-        else _isProfileFetched.value = null
-
-
-        UserRepository.getProfile(context, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                profileDataModel = UserRepository.profileDataModel!!
-                _isProfileFetched.postValue(Constants.API_SUCCESS)
-            }
-
-            override fun onError(response: String) {
-                _isProfileFetched.postValue(response)
-            }
-        })
-    }
-
-    fun getAllUserPosts(context: Context) {
-        PostRepository.getAllUserPosts(context, profileDataModel.userId, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isUserPostsFetched.value = Constants.API_SUCCESS
-            }
-
-            override fun onError(response: String) {
-                _isUserPostsFetched.value = response
-                userPostsList.value = mutableListOf()
-            }
-        })
-    }
 
     fun deletePost(context: Context, postId: String) {
         _isPostDeleted.value = null
@@ -190,12 +155,6 @@ class HomeViewModel : ViewModel() {
                 }
             }
         })
-    }
-
-    fun refreshProfile(context: Context) {
-        _isProfileFetched = MutableLiveData<String?>(null)
-        _isUserPostsFetched.value = null
-        getAllUserPosts(context)
     }
 
     fun getAllUserPolls(context: Context) {

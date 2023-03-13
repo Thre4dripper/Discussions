@@ -9,7 +9,7 @@ import com.example.discussions.api.apiCalls.user.ProfileApi
 import com.example.discussions.models.ProfileDataModel
 import com.example.discussions.store.LoginStore
 
-class UserRepository {
+class ProfileRepository {
     companion object {
         private const val TAG = "ProfileRepository"
         var map = mapOf<String, String>()

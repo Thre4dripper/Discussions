@@ -8,7 +8,7 @@ import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PostRepository
-import com.example.discussions.repositories.UserRepository
+import com.example.discussions.repositories.ProfileRepository
 
 class CreateEditPostViewModel : ViewModel() {
     private val TAG = "CreateEditPostViewModel"
@@ -34,10 +34,10 @@ class CreateEditPostViewModel : ViewModel() {
 
 
     fun getUsernameAndImage(context: Context) {
-        UserRepository.getUsernameAndImage(context, object : ResponseCallback {
+        ProfileRepository.getUsernameAndImage(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                UserRepository.map[Constants.PROFILE_IMAGE]?.let { profileImage = it }
-                UserRepository.map[Constants.USERNAME]?.let { username = it }
+                ProfileRepository.map[Constants.PROFILE_IMAGE]?.let { profileImage = it }
+                ProfileRepository.map[Constants.USERNAME]?.let { username = it }
                 _isApiFetched.postValue(Constants.API_SUCCESS)
             }
 

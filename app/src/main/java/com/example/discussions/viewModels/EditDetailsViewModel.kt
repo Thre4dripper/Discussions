@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.repositories.UserRepository
+import com.example.discussions.repositories.ProfileRepository
 
 class EditDetailsViewModel : ViewModel() {
     private val TAG = "EditProfileViewModel"
@@ -31,17 +31,17 @@ class EditDetailsViewModel : ViewModel() {
         get() = _isDetailsUpdated
 
     fun getDetails(context: Context) {
-        UserRepository.getDetails(context, object : ResponseCallback {
+        ProfileRepository.getDetails(context, object : ResponseCallback {
             override fun onSuccess(response: String) {
-                UserRepository.map[Constants.PROFILE_IMAGE]?.let { profileImage = it }
-                UserRepository.map[Constants.USERNAME]?.let { username = it }
-                UserRepository.map[Constants.FIRST_NAME]?.let { firstName = it }
-                UserRepository.map[Constants.LAST_NAME]?.let { lastName = it }
-                UserRepository.map[Constants.GENDER]?.let { gender = it }
-                UserRepository.map[Constants.EMAIL]?.let { email = it }
-                UserRepository.map[Constants.MOBILE]?.let { mobileNo = it }
-                UserRepository.map[Constants.DOB]?.let { dob = it }
-                UserRepository.map[Constants.ADDRESS]?.let { address = it }
+                ProfileRepository.map[Constants.PROFILE_IMAGE]?.let { profileImage = it }
+                ProfileRepository.map[Constants.USERNAME]?.let { username = it }
+                ProfileRepository.map[Constants.FIRST_NAME]?.let { firstName = it }
+                ProfileRepository.map[Constants.LAST_NAME]?.let { lastName = it }
+                ProfileRepository.map[Constants.GENDER]?.let { gender = it }
+                ProfileRepository.map[Constants.EMAIL]?.let { email = it }
+                ProfileRepository.map[Constants.MOBILE]?.let { mobileNo = it }
+                ProfileRepository.map[Constants.DOB]?.let { dob = it }
+                ProfileRepository.map[Constants.ADDRESS]?.let { address = it }
                 _isDetailsLoaded.postValue(Constants.API_SUCCESS)
             }
 
@@ -64,7 +64,7 @@ class EditDetailsViewModel : ViewModel() {
         address: String,
     ) {
 
-        UserRepository.updateDetails(context,
+        ProfileRepository.updateDetails(context,
             imageUrl,
             username,
             firstName,

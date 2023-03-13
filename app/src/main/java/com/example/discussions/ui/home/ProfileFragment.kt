@@ -22,14 +22,14 @@ import com.example.discussions.ui.EditDetailsActivity
 import com.example.discussions.ui.SettingsActivity
 import com.example.discussions.ui.UserPostsActivity
 import com.example.discussions.ui.ZoomImageActivity
-import com.example.discussions.viewModels.HomeViewModel
+import com.example.discussions.viewModels.ProfileViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ProfileFragment : Fragment(), PostClickInterface {
     private val TAG = "ProfileFragment"
 
     private lateinit var binding: FragmentProfileBinding
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var viewModel: ProfileViewModel
 
     private lateinit var loadingDialog: AlertDialog
     private lateinit var retryDialog: AlertDialog
@@ -42,12 +42,15 @@ class ProfileFragment : Fragment(), PostClickInterface {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
-        homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
 
         //for launching profile image zoom activity
         binding.profileIv.setOnClickListener {
             val intent = Intent(requireContext(), ZoomImageActivity::class.java)
-            intent.putExtra(Constants.ZOOM_IMAGE_URL, homeViewModel.profileDataModel.profileImage)
+            intent.putExtra(
+                Constants.ZOOM_IMAGE_URL,
+                viewModel.profileDataModel.profileImage
+            )
             startActivity(intent)
         }
 
@@ -70,7 +73,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
         //swipe to refresh
         binding.profileSwipeLayout.setOnRefreshListener {
-            homeViewModel.refreshProfile(requireContext())
+            viewModel.refreshProfile(requireContext())
             getProfile()
         }
 
@@ -110,7 +113,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
     private fun getProfile() {
         loadingDialog.show()
-        homeViewModel.isProfileFetched.observe(viewLifecycleOwner) {
+        viewModel.isProfileFetched.observe(viewLifecycleOwner) {
             binding.profileSwipeLayout.isRefreshing = false
             if (it != null) {
                 loadingDialog.dismiss()
@@ -118,10 +121,10 @@ class ProfileFragment : Fragment(), PostClickInterface {
                     Constants.API_SUCCESS -> {
 
                         Glide.with(this)
-                            .load(homeViewModel.profileDataModel.profileImage)
+                            .load(viewModel.profileDataModel.profileImage)
                             .into(binding.profileIv)
 
-                        binding.profile = homeViewModel.profileDataModel
+                        binding.profile = viewModel.profileDataModel
 
                         getUserPosts()
                     }
@@ -137,13 +140,13 @@ class ProfileFragment : Fragment(), PostClickInterface {
             }
         }
 
-        homeViewModel.getProfile(requireContext())
+        viewModel.getProfile(requireContext())
     }
 
     private fun getUserPosts() {
         binding.profilePostsProgressBar.visibility = View.VISIBLE
         profileAdapter.submitList(mutableListOf())
-        homeViewModel.userPostsList.observe(viewLifecycleOwner) {
+        viewModel.userPostsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 //updating posts list recycler view
                 profileAdapter.submitList(it)
@@ -158,13 +161,13 @@ class ProfileFragment : Fragment(), PostClickInterface {
                 if (it.isEmpty()) {
                     //showing lottie animation
                     binding.profilePostsLottieNoData.visibility = View.VISIBLE
-                    val error = homeViewModel.isUserPostsFetched.value
+                    val error = viewModel.isUserPostsFetched.value
 
                     //when empty is due to network error, showing toast
-                    if (homeViewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
+                    if (viewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
-                            homeViewModel.isUserPostsFetched.value,
+                            viewModel.isUserPostsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()
@@ -177,7 +180,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
             }
         }
 
-        homeViewModel.getAllUserPosts(requireContext())
+        viewModel.getAllUserPosts(requireContext())
     }
 
     /**
