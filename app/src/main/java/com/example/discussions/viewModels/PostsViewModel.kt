@@ -40,7 +40,9 @@ class PostsViewModel : ViewModel() {
     }
 
     fun getAllUserPosts(context: Context, userId: String) {
-        _isUserPostsFetched.value = null
+        if (_isUserPostsFetched.value == Constants.API_SUCCESS) return
+        else _isUserPostsFetched.value = null
+        userPostsScrollToIndex = true
 
         PostRepository.getAllUserPosts(context, userId, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -54,8 +56,14 @@ class PostsViewModel : ViewModel() {
         })
     }
 
+    fun refreshUserPosts() {
+        _isUserPostsFetched.value = null
+    }
+
     fun deletePost(context: Context, postId: String) {
         _isPostDeleted.value = null
+        userPostsScrollToIndex = false
+        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
 
         //deleting post from all posts list
         val deletedPost = _allPostsList.value?.find { it.post?.postId == postId }

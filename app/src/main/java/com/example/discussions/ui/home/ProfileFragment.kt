@@ -2,7 +2,6 @@ package com.example.discussions.ui.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,6 +80,8 @@ class ProfileFragment : Fragment(), PostClickInterface {
             getProfile()
         }
 
+        getProfileObserver()
+        getUserPostsObserver()
         getProfile()
         return binding.root
     }
@@ -115,8 +116,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
         }
     }
 
-    private fun getProfile() {
-        loadingDialog.show()
+    private fun getProfileObserver() {
         viewModel.isProfileFetched.observe(viewLifecycleOwner) {
             binding.profileSwipeLayout.isRefreshing = false
             if (it != null) {
@@ -143,13 +143,14 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
             }
         }
+    }
 
+    private fun getProfile() {
+        loadingDialog.show()
         viewModel.getProfile(requireContext())
     }
 
-    private fun getUserPosts() {
-        binding.profilePostsProgressBar.visibility = View.VISIBLE
-        profileAdapter.submitList(mutableListOf())
+    private fun getUserPostsObserver() {
         postsViewModel.userPostsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 //updating posts list recycler view
@@ -183,8 +184,16 @@ class ProfileFragment : Fragment(), PostClickInterface {
                 }
             }
         }
+    }
 
-        Log.d(TAG, "getUserPosts: ${viewModel.profileDataModel.userId}")
+    private fun getUserPosts() {
+        //refreshing user posts, doesn't matter if it is first time or not
+        postsViewModel.refreshUserPosts()
+        //clearing previous posts list
+        profileAdapter.submitList(mutableListOf())
+        //showing progress bar
+        binding.profilePostsProgressBar.visibility = View.VISIBLE
+        //getting user posts
         postsViewModel.getAllUserPosts(requireContext(), viewModel.profileDataModel.userId)
     }
 

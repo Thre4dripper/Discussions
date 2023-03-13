@@ -34,6 +34,6 @@ class ProfileViewModel : ViewModel() {
     }
 
     fun refreshProfile() {
-        _isProfileFetched = MutableLiveData<String?>(null)
+        _isProfileFetched.value = null
     }
 }
