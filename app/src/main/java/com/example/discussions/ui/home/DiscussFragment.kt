@@ -28,6 +28,7 @@ import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
+import com.example.discussions.viewModels.PollsViewModel
 import com.example.discussions.viewModels.PostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -38,6 +39,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     private lateinit var binding: FragmentDiscussBinding
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var postsViewModel: PostsViewModel
+    private lateinit var pollsViewModel: PollsViewModel
 
     private lateinit var discussAdapter: DiscussionsRecyclerAdapter
     private var handler = Handler(Looper.getMainLooper())
@@ -50,6 +52,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         binding = FragmentDiscussBinding.inflate(inflater, container, false)
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
         postsViewModel = ViewModelProvider(requireActivity())[PostsViewModel::class.java]
+        pollsViewModel = ViewModelProvider(requireActivity())[PollsViewModel::class.java]
 
         binding.discussionRv.apply {
             discussAdapter = DiscussionsRecyclerAdapter(
@@ -151,7 +154,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     }
 
     override fun onPollLike(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        homeViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
+        pollsViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -167,7 +170,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
             handler.removeCallbacksAndMessages(pollId)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePoll(requireContext(), pollId)
+                    pollsViewModel.likePoll(requireContext(), pollId)
 
             }, pollId, Constants.LIKE_DEBOUNCE_TIME)
         }
@@ -176,7 +179,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
             handler.removeCallbacksAndMessages(null)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePoll(requireContext(), pollId)
+                    pollsViewModel.likePoll(requireContext(), pollId)
 
             }, Constants.LIKE_DEBOUNCE_TIME)
         }
@@ -198,7 +201,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     }
 
     override fun onPollVote(pollId: String, optionId: String) {
-        homeViewModel.isPollVoted.observe(this) {
+        pollsViewModel.isPollVoted.observe(this) {
             if (it != null) {
                 if (it == Constants.API_FAILED)
                     Toast.makeText(requireContext(), "Problem Voting Poll", Toast.LENGTH_SHORT)
@@ -206,7 +209,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
             }
         }
 
-        homeViewModel.pollVote(requireContext(), pollId, optionId)
+        pollsViewModel.pollVote(requireContext(), pollId, optionId)
     }
 
     override fun onPollResult(pollId: String) {
@@ -293,7 +296,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
 
     private fun deletePoll(pollId: String) {
         //post delete api observer
-        homeViewModel.isPollDeleted.observe(this) {
+        pollsViewModel.isPollDeleted.observe(this) {
             if (it != null) {
                 if (it == Constants.API_SUCCESS)
                     Toast.makeText(requireContext(), "Poll Deleted", Toast.LENGTH_SHORT).show()
@@ -302,6 +305,6 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                         .show()
             }
         }
-        homeViewModel.deletePoll(requireContext(), pollId)
+        pollsViewModel.deletePoll(requireContext(), pollId)
     }
 }

@@ -24,7 +24,7 @@ import com.example.discussions.ui.PollResultsActivity
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
-import com.example.discussions.viewModels.UserPollsViewModel
+import com.example.discussions.viewModels.PollsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
@@ -32,8 +32,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
     private val TAG = "PollsFragment"
 
     private lateinit var binding: FragmentPollsBinding
-    private lateinit var homeViewModel: HomeViewModel
-    private lateinit var viewModel: UserPollsViewModel
+    private lateinit var viewModel: PollsViewModel
 
     private lateinit var pollsAdapter: DiscussionsRecyclerAdapter
     private val handler = Handler(Looper.getMainLooper())
@@ -42,8 +41,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentPollsBinding.inflate(inflater, container, false)
-        homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
-        viewModel = ViewModelProvider(requireActivity())[UserPollsViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[PollsViewModel::class.java]
 
         binding.pollsRv.apply {
             pollsAdapter = DiscussionsRecyclerAdapter(
@@ -56,7 +54,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
         }
 
         binding.pollsSwipeLayout.setOnRefreshListener {
-            homeViewModel.refreshAllUserPolls(
+            viewModel.refreshAllUserPolls(
                 requireContext()
             )
         }
@@ -67,7 +65,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
 
     private fun getAllUserPolls() {
         binding.pollsProgressBar.visibility = View.VISIBLE
-        homeViewModel.userPollsList.observe(viewLifecycleOwner) {
+        viewModel.userPollsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 pollsAdapter.submitList(it) {
                     if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop)
@@ -81,13 +79,13 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
                 //when empty list is loaded
                 if (it.isEmpty()) {
                     binding.pollsLottieNoData.visibility = View.VISIBLE
-                    val error = homeViewModel.isUserPollsFetched.value
+                    val error = viewModel.isUserPollsFetched.value
 
                     //when empty list is due to network error
                     if (error != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
-                            homeViewModel.isUserPollsFetched.value,
+                            viewModel.isUserPollsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()
@@ -101,7 +99,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
             }
         }
 
-        homeViewModel.getAllUserPolls(requireContext())
+        viewModel.getAllUserPolls(requireContext())
     }
 
     /**
@@ -122,7 +120,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
     }
 
     override fun onPollVote(pollId: String, optionId: String) {
-        homeViewModel.isPollVoted.observe(this) {
+        viewModel.isPollVoted.observe(this) {
             if (it != null) {
                 if (it == Constants.API_FAILED)
                     Toast.makeText(requireContext(), "Problem Voting Poll", Toast.LENGTH_SHORT)
@@ -130,7 +128,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
             }
         }
 
-        homeViewModel.pollVote(requireContext(), pollId, optionId)
+        viewModel.pollVote(requireContext(), pollId, optionId)
     }
 
     override fun onPollResult(pollId: String) {
@@ -146,7 +144,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
     }
 
     override fun onPollLike(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        homeViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
+        viewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -162,7 +160,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
             handler.removeCallbacksAndMessages(pollId)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePoll(requireContext(), pollId)
+                    viewModel.likePoll(requireContext(), pollId)
 
             }, pollId, Constants.LIKE_DEBOUNCE_TIME)
         }
@@ -171,7 +169,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
             handler.removeCallbacksAndMessages(null)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePoll(requireContext(), pollId)
+                    viewModel.likePoll(requireContext(), pollId)
 
             }, Constants.LIKE_DEBOUNCE_TIME)
         }

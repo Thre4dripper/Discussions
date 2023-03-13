@@ -6,10 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.models.DiscussionModel
 import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.NotificationRepository
-import com.example.discussions.repositories.PollRepository
 
 class HomeViewModel : ViewModel() {
     private val TAG = "HomeViewModel"
@@ -17,23 +15,12 @@ class HomeViewModel : ViewModel() {
 
     var discussions = DiscussionRepository.discussions
 
-    //get user polls list directly from repository live data
-    var userPollsList = PollRepository.userPollsList
-
     //get notifications list directly from repository live data
     var notificationsList = NotificationRepository.notificationsList
 
     private var _isDiscussionsFetched = MutableLiveData<String?>(null)
     val isDiscussionsFetched: LiveData<String?>
         get() = _isDiscussionsFetched
-
-    private var _isUserPollsFetched = MutableLiveData<String?>(null)
-    val isUserPollsFetched: LiveData<String?>
-        get() = _isUserPollsFetched
-
-    private var _isPollDeleted = MutableLiveData<String?>(null)
-    val isPollDeleted: LiveData<String?>
-        get() = _isPollDeleted
 
     private var _isNotificationsFetched = MutableLiveData<String?>(null)
     val isNotificationsFetched: LiveData<String?>
@@ -50,14 +37,6 @@ class HomeViewModel : ViewModel() {
     private var _isNotificationRead = MutableLiveData<String?>(null)
     val isNotificationRead: LiveData<String?>
         get() = _isNotificationRead
-
-    private var _isPollVoted = MutableLiveData<String?>(null)
-    val isPollVoted: LiveData<String?>
-        get() = _isPollVoted
-
-    private var _isPollLikedChanged = MutableLiveData<String?>(null)
-    val isPollLikedChanged: LiveData<String?>
-        get() = _isPollLikedChanged
 
     companion object {
         var postsOrPollsOrNotificationsScrollToTop = false
@@ -82,135 +61,6 @@ class HomeViewModel : ViewModel() {
     fun refreshAllDiscussions(context: Context) {
         _isDiscussionsFetched.value = null
         getAllDiscussions(context, 1)
-    }
-
-    fun getAllUserPolls(context: Context) {
-        if (_isUserPollsFetched.value == Constants.API_SUCCESS) return
-        else {
-            _isUserPollsFetched.value = null
-        }
-        postsOrPollsOrNotificationsScrollToTop = true
-
-        PollRepository.getAllUserPolls(context, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isUserPollsFetched.value = Constants.API_SUCCESS
-            }
-
-            override fun onError(response: String) {
-                _isUserPollsFetched.value = response
-                userPollsList.value = mutableListOf()
-            }
-        })
-    }
-
-    fun refreshAllUserPolls(context: Context) {
-        _isUserPollsFetched.value = null
-        getAllUserPolls(context)
-    }
-
-    fun pollVote(context: Context, pollId: String, optionId: String) {
-        _isPollVoted.value = null
-        postsOrPollsOrNotificationsScrollToTop = false
-
-        //changing vote status to voting, this will trigger progress bar in recycler view
-        val newAllPollsList = discussions.value?.toMutableList()
-        val allPollsIndex = newAllPollsList?.indexOfFirst { it.poll?.pollId == pollId }
-
-        val newUserPollsList = userPollsList.value?.toMutableList()
-        val userPollIndex = newUserPollsList?.indexOfFirst { it.poll?.pollId == pollId }
-
-        if (allPollsIndex != null && allPollsIndex != -1) {
-            val votedPoll = newAllPollsList[allPollsIndex].poll!!.copy(isVoting = true)
-            val newDiscussionPoll = newAllPollsList[allPollsIndex].copy(poll = votedPoll)
-            newAllPollsList[allPollsIndex] = newDiscussionPoll
-            discussions.value = newAllPollsList
-        }
-
-        if (userPollIndex != null && userPollIndex != -1) {
-            val votedPoll = newUserPollsList[userPollIndex].poll!!.copy(isVoting = true)
-            val newDiscussionPoll = newUserPollsList[userPollIndex].copy(poll = votedPoll)
-            newUserPollsList[userPollIndex] = newDiscussionPoll
-            userPollsList.value = newUserPollsList
-        }
-
-        PollRepository.pollVote(context, pollId, optionId, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isPollVoted.value = Constants.API_SUCCESS
-            }
-
-            override fun onError(response: String) {
-                _isPollVoted.value = Constants.API_FAILED
-            }
-        })
-    }
-
-    fun likePoll(context: Context, pollId: String) {
-        _isPollLikedChanged.value = null
-        postsOrPollsOrNotificationsScrollToTop = false
-
-        PollRepository.likePoll(context, pollId, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isPollLikedChanged.value = Constants.API_SUCCESS
-            }
-
-            override fun onError(response: String) {
-                _isPollLikedChanged.value = Constants.API_FAILED
-            }
-        })
-    }
-
-    fun deletePoll(context: Context, pollId: String) {
-        _isPollDeleted.value = null
-        postsOrPollsOrNotificationsScrollToTop = false
-
-        //deleting poll from all polls list
-        val deletedPoll = discussions.value?.find { it.poll!!.pollId == pollId }
-        var deletedPollIndex = -1
-        var newPollsList: MutableList<DiscussionModel>
-
-        //when all polls list is not updated yet after inserting new poll then deleted poll can only be found in user polls list
-        if (deletedPoll != null) {
-            deletedPollIndex = discussions.value!!.indexOf(deletedPoll)
-            newPollsList = discussions.value!!.toMutableList()
-            newPollsList.removeAt(deletedPollIndex)
-            discussions.value = newPollsList
-        }
-
-        //deleting poll from user polls list
-        val deletedUserPoll = userPollsList.value?.find { it.poll!!.pollId == pollId }
-        var deletedUserPollIndex = -1
-        var newUserPollsList: MutableList<DiscussionModel>
-
-        if (deletedUserPoll != null) {
-            deletedUserPollIndex = userPollsList.value!!.indexOf(deletedUserPoll)
-            newUserPollsList = userPollsList.value!!.toMutableList()
-            newUserPollsList.removeAt(deletedUserPollIndex)
-            userPollsList.value = newUserPollsList
-        }
-
-        PollRepository.deletePoll(context, pollId, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isPollDeleted.postValue(Constants.API_SUCCESS)
-            }
-
-            override fun onError(response: String) {
-                _isPollDeleted.postValue(Constants.API_FAILED)
-
-                if (deletedPoll != null) {
-                    //re-adding poll when error occurs
-                    newPollsList = discussions.value!!.toMutableList()
-                    newPollsList.add(deletedPollIndex, deletedPoll)
-                    discussions.value = newPollsList
-                }
-
-                if (deletedUserPoll != null) {
-                    //re-adding poll when error occurs
-                    newUserPollsList = userPollsList.value!!.toMutableList()
-                    newUserPollsList.add(deletedUserPollIndex, deletedUserPoll)
-                    userPollsList.value = newUserPollsList
-                }
-            }
-        })
     }
 
     fun getAllNotifications(context: Context) {
