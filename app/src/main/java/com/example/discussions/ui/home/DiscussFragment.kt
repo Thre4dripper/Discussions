@@ -28,6 +28,7 @@ import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
 import com.example.discussions.viewModels.HomeViewModel
+import com.example.discussions.viewModels.PostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, PollClickInterface,
@@ -36,6 +37,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
 
     private lateinit var binding: FragmentDiscussBinding
     private lateinit var homeViewModel: HomeViewModel
+    private lateinit var postsViewModel: PostsViewModel
 
     private lateinit var discussAdapter: DiscussionsRecyclerAdapter
     private var handler = Handler(Looper.getMainLooper())
@@ -47,6 +49,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         // Inflate the layout for this fragment
         binding = FragmentDiscussBinding.inflate(inflater, container, false)
         homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+        postsViewModel = ViewModelProvider(requireActivity())[PostsViewModel::class.java]
 
         binding.discussionRv.apply {
             discussAdapter = DiscussionsRecyclerAdapter(
@@ -107,7 +110,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     }
 
     override fun onPostLike(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        homeViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
+        postsViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
@@ -123,7 +126,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
             handler.removeCallbacksAndMessages(postId)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePost(requireContext(), postId)
+                    postsViewModel.likePost(requireContext(), postId)
 
             }, postId, Constants.LIKE_DEBOUNCE_TIME)
         }
@@ -132,7 +135,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
             handler.removeCallbacksAndMessages(null)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    homeViewModel.likePost(requireContext(), postId)
+                    postsViewModel.likePost(requireContext(), postId)
 
             }, Constants.LIKE_DEBOUNCE_TIME)
         }
@@ -256,7 +259,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
      */
     private fun deletePost(postId: String) {
         //post delete api observer
-        homeViewModel.isPostDeleted.observe(this) {
+        postsViewModel.isPostDeleted.observe(this) {
             if (it != null) {
                 if (it == Constants.API_SUCCESS) Toast.makeText(
                     requireContext(),
@@ -270,7 +273,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                 ).show()
             }
         }
-        homeViewModel.deletePost(requireContext(), postId)
+        postsViewModel.deletePost(requireContext(), postId)
     }
 
     override fun onPollDelete(pollId: String) {

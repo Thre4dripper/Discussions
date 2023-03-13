@@ -2,6 +2,7 @@ package com.example.discussions.ui.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import com.example.discussions.ui.EditDetailsActivity
 import com.example.discussions.ui.SettingsActivity
 import com.example.discussions.ui.UserPostsActivity
 import com.example.discussions.ui.ZoomImageActivity
+import com.example.discussions.viewModels.PostsViewModel
 import com.example.discussions.viewModels.ProfileViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -30,6 +32,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
     private lateinit var binding: FragmentProfileBinding
     private lateinit var viewModel: ProfileViewModel
+    private lateinit var postsViewModel: PostsViewModel
 
     private lateinit var loadingDialog: AlertDialog
     private lateinit var retryDialog: AlertDialog
@@ -43,6 +46,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
         // Inflate the layout for this fragment
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
+        postsViewModel = ViewModelProvider(requireActivity())[PostsViewModel::class.java]
 
         //for launching profile image zoom activity
         binding.profileIv.setOnClickListener {
@@ -73,7 +77,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
         //swipe to refresh
         binding.profileSwipeLayout.setOnRefreshListener {
-            viewModel.refreshProfile(requireContext())
+            viewModel.refreshProfile()
             getProfile()
         }
 
@@ -146,7 +150,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
     private fun getUserPosts() {
         binding.profilePostsProgressBar.visibility = View.VISIBLE
         profileAdapter.submitList(mutableListOf())
-        viewModel.userPostsList.observe(viewLifecycleOwner) {
+        postsViewModel.userPostsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 //updating posts list recycler view
                 profileAdapter.submitList(it)
@@ -161,13 +165,13 @@ class ProfileFragment : Fragment(), PostClickInterface {
                 if (it.isEmpty()) {
                     //showing lottie animation
                     binding.profilePostsLottieNoData.visibility = View.VISIBLE
-                    val error = viewModel.isUserPostsFetched.value
+                    val error = postsViewModel.isUserPostsFetched.value
 
                     //when empty is due to network error, showing toast
-                    if (viewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
+                    if (postsViewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
                         Toast.makeText(
                             requireContext(),
-                            viewModel.isUserPostsFetched.value,
+                            postsViewModel.isUserPostsFetched.value,
                             Toast.LENGTH_SHORT
                         )
                             .show()
@@ -180,7 +184,8 @@ class ProfileFragment : Fragment(), PostClickInterface {
             }
         }
 
-        viewModel.getAllUserPosts(requireContext())
+        Log.d(TAG, "getUserPosts: ${viewModel.profileDataModel.userId}")
+        postsViewModel.getAllUserPosts(requireContext(), viewModel.profileDataModel.userId)
     }
 
     /**

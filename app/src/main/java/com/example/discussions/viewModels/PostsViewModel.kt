@@ -11,17 +11,21 @@ import com.example.discussions.models.DiscussionModel
 import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PostRepository
 
-class UserPostsViewModel : ViewModel() {
+class PostsViewModel : ViewModel() {
 
     private val TAG = "UserPostsViewModel"
 
-    //get user list directly from repository live data
-    private var _userPosts = PostRepository.userPostsList
-    val userPosts: LiveData<MutableList<DiscussionModel>?>
-        get() = _userPosts
-
     //all posts list from repository
-    private var _allPosts = DiscussionRepository.discussions
+    private var _allPostsList = DiscussionRepository.discussions
+
+    //get user list directly from repository live data
+    private var _userPostsList = PostRepository.userPostsList
+    val userPostsList: LiveData<MutableList<DiscussionModel>?>
+        get() = _userPostsList
+
+    private var _isUserPostsFetched = MutableLiveData<String?>(null)
+    val isUserPostsFetched: LiveData<String?>
+        get() = _isUserPostsFetched
 
     private var _isPostDeleted = MutableLiveData<String?>(null)
     val isPostDeleted: LiveData<String?>
@@ -35,35 +39,55 @@ class UserPostsViewModel : ViewModel() {
         var userPostsScrollToIndex = false
     }
 
+    fun getAllUserPosts(context: Context, userId: String) {
+        _isUserPostsFetched.value = null
+
+        PostRepository.getAllUserPosts(context, userId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isUserPostsFetched.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isUserPostsFetched.value = response
+                _userPostsList.value = mutableListOf()
+            }
+        })
+    }
+
     fun deletePost(context: Context, postId: String) {
         _isPostDeleted.value = null
 
         //deleting post from all posts list
-        val deletedPost = _allPosts.value!!.find { it.post?.postId == postId }
+        val deletedPost = _allPostsList.value?.find { it.post?.postId == postId }
         var deletedPostIndex = -1
         var newPostsList: MutableList<DiscussionModel>
 
         //when all posts list is not updated yet after inserting new post then deleted post can only be found in user posts list
         if (deletedPost != null) {
-            deletedPostIndex = _allPosts.value!!.indexOf(deletedPost)
-            newPostsList = _allPosts.value!!.toMutableList()
+            deletedPostIndex = _allPostsList.value!!.indexOf(deletedPost)
+            newPostsList = _allPostsList.value!!.toMutableList()
             newPostsList.removeAt(deletedPostIndex)
-            _allPosts.value = newPostsList
+            _allPostsList.value = newPostsList
         }
 
         //deleting post from user posts list
-        val deletedUserPost = _userPosts.value!!.find { it.post?.postId == postId }!!
-        val deletedUserPostIndex = _userPosts.value!!.indexOf(deletedUserPost)
-        var newUserPostsList = _userPosts.value!!.toMutableList()
-        newUserPostsList.removeAt(deletedUserPostIndex)
-        _userPosts.value = newUserPostsList
+        val deletedUserPost = _userPostsList.value?.find { it.post?.postId == postId }
+        var deletedUserPostIndex = -1
+        var newUserPostsList: MutableList<DiscussionModel>
 
+        if (deletedUserPost != null) {
+            deletedUserPostIndex = _userPostsList.value!!.indexOf(deletedUserPost)
+            newUserPostsList = _userPostsList.value!!.toMutableList()
+            newUserPostsList.removeAt(deletedUserPostIndex)
+            _userPostsList.value = newUserPostsList
+        }
 
         PostRepository.deletePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPostDeleted.postValue(Constants.API_SUCCESS)
 
-                val imageUrl = deletedUserPost.post!!.postImage
+                val imageUrl =
+                    deletedPost?.post?.postImage ?: deletedUserPost?.post?.postImage ?: ""
                 if (imageUrl.isNotEmpty()) Cloudinary.deleteImage(context, imageUrl)
             }
 
@@ -72,14 +96,17 @@ class UserPostsViewModel : ViewModel() {
 
                 if (deletedPost != null) {
                     //re-adding post when error occurs
-                    newPostsList = _allPosts.value!!.toMutableList()
+                    newPostsList = _allPostsList.value!!.toMutableList()
                     newPostsList.add(deletedPostIndex, deletedPost)
-                    _allPosts.value = newPostsList
+                    _allPostsList.value = newPostsList
                 }
 
-                newUserPostsList = _userPosts.value!!.toMutableList()
-                newUserPostsList.add(deletedUserPostIndex, deletedUserPost)
-                _userPosts.value = newUserPostsList
+                if (deletedUserPost != null) {
+                    //re-adding post when error occurs
+                    newUserPostsList = _userPostsList.value!!.toMutableList()
+                    newUserPostsList.add(deletedUserPostIndex, deletedUserPost)
+                    _userPostsList.value = newUserPostsList
+                }
             }
         })
     }
@@ -87,6 +114,7 @@ class UserPostsViewModel : ViewModel() {
     fun likePost(context: Context, postId: String) {
         _isPostLikedChanged.value = null
         userPostsScrollToIndex = false
+        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
 
         PostRepository.likePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {

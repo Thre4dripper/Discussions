@@ -20,7 +20,7 @@ import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.PostRepository
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
-import com.example.discussions.viewModels.UserPostsViewModel
+import com.example.discussions.viewModels.PostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentInterface,
@@ -28,14 +28,14 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
     private val TAG = "UserPostsActivity"
 
     private lateinit var binding: ActivityUserPostsBinding
-    private lateinit var viewModel: UserPostsViewModel
+    private lateinit var viewModel: PostsViewModel
 
     private lateinit var userPostsAdapter: DiscussionsRecyclerAdapter
     private var handler = Handler(Looper.getMainLooper())
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_user_posts)
-        viewModel = ViewModelProvider(this)[UserPostsViewModel::class.java]
+        viewModel = ViewModelProvider(this)[PostsViewModel::class.java]
 
         binding.userPostsRv.apply {
             userPostsAdapter =
@@ -54,10 +54,10 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
 
         //getting post id from intent
         val postId = intent.getStringExtra(Constants.POST_ID)!!
-        UserPostsViewModel.userPostsScrollToIndex = true
+        PostsViewModel.userPostsScrollToIndex = true
 
         //getting post index from post id
-        val postIndex = viewModel.userPosts.value?.indexOfFirst { it.post!!.postId == postId }!!
+        val postIndex = viewModel.userPostsList.value?.indexOfFirst { it.post!!.postId == postId }!!
         getUserPosts(postIndex)
     }
 
@@ -65,9 +65,10 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
      * METHOD FOR GETTING USER POSTS FROM POST REPOSITORY AND POPULATING THE RECYCLER VIEW
      */
     private fun getUserPosts(postIndex: Int) {
-        viewModel.userPosts.observe(this) {
+        //no api will be called in this case as the user posts are already fetched in the previous activity
+        viewModel.userPostsList.observe(this) {
             userPostsAdapter.submitList(it) {
-                if (UserPostsViewModel.userPostsScrollToIndex) binding.userPostsRv.scrollToPosition(
+                if (PostsViewModel.userPostsScrollToIndex) binding.userPostsRv.scrollToPosition(
                     postIndex
                 )
             }
@@ -83,7 +84,7 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
         val intent = Intent(this, CreateEditPostActivity::class.java)
         intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
         intent.putExtra(Constants.POST_ID, postId)
-        val post = viewModel.userPosts.value?.find { it.post!!.postId == postId }!!.post!!
+        val post = viewModel.userPostsList.value?.find { it.post!!.postId == postId }!!.post!!
         intent.putExtra(Constants.POST_TITLE, post.title)
         intent.putExtra(Constants.POST_CONTENT, post.content)
         intent.putExtra(Constants.POST_IMAGE, post.postImage)
