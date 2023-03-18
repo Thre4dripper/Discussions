@@ -27,13 +27,14 @@ import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.NotificationOptionsBS
 import com.example.discussions.viewModels.HomeViewModel
+import com.example.discussions.viewModels.NotificationsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class NotificationFragment : Fragment(), NotificationInterface {
     private val TAG = "NotificationFragment"
 
     private lateinit var binding: FragmentNotificationBinding
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var viewModel: NotificationsViewModel
 
     private lateinit var notificationAdapter: NotificationRecyclerAdapter
 
@@ -43,7 +44,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
     ): View {
         binding =
             DataBindingUtil.inflate(inflater, R.layout.fragment_notification, container, false)
-        homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+        viewModel = ViewModelProvider(requireActivity())[NotificationsViewModel::class.java]
 
         binding.notificationRv.apply {
             notificationAdapter = NotificationRecyclerAdapter(this@NotificationFragment)
@@ -57,7 +58,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
         }
 
         binding.notificationSwipeLayout.setOnRefreshListener {
-            homeViewModel.refreshAllNotifications(requireContext())
+            viewModel.refreshAllNotifications(requireContext())
         }
 
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
@@ -70,7 +71,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
 
     private fun getAllNotifications() {
         binding.notificationProgressBar.visibility = View.VISIBLE
-        homeViewModel.notificationsList.observe(viewLifecycleOwner) {
+        viewModel.notificationsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 notificationAdapter.submitList(it) {
                     if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop)
@@ -84,7 +85,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
                 //when empty list is loaded
                 if (it.isEmpty()) {
                     binding.notificationLottieNoData.visibility = View.VISIBLE
-                    val error = homeViewModel.isNotificationsFetched.value
+                    val error = viewModel.isNotificationsFetched.value
 
                     //when empty list is due to network error
                     if (error != Constants.API_SUCCESS && error != null) {
@@ -103,11 +104,11 @@ class NotificationFragment : Fragment(), NotificationInterface {
             }
         }
 
-        homeViewModel.getAllNotifications(requireContext())
+        viewModel.getAllNotifications(requireContext())
     }
 
     private fun setDeleteAllNotificationsButton() {
-        homeViewModel.isAllNotificationsDeleted.observe(viewLifecycleOwner) {
+        viewModel.isAllNotificationsDeleted.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_SUCCESS) {
                     Toast.makeText(
@@ -128,7 +129,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
         }
 
         binding.notificationClearAllBtn.setOnClickListener {
-            if (homeViewModel.notificationsList.value == null || homeViewModel.notificationsList.value!!.isEmpty()) {
+            if (viewModel.notificationsList.value == null || viewModel.notificationsList.value!!.isEmpty()) {
                 Toast.makeText(requireContext(), "No notifications to clear", Toast.LENGTH_SHORT)
                     .show()
                 return@setOnClickListener
@@ -138,7 +139,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
                 .setTitle("Delete All Notifications")
                 .setMessage("Are you sure you want to delete all notifications?")
                 .setPositiveButton("Yes") { _, _ ->
-                    homeViewModel.deleteAllNotifications(requireContext())
+                    viewModel.deleteAllNotifications(requireContext())
                 }
                 .setNegativeButton("No") { _, _ -> }
                 .setCancelable(false)
@@ -280,7 +281,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
     }
 
     override fun onNotificationDelete(notificationId: String) {
-        homeViewModel.isNotificationDeleted.observe(viewLifecycleOwner) {
+        viewModel.isNotificationDeleted.observe(viewLifecycleOwner) {
 
             if (it != null && it != Constants.API_SUCCESS) {
                 Toast.makeText(
@@ -292,11 +293,11 @@ class NotificationFragment : Fragment(), NotificationInterface {
             }
         }
 
-        homeViewModel.deleteNotificationById(requireContext(), notificationId)
+        viewModel.deleteNotificationById(requireContext(), notificationId)
     }
 
     override fun onNotificationMarkAsRead(notificationId: String) {
-        homeViewModel.isNotificationRead.observe(viewLifecycleOwner) {
+        viewModel.isNotificationRead.observe(viewLifecycleOwner) {
             if (it != null && it != Constants.API_SUCCESS) {
                 Toast.makeText(
                     requireContext(),
@@ -315,6 +316,6 @@ class NotificationFragment : Fragment(), NotificationInterface {
             notificationAdapter.notifyItemChanged(position)
         }
 
-        homeViewModel.readNotification(requireContext(), notificationId)
+        viewModel.readNotification(requireContext(), notificationId)
     }
 }
