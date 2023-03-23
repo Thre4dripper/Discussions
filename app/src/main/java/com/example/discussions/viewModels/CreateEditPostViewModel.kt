@@ -29,7 +29,7 @@ class CreateEditPostViewModel : ViewModel() {
     val isPostCreatedOrUpdated: LiveData<String?>
         get() = _isPostCreatedOrUpdated
 
-    private var _allPosts = DiscussionRepository.discussions
+    private var _discussionsPosts = DiscussionRepository.discussions
     private var _userPosts = PostRepository.userPostsList
 
 
@@ -81,7 +81,7 @@ class CreateEditPostViewModel : ViewModel() {
 
                     //TODO its not necessary that user post is in all posts list
                     //getting old post from all posts list and user posts list
-                    val oldPost = _allPosts.value?.find { it.post?.postId == postId }!!
+                    val oldPost = _discussionsPosts.value?.find { it.post?.postId == postId }!!
                     val oldUserPost = _userPosts.value?.find { it.post?.postId == postId }!!
 
                     //creating copy of the post from all posts list
@@ -107,13 +107,13 @@ class CreateEditPostViewModel : ViewModel() {
                     )
 
                     //updating the post in all posts list and user posts list for real time update in the UI
-                    val newAllPosts = _allPosts.value?.toMutableList()
+                    val newAllPosts = _discussionsPosts.value?.toMutableList()
                     val newUserPosts = _userPosts.value?.toMutableList()
 
                     newAllPosts?.set(newAllPosts.indexOf(oldPost), newDiscussionPost)
                     newUserPosts?.set(newUserPosts.indexOf(oldUserPost), newUserDiscussionPost)
 
-                    _allPosts.postValue(newAllPosts)
+                    _discussionsPosts.postValue(newAllPosts)
                     _userPosts.postValue(newUserPosts)
                 }
 

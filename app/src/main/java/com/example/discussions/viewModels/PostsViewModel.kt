@@ -16,7 +16,7 @@ class PostsViewModel : ViewModel() {
     private val TAG = "UserPostsViewModel"
 
     //all posts list from repository
-    private var _allPostsList = DiscussionRepository.discussions
+    private var discussionsPostsList = DiscussionRepository.discussions
 
     //get user list directly from repository live data
     private var _userPostsList = PostRepository.userPostsList
@@ -66,16 +66,16 @@ class PostsViewModel : ViewModel() {
         HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
 
         //deleting post from all posts list
-        val deletedPost = _allPostsList.value?.find { it.post?.postId == postId }
+        val deletedPost = discussionsPostsList.value?.find { it.post?.postId == postId }
         var deletedPostIndex = -1
         var newPostsList: MutableList<DiscussionModel>
 
         //when all posts list is not updated yet after inserting new post then deleted post can only be found in user posts list
         if (deletedPost != null) {
-            deletedPostIndex = _allPostsList.value!!.indexOf(deletedPost)
-            newPostsList = _allPostsList.value!!.toMutableList()
+            deletedPostIndex = discussionsPostsList.value!!.indexOf(deletedPost)
+            newPostsList = discussionsPostsList.value!!.toMutableList()
             newPostsList.removeAt(deletedPostIndex)
-            _allPostsList.value = newPostsList
+            discussionsPostsList.value = newPostsList
         }
 
         //deleting post from user posts list
@@ -104,9 +104,9 @@ class PostsViewModel : ViewModel() {
 
                 if (deletedPost != null) {
                     //re-adding post when error occurs
-                    newPostsList = _allPostsList.value!!.toMutableList()
+                    newPostsList = discussionsPostsList.value!!.toMutableList()
                     newPostsList.add(deletedPostIndex, deletedPost)
-                    _allPostsList.value = newPostsList
+                    discussionsPostsList.value = newPostsList
                 }
 
                 if (deletedUserPost != null) {

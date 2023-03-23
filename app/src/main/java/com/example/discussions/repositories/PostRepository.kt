@@ -194,11 +194,11 @@ class PostRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            val oldAllPostsList = DiscussionRepository.discussions.value
+            val oldDiscussionsPostsList = DiscussionRepository.discussions.value
             val oldUserPostsList = userPostsList.value
 
-            val updatedAllPostsList = likePostInData(oldAllPostsList, postId)
-            DiscussionRepository.discussions.postValue(updatedAllPostsList)
+            val updatedDiscussionsPostsList = likePostInData(oldDiscussionsPostsList, postId)
+            DiscussionRepository.discussions.postValue(updatedDiscussionsPostsList)
 
             val updatedUserPostsList = likePostInData(oldUserPostsList, postId)
             userPostsList.postValue(updatedUserPostsList)
@@ -210,7 +210,7 @@ class PostRepository {
 
                 override fun onError(response: String) {
                     // Revert the changes
-                    DiscussionRepository.discussions.postValue(oldAllPostsList)
+                    DiscussionRepository.discussions.postValue(oldDiscussionsPostsList)
                     userPostsList.postValue(oldUserPostsList)
 
                     if (response.contains("com.android.volley.TimeoutError")) {
