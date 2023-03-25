@@ -73,31 +73,6 @@ class PollsViewModel : ViewModel() {
         userPollsScrollToIndex = false
         HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
 
-        //deleting poll from all polls list
-        val deletedPoll = _allPollsList.value?.find { it.poll!!.pollId == pollId }
-        var deletedPollIndex = -1
-        var newPollsList: MutableList<DiscussionModel>
-
-        //when all polls list is not updated yet after inserting new poll then deleted poll can only be found in user polls list
-        if (deletedPoll != null) {
-            deletedPollIndex = _allPollsList.value!!.indexOf(deletedPoll)
-            newPollsList = _allPollsList.value!!.toMutableList()
-            newPollsList.removeAt(deletedPollIndex)
-            _allPollsList.value = newPollsList
-        }
-
-        //deleting poll from user polls list
-        val deletedUserPoll = _userPollsList.value?.find { it.poll!!.pollId == pollId }
-        var deletedUserPollIndex = -1
-        var newUserPollsList: MutableList<DiscussionModel>
-
-        if (deletedUserPoll != null) {
-            deletedUserPollIndex = _userPollsList.value!!.indexOf(deletedUserPoll)
-            newUserPollsList = _userPollsList.value!!.toMutableList()
-            newUserPollsList.removeAt(deletedUserPollIndex)
-            _userPollsList.value = newUserPollsList
-        }
-
         PollRepository.deletePoll(context, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPollDeleted.postValue(Constants.API_SUCCESS)
@@ -105,20 +80,6 @@ class PollsViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isPollDeleted.postValue(Constants.API_FAILED)
-
-                if (deletedPoll != null) {
-                    //re-adding poll when error occurs
-                    newPollsList = _allPollsList.value!!.toMutableList()
-                    newPollsList.add(deletedPollIndex, deletedPoll)
-                    _allPollsList.value = newPollsList
-                }
-
-                if (deletedUserPoll != null) {
-                    //re-adding poll when error occurs
-                    newUserPollsList = _userPollsList.value!!.toMutableList()
-                    newUserPollsList.add(deletedUserPollIndex, deletedUserPoll)
-                    _userPollsList.value = newUserPollsList
-                }
             }
         })
     }

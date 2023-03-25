@@ -135,12 +135,25 @@ class PostRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
+            val oldDiscussionsPostsList = DiscussionRepository.discussions.value
+            val oldUserPostsList = userPostsList.value
+
+            val deletedDiscussionPostList = deletePostInData(oldDiscussionsPostsList, postId)
+            DiscussionRepository.discussions.postValue(deletedDiscussionPostList)
+
+            val deletedUserPostsList = deletePostInData(oldUserPostsList, postId)
+            userPostsList.postValue(deletedUserPostsList)
+
             DeletePostApi.deletePost(context, postId, token, object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     callback.onSuccess(response)
                 }
 
                 override fun onError(response: String) {
+                    // Revert the changes if the delete post api fails
+                    DiscussionRepository.discussions.postValue(oldDiscussionsPostsList)
+                    userPostsList.postValue(oldUserPostsList)
+
                     if (response.contains("com.android.volley.TimeoutError")) {
                         callback.onError("Time Out")
                     } else if (response.contains("com.android.volley.NoConnectionError")) {
@@ -197,11 +210,11 @@ class PostRepository {
             val oldDiscussionsPostsList = DiscussionRepository.discussions.value
             val oldUserPostsList = userPostsList.value
 
-            val updatedDiscussionsPostsList = likePostInData(oldDiscussionsPostsList, postId)
-            DiscussionRepository.discussions.postValue(updatedDiscussionsPostsList)
+            val likedDiscussionPostList = likePostInData(oldDiscussionsPostsList, postId)
+            DiscussionRepository.discussions.postValue(likedDiscussionPostList)
 
-            val updatedUserPostsList = likePostInData(oldUserPostsList, postId)
-            userPostsList.postValue(updatedUserPostsList)
+            val likedUserPostsList = likePostInData(oldUserPostsList, postId)
+            userPostsList.postValue(likedUserPostsList)
 
             PostLikeApi.likePost(context, postId, token, object : ResponseCallback {
                 override fun onSuccess(response: String) {
@@ -259,8 +272,24 @@ class PostRepository {
             } else {
                 postsList
             }
+        }
 
+        private fun deletePostInData(
+            postsList: MutableList<DiscussionModel>?, postId: String
+        ): MutableList<DiscussionModel>? {
+            val deletedPost = postsList?.find { it.post?.postId == postId }
+            val deletedPostIndex: Int
+            val newPostsList: MutableList<DiscussionModel>?
 
+            return if (deletedPost != null) {
+                deletedPostIndex = postsList.indexOf(deletedPost)
+                newPostsList = postsList.toMutableList()
+                newPostsList.removeAt(deletedPostIndex)
+
+                newPostsList
+            } else {
+                postsList
+            }
         }
     }
 }

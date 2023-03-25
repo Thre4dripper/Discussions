@@ -65,56 +65,21 @@ class PostsViewModel : ViewModel() {
         userPostsScrollToIndex = false
         HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
 
-        //deleting post from all posts list
+        //deleted post for deleting image
         val deletedPost = discussionsPostsList.value?.find { it.post?.postId == postId }
-        var deletedPostIndex = -1
-        var newPostsList: MutableList<DiscussionModel>
-
-        //when all posts list is not updated yet after inserting new post then deleted post can only be found in user posts list
-        if (deletedPost != null) {
-            deletedPostIndex = discussionsPostsList.value!!.indexOf(deletedPost)
-            newPostsList = discussionsPostsList.value!!.toMutableList()
-            newPostsList.removeAt(deletedPostIndex)
-            discussionsPostsList.value = newPostsList
-        }
-
-        //deleting post from user posts list
-        val deletedUserPost = _userPostsList.value?.find { it.post?.postId == postId }
-        var deletedUserPostIndex = -1
-        var newUserPostsList: MutableList<DiscussionModel>
-
-        if (deletedUserPost != null) {
-            deletedUserPostIndex = _userPostsList.value!!.indexOf(deletedUserPost)
-            newUserPostsList = _userPostsList.value!!.toMutableList()
-            newUserPostsList.removeAt(deletedUserPostIndex)
-            _userPostsList.value = newUserPostsList
-        }
+            ?: userPostsList.value?.find { it.post?.postId == postId }!!
 
         PostRepository.deletePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isPostDeleted.postValue(Constants.API_SUCCESS)
 
                 val imageUrl =
-                    deletedPost?.post?.postImage ?: deletedUserPost?.post?.postImage ?: ""
+                    deletedPost.post?.postImage ?: ""
                 if (imageUrl.isNotEmpty()) Cloudinary.deleteImage(context, imageUrl)
             }
 
             override fun onError(response: String) {
                 _isPostDeleted.postValue(Constants.API_FAILED)
-
-                if (deletedPost != null) {
-                    //re-adding post when error occurs
-                    newPostsList = discussionsPostsList.value!!.toMutableList()
-                    newPostsList.add(deletedPostIndex, deletedPost)
-                    discussionsPostsList.value = newPostsList
-                }
-
-                if (deletedUserPost != null) {
-                    //re-adding post when error occurs
-                    newUserPostsList = _userPostsList.value!!.toMutableList()
-                    newUserPostsList.add(deletedUserPostIndex, deletedUserPost)
-                    _userPostsList.value = newUserPostsList
-                }
             }
         })
     }

@@ -175,12 +175,25 @@ class PollRepository {
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
+            val oldDiscussionsPollsList = DiscussionRepository.discussions.value
+            val oldUserPollsList = userPollsList.value
+
+            val deletedDiscussionPollsList = deletePollInData(oldDiscussionsPollsList, pollId)
+            DiscussionRepository.discussions.postValue(deletedDiscussionPollsList)
+
+            val deletedUserPollsList = deletePollInData(oldUserPollsList, pollId)
+            userPollsList.postValue(deletedUserPollsList)
+
             DeletePollApi.deletePoll(context, pollId, token, object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     callback.onSuccess(response)
                 }
 
                 override fun onError(response: String) {
+                    // Revert the changes if the delete poll api fails
+                    DiscussionRepository.discussions.postValue(oldDiscussionsPollsList)
+                    userPollsList.postValue(oldUserPollsList)
+
                     if (response.contains("com.android.volley.TimeoutError")) {
                         callback.onError("Time Out")
                     } else if (response.contains("com.android.volley.NoConnectionError")) {
@@ -293,6 +306,24 @@ class PollRepository {
 
                 val discussionPoll = likedPoll.copy(poll = poll)
                 newPollsList[likedPollIndex] = discussionPoll
+
+                newPollsList
+            } else {
+                pollsList
+            }
+        }
+
+        private fun deletePollInData(
+            pollsList: MutableList<DiscussionModel>?, pollId: String
+        ): MutableList<DiscussionModel>? {
+            val deletedPoll = pollsList?.find { it.poll?.pollId == pollId }
+            val deletedPollIndex: Int
+            val newPollsList: MutableList<DiscussionModel>?
+
+            return if (deletedPoll != null) {
+                deletedPollIndex = pollsList.indexOf(deletedPoll)
+                newPollsList = pollsList.toMutableList()
+                newPollsList.removeAt(deletedPollIndex)
 
                 newPollsList
             } else {
