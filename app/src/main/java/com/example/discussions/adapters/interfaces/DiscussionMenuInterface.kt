@@ -4,9 +4,10 @@ import com.example.discussions.models.PollModel
 import com.example.discussions.models.PostModel
 
 interface DiscussionMenuInterface {
-    fun onPostEdit(postId: String) {}
-    fun onPostDelete(postId: String) {}
-    fun onPollDelete(pollId: String) {}
-    fun onPostMenuClicked(post: PostModel) {}
-    fun onPollMenuClicked(poll: PollModel) {}
+    fun onMenuClicked(post: PostModel?, poll: PollModel?, type: Int)
+    fun onMenuEdit(postId: String?, pollId: String?, type: Int)
+    fun onMenuDelete(postId: String?, pollId: String?, type: Int)
+
+    //TODO add onMenuReport
+    //TODO add onMenuBookmark
 }

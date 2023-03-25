@@ -16,6 +16,7 @@ import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.ActivityUserPostsBinding
+import com.example.discussions.models.PollModel
 import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.PostRepository
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
@@ -75,12 +76,70 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
         }
     }
 
-    override fun onPostMenuClicked(post: PostModel) {
+
+    override fun onPostClick(postId: String) {
+        val intent = Intent(this, PostDetailsActivity::class.java)
+        intent.putExtra(Constants.POST_ID, postId)
+        startActivity(intent)
+    }
+
+    override fun onLike(
+        postId: String?,
+        pollId: String?,
+        type: Int,
+        isLiked: Boolean,
+        btnLikeStatus: Boolean
+    ) {
+        /*IN USER POSTS ACTIVITY, THE POST ID IS NOT NULL AND THE TYPE IS ALWAYS POST*/
+
+        viewModel.isPostLikedChanged.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_FAILED) {
+                    Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+                } else if (it == Constants.AUTH_FAILURE_ERROR) {
+                    setResult(Constants.RESULT_LOGOUT)
+                    finish()
+                }
+            }
+        }
+
+        //debouncing the like button above android P
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            handler.removeCallbacksAndMessages(postId)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    viewModel.likePost(this, postId!!)
+
+            }, postId, Constants.LIKE_DEBOUNCE_TIME)
+        }
+        //debouncing the like button below android P
+        else {
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus)
+                    viewModel.likePost(this, postId!!)
+
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
+    }
+
+    override fun onComment(postId: String?, pollId: String?, type: Int) {
+        /*IN USER POSTS ACTIVITY, THE POST ID IS NOT NULL AND THE TYPE IS ALWAYS POST*/
+
+        val count =
+            PostRepository.userPostsList.value?.find { it.post!!.postId == postId }?.post?.comments
+                ?: 0
+
+        val commentsBS = CommentsBS(postId!!, Constants.COMMENT_TYPE_POST, count)
+        commentsBS.show(this.supportFragmentManager, commentsBS.tag)
+    }
+
+    override fun onMenuClicked(post: PostModel?, poll: PollModel?, type: Int) {
         val optionsBs = DiscussionOptionsBS(post, null, this@UserPostsActivity)
         optionsBs.show(supportFragmentManager, optionsBs.tag)
     }
 
-    override fun onPostEdit(postId: String) {
+    override fun onMenuEdit(postId: String?, pollId: String?, type: Int) {
         val intent = Intent(this, CreateEditPostActivity::class.java)
         intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
         intent.putExtra(Constants.POST_ID, postId)
@@ -91,12 +150,14 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
         startActivity(intent)
     }
 
-    override fun onPostDelete(postId: String) {
+    override fun onMenuDelete(postId: String?, pollId: String?, type: Int) {
+        /*IN USER POSTS ACTIVITY, THE POST ID IS NOT NULL AND THE TYPE IS ALWAYS POST*/
+
         MaterialAlertDialogBuilder(this).setTitle("Delete")
             .setMessage("Are you sure you want to delete this post?")
             .setPositiveButton("Confirm") { dialog, _ ->
                 dialog.dismiss()
-                deletePost(postId)
+                deletePost(postId!!)
             }.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }.show()
@@ -122,50 +183,5 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
             }
         }
         viewModel.deletePost(this, postId)
-    }
-
-    override fun onPostLike(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        viewModel.isPostLikedChanged.observe(this) {
-            if (it != null) {
-                if (it == Constants.API_FAILED) {
-                    Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-                } else if (it == Constants.AUTH_FAILURE_ERROR) {
-                    setResult(Constants.RESULT_LOGOUT)
-                    finish()
-                }
-            }
-        }
-
-        //debouncing the like button above android P
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            handler.removeCallbacksAndMessages(postId)
-            handler.postDelayed({
-                if (isLiked == btnLikeStatus)
-                    viewModel.likePost(this, postId)
-
-            }, postId, Constants.LIKE_DEBOUNCE_TIME)
-        }
-        //debouncing the like button below android P
-        else {
-            handler.removeCallbacksAndMessages(null)
-            handler.postDelayed({
-                if (isLiked == btnLikeStatus)
-                    viewModel.likePost(this, postId)
-
-            }, Constants.LIKE_DEBOUNCE_TIME)
-        }
-    }
-
-    override fun onPostComment(postId: String) {
-        val count =
-            PostRepository.userPostsList.value?.find { it.post!!.postId == postId }?.post?.comments
-                ?: 0
-
-        val commentsBS = CommentsBS(postId, Constants.COMMENT_TYPE_POST, count)
-        commentsBS.show(this.supportFragmentManager, commentsBS.tag)
-    }
-
-    override fun onPostClick(postId: String) {
-
     }
 }

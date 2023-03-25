@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.discussions.MyApplication
+import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.databinding.BsDiscussionOptionsBinding
 import com.example.discussions.models.PollModel
@@ -54,17 +55,29 @@ class DiscussionOptionsBS(
 
         binding.optionEditDiscussionTv.setOnClickListener {
             if (post != null) {
-                discussionMenuInterface.onPostEdit(post!!.postId)
+                discussionMenuInterface.onMenuEdit(
+                    post!!.postId,
+                    null,
+                    DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST
+                )
             }
             dismiss()
         }
 
         binding.optionDeleteDiscussionTv.setOnClickListener {
             if (post != null) {
-                discussionMenuInterface.onPostDelete(post!!.postId)
+                discussionMenuInterface.onMenuDelete(
+                    post!!.postId,
+                    null,
+                    DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST
+                )
             }
             if (poll != null) {
-                discussionMenuInterface.onPollDelete(poll!!.pollId)
+                discussionMenuInterface.onMenuDelete(
+                    null,
+                    poll!!.pollId,
+                    DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL
+                )
             }
             dismiss()
         }

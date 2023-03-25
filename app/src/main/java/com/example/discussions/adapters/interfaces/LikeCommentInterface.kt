@@ -1,8 +1,13 @@
 package com.example.discussions.adapters.interfaces
 
 interface LikeCommentInterface {
-    fun onPostLike(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {}
-    fun onPostComment(postId: String) {}
-    fun onPollLike(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {}
-    fun onPollComment(pollId: String) {}
+    fun onLike(
+        postId: String?,
+        pollId: String?,
+        type: Int,
+        isLiked: Boolean,
+        btnLikeStatus: Boolean
+    )
+
+    fun onComment(postId: String?, pollId: String?, type: Int)
 }

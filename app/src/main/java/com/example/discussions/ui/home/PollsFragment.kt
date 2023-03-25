@@ -18,6 +18,7 @@ import com.example.discussions.adapters.interfaces.LikeCommentInterface
 import com.example.discussions.adapters.interfaces.PollClickInterface
 import com.example.discussions.databinding.FragmentPollsBinding
 import com.example.discussions.models.PollModel
+import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.PollRepository
 import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PollResultsActivity
@@ -102,23 +103,6 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
         viewModel.getAllUserPolls(requireContext())
     }
 
-    /**
-     * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
-     */
-    private fun deletePoll(pollId: String) {
-        //post delete api observer
-        viewModel.isPollDeleted.observe(this) {
-            if (it != null) {
-                if (it == Constants.API_SUCCESS)
-                    Toast.makeText(requireContext(), "Poll Deleted", Toast.LENGTH_SHORT).show()
-                else if (it == Constants.API_FAILED)
-                    Toast.makeText(requireContext(), "Problem Deleting Poll", Toast.LENGTH_SHORT)
-                        .show()
-            }
-        }
-        viewModel.deletePoll(requireContext(), pollId)
-    }
-
     override fun onPollVote(pollId: String, optionId: String) {
         viewModel.isPollVoted.observe(this) {
             if (it != null) {
@@ -143,7 +127,15 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
         startActivity(intent)
     }
 
-    override fun onPollLike(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+    override fun onLike(
+        postId: String?,
+        pollId: String?,
+        type: Int,
+        isLiked: Boolean,
+        btnLikeStatus: Boolean
+    ) {
+        /*IN USER POLLS ACTIVITY, THE POLL ID IS NOT NULL AND THE TYPE IS ALWAYS POLL*/
+
         viewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
             if (it != null) {
                 if (it == Constants.API_FAILED) {
@@ -160,7 +152,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
             handler.removeCallbacksAndMessages(pollId)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    viewModel.likePoll(requireContext(), pollId)
+                    viewModel.likePoll(requireContext(), pollId!!)
 
             }, pollId, Constants.LIKE_DEBOUNCE_TIME)
         }
@@ -169,37 +161,65 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
             handler.removeCallbacksAndMessages(null)
             handler.postDelayed({
                 if (isLiked == btnLikeStatus)
-                    viewModel.likePoll(requireContext(), pollId)
+                    viewModel.likePoll(requireContext(), pollId!!)
 
             }, Constants.LIKE_DEBOUNCE_TIME)
         }
     }
 
-    override fun onPollComment(pollId: String) {
+    override fun onComment(postId: String?, pollId: String?, type: Int) {
+        /*IN USER POLLS ACTIVITY, THE POLL ID IS NOT NULL AND THE TYPE IS ALWAYS POLL*/
+
         val count =
             PollRepository.userPollsList.value?.find { it.poll!!.pollId == pollId }?.poll?.comments
                 ?: 0
 
-        val commentsBS = CommentsBS(pollId, Constants.COMMENT_TYPE_POLL, count)
+        val commentsBS = CommentsBS(pollId!!, Constants.COMMENT_TYPE_POLL, count)
         commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
     }
 
-    override fun onPollMenuClicked(poll: PollModel) {
+    override fun onMenuClicked(post: PostModel?, poll: PollModel?, type: Int) {
+        /*IN USER POLLS ACTIVITY, THE POLL IS NOT NULL AND THE TYPE IS ALWAYS POLL*/
+
         val optionsBS = DiscussionOptionsBS(null, poll, this@PollsFragment)
         optionsBS.show(requireActivity().supportFragmentManager, optionsBS.tag)
     }
 
-    override fun onPollDelete(pollId: String) {
+    override fun onMenuEdit(postId: String?, pollId: String?, type: Int) {
+        //Edit not allowed for polls
+    }
+
+    override fun onMenuDelete(postId: String?, pollId: String?, type: Int) {
+        /*IN USER POLLS ACTIVITY, THE POLL ID IS NOT NULL AND THE TYPE IS ALWAYS POLL*/
+
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("Delete")
             .setMessage("Are you sure you want to delete this poll?")
             .setPositiveButton("Confirm") { dialog, _ ->
                 dialog.dismiss()
-                deletePoll(pollId)
+                deletePoll(pollId!!)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }
             .show()
+    }
+
+
+    /**
+     * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
+     */
+    private fun deletePoll(pollId: String) {
+        //post delete api observer
+        viewModel.isPollDeleted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS)
+                    Toast.makeText(requireContext(), "Poll Deleted", Toast.LENGTH_SHORT).show()
+                else if (it == Constants.API_FAILED)
+                    Toast.makeText(requireContext(), "Problem Deleting Poll", Toast.LENGTH_SHORT)
+                        .show()
+            }
+        }
+        viewModel.deletePoll(requireContext(), pollId)
     }
 }

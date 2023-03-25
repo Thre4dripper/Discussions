@@ -45,8 +45,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     private var handler = Handler(Looper.getMainLooper())
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentDiscussBinding.inflate(inflater, container, false)
@@ -79,8 +78,9 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         homeViewModel.discussions.observe(viewLifecycleOwner) {
             if (it != null) {
                 discussAdapter.submitList(it) {
-                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop)
-                        binding.discussionRv.scrollToPosition(0)
+                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop) binding.discussionRv.scrollToPosition(
+                        0
+                    )
                 }
                 //hiding all loading
                 binding.discussSwipeLayout.isRefreshing = false
@@ -98,8 +98,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                             requireContext(),
                             homeViewModel.isDiscussionsFetched.value,
                             Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        ).show()
                     }
                     if (error == Constants.AUTH_FAILURE_ERROR) {
                         requireActivity().setResult(Constants.RESULT_LOGOUT)
@@ -112,88 +111,6 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         homeViewModel.getAllDiscussions(requireContext(), 1)
     }
 
-    override fun onPostLike(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        postsViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
-            if (it != null) {
-                if (it == Constants.API_FAILED) {
-                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                } else if (it == Constants.AUTH_FAILURE_ERROR) {
-                    requireActivity().setResult(Constants.RESULT_LOGOUT)
-                    requireActivity().finish()
-                }
-            }
-        }
-
-        //debouncing the like button above android P
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            handler.removeCallbacksAndMessages(postId)
-            handler.postDelayed({
-                if (isLiked == btnLikeStatus)
-                    postsViewModel.likePost(requireContext(), postId)
-
-            }, postId, Constants.LIKE_DEBOUNCE_TIME)
-        }
-        //debouncing the like button below android P
-        else {
-            handler.removeCallbacksAndMessages(null)
-            handler.postDelayed({
-                if (isLiked == btnLikeStatus)
-                    postsViewModel.likePost(requireContext(), postId)
-
-            }, Constants.LIKE_DEBOUNCE_TIME)
-        }
-    }
-
-    override fun onPostComment(postId: String) {
-        val count =
-            DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.post?.comments
-                ?: 0
-
-        val commentsBS = CommentsBS(postId, Constants.COMMENT_TYPE_POST, count)
-        commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
-    }
-
-    override fun onPollLike(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
-        pollsViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
-            if (it != null) {
-                if (it == Constants.API_FAILED) {
-                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-                } else if (it == Constants.AUTH_FAILURE_ERROR) {
-                    requireActivity().setResult(Constants.RESULT_LOGOUT)
-                    requireActivity().finish()
-                }
-            }
-        }
-
-        //debouncing the like button above android P
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            handler.removeCallbacksAndMessages(pollId)
-            handler.postDelayed({
-                if (isLiked == btnLikeStatus)
-                    pollsViewModel.likePoll(requireContext(), pollId)
-
-            }, pollId, Constants.LIKE_DEBOUNCE_TIME)
-        }
-        //debouncing the like button below android P
-        else {
-            handler.removeCallbacksAndMessages(null)
-            handler.postDelayed({
-                if (isLiked == btnLikeStatus)
-                    pollsViewModel.likePoll(requireContext(), pollId)
-
-            }, Constants.LIKE_DEBOUNCE_TIME)
-        }
-    }
-
-    override fun onPollComment(pollId: String) {
-        val count =
-            DiscussionRepository.discussions.value?.find { it.poll?.pollId == pollId }?.poll?.comments
-                ?: 0
-
-        val commentsBS = CommentsBS(pollId, Constants.COMMENT_TYPE_POLL, count)
-        commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
-    }
-
     override fun onPostClick(postId: String) {
         val intent = Intent(requireContext(), PostDetailsActivity::class.java)
         intent.putExtra(Constants.POST_ID, postId)
@@ -203,9 +120,11 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
     override fun onPollVote(pollId: String, optionId: String) {
         pollsViewModel.isPollVoted.observe(this) {
             if (it != null) {
-                if (it == Constants.API_FAILED)
-                    Toast.makeText(requireContext(), "Problem Voting Poll", Toast.LENGTH_SHORT)
-                        .show()
+                if (it == Constants.API_FAILED) Toast.makeText(
+                    requireContext(),
+                    "Problem Voting Poll",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -224,18 +143,128 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         startActivity(intent)
     }
 
-
-    override fun onPostMenuClicked(post: PostModel) {
-        val optionsBs = DiscussionOptionsBS(post, null, this@DiscussFragment)
-        optionsBs.show(requireActivity().supportFragmentManager, optionsBs.tag)
+    override fun onLike(
+        postId: String?, pollId: String?, type: Int, isLiked: Boolean, btnLikeStatus: Boolean
+    ) {
+        if (type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST) likePost(
+            postId!!,
+            isLiked,
+            btnLikeStatus
+        )
+        else if (type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL) likePoll(
+            pollId!!,
+            isLiked,
+            btnLikeStatus
+        )
     }
 
-    override fun onPollMenuClicked(poll: PollModel) {
-        val optionsBs = DiscussionOptionsBS(null, poll, this@DiscussFragment)
-        optionsBs.show(requireActivity().supportFragmentManager, optionsBs.tag)
+    /**
+     * METHOD FOR SENDING POST LIKE REQ TO THE VIEW MODEL
+     */
+    private fun likePost(postId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+        postsViewModel.isPostLikedChanged.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_FAILED) {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                } else if (it == Constants.AUTH_FAILURE_ERROR) {
+                    requireActivity().setResult(Constants.RESULT_LOGOUT)
+                    requireActivity().finish()
+                }
+            }
+        }
+
+        //debouncing the like button above android P
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            handler.removeCallbacksAndMessages(postId)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus) postsViewModel.likePost(requireContext(), postId)
+
+            }, postId, Constants.LIKE_DEBOUNCE_TIME)
+        }
+        //debouncing the like button below android P
+        else {
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus) postsViewModel.likePost(requireContext(), postId)
+
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
     }
 
-    override fun onPostEdit(postId: String) {
+    /**
+     * METHOD FOR SENDING POLL LIKE REQ TO THE VIEW MODEL
+     */
+    private fun likePoll(pollId: String, isLiked: Boolean, btnLikeStatus: Boolean) {
+        pollsViewModel.isPollLikedChanged.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it == Constants.API_FAILED) {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                } else if (it == Constants.AUTH_FAILURE_ERROR) {
+                    requireActivity().setResult(Constants.RESULT_LOGOUT)
+                    requireActivity().finish()
+                }
+            }
+        }
+
+        //debouncing the like button above android P
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            handler.removeCallbacksAndMessages(pollId)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus) pollsViewModel.likePoll(requireContext(), pollId)
+
+            }, pollId, Constants.LIKE_DEBOUNCE_TIME)
+        }
+        //debouncing the like button below android P
+        else {
+            handler.removeCallbacksAndMessages(null)
+            handler.postDelayed({
+                if (isLiked == btnLikeStatus) pollsViewModel.likePoll(requireContext(), pollId)
+
+            }, Constants.LIKE_DEBOUNCE_TIME)
+        }
+    }
+
+    override fun onComment(postId: String?, pollId: String?, type: Int) {
+        if (type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST) commentPost(postId!!)
+        else if (type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL) commentPoll(pollId!!)
+    }
+
+    /**
+     * METHOD FOR OPENING COMMENTS BOTTOM SHEET FOR POST
+     */
+    private fun commentPost(postId: String) {
+        val count =
+            DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.post?.comments
+                ?: 0
+
+        val commentsBS = CommentsBS(postId, Constants.COMMENT_TYPE_POST, count)
+        commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
+    }
+
+    /**
+     * METHOD FOR OPENING COMMENTS BOTTOM SHEET FOR POLL
+     */
+    private fun commentPoll(pollId: String) {
+        val count =
+            DiscussionRepository.discussions.value?.find { it.poll?.pollId == pollId }?.poll?.comments
+                ?: 0
+
+        val commentsBS = CommentsBS(pollId, Constants.COMMENT_TYPE_POLL, count)
+        commentsBS.show(requireActivity().supportFragmentManager, commentsBS.tag)
+    }
+
+    override fun onMenuClicked(post: PostModel?, poll: PollModel?, type: Int) {
+        val optionsBS: DiscussionOptionsBS
+        if (type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST) {
+            optionsBS = DiscussionOptionsBS(post, null, this@DiscussFragment)
+            optionsBS.show(requireActivity().supportFragmentManager, optionsBS.tag)
+        } else if (type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL) {
+            optionsBS = DiscussionOptionsBS(null, poll, this@DiscussFragment)
+            optionsBS.show(requireActivity().supportFragmentManager, optionsBS.tag)
+        }
+    }
+
+    override fun onMenuEdit(postId: String?, pollId: String?, type: Int) {
         val intent = Intent(requireContext(), CreateEditPostActivity::class.java)
         intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
         intent.putExtra(Constants.POST_ID, postId)
@@ -246,12 +275,14 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         startActivity(intent)
     }
 
-    override fun onPostDelete(postId: String) {
+    override fun onMenuDelete(postId: String?, pollId: String?, type: Int) {
         MaterialAlertDialogBuilder(requireContext()).setTitle("Delete")
             .setMessage("Are you sure you want to delete this post?")
             .setPositiveButton("Confirm") { dialog, _ ->
                 dialog.dismiss()
-                deletePost(postId)
+
+                if (type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST) deletePost(postId!!)
+                else if (type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL) deletePoll(pollId!!)
             }.setNegativeButton("Cancel") { dialog, _ ->
                 dialog.dismiss()
             }.show()
@@ -265,29 +296,14 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         postsViewModel.isPostDeleted.observe(this) {
             if (it != null) {
                 if (it == Constants.API_SUCCESS) Toast.makeText(
-                    requireContext(),
-                    "Post Deleted",
-                    Toast.LENGTH_SHORT
+                    requireContext(), "Post Deleted", Toast.LENGTH_SHORT
                 ).show()
                 else if (it == Constants.API_FAILED) Toast.makeText(
-                    requireContext(),
-                    "Problem Deleting Post",
-                    Toast.LENGTH_SHORT
+                    requireContext(), "Problem Deleting Post", Toast.LENGTH_SHORT
                 ).show()
             }
         }
         postsViewModel.deletePost(requireContext(), postId)
-    }
-
-    override fun onPollDelete(pollId: String) {
-        MaterialAlertDialogBuilder(requireContext()).setTitle("Delete")
-            .setMessage("Are you sure you want to delete this poll?")
-            .setPositiveButton("Confirm") { dialog, _ ->
-                dialog.dismiss()
-                deletePoll(pollId)
-            }.setNegativeButton("Cancel") { dialog, _ ->
-                dialog.dismiss()
-            }.show()
     }
 
     /**
@@ -298,11 +314,16 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         //post delete api observer
         pollsViewModel.isPollDeleted.observe(this) {
             if (it != null) {
-                if (it == Constants.API_SUCCESS)
-                    Toast.makeText(requireContext(), "Poll Deleted", Toast.LENGTH_SHORT).show()
-                else if (it == Constants.API_FAILED)
-                    Toast.makeText(requireContext(), "Problem Deleting Poll", Toast.LENGTH_SHORT)
-                        .show()
+                if (it == Constants.API_SUCCESS) Toast.makeText(
+                    requireContext(),
+                    "Poll Deleted",
+                    Toast.LENGTH_SHORT
+                ).show()
+                else if (it == Constants.API_FAILED) Toast.makeText(
+                    requireContext(),
+                    "Problem Deleting Poll",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         pollsViewModel.deletePoll(requireContext(), pollId)

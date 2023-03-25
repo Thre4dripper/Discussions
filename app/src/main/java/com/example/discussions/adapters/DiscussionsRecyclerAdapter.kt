@@ -110,7 +110,7 @@ class DiscussionsRecyclerAdapter(
 
             //setting up the more options menu
             binding.itemPostMenuOptions.setOnClickListener {
-                discussionMenuInterface.onPostMenuClicked(postModel)
+                discussionMenuInterface.onMenuClicked(postModel, null, DISCUSSION_TYPE_POST)
             }
 
             //setting the profile image of current post's user
@@ -175,8 +175,10 @@ class DiscussionsRecyclerAdapter(
             //setting like and comment button click listeners
             binding.itemPostLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onPostLike(
+                    likeCommentInterface.onLike(
                         postModel.postId,
+                        null,
+                        DISCUSSION_TYPE_POST,
                         postModel.isLiked,
                         postIsLiked
                     )
@@ -211,7 +213,7 @@ class DiscussionsRecyclerAdapter(
 
             binding.itemPostCommentBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onPostComment(postModel.postId)
+                    likeCommentInterface.onComment(postModel.postId, null, DISCUSSION_TYPE_POST)
                 }
                 visibility = if (postModel.allowComments) View.VISIBLE else View.GONE
             }
@@ -275,7 +277,7 @@ class DiscussionsRecyclerAdapter(
         ) {
             //setting up the more options menu
             binding.itemPollMenuOptions.setOnClickListener {
-                discussionMenuInterface.onPollMenuClicked(pollModel)
+                discussionMenuInterface.onMenuClicked(null, pollModel, DISCUSSION_TYPE_POLL)
             }
 
             //setting the profile image of current poll's user
@@ -420,8 +422,10 @@ class DiscussionsRecyclerAdapter(
             //setting like and comment button click listeners
             binding.itemPollLikeBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onPollLike(
+                    likeCommentInterface.onLike(
+                        null,
                         pollModel.pollId,
+                        DISCUSSION_TYPE_POLL,
                         pollModel.isLiked,
                         pollIsLiked
                     )
@@ -456,7 +460,7 @@ class DiscussionsRecyclerAdapter(
 
             binding.itemPollCommentBtn.apply {
                 setOnClickListener {
-                    likeCommentInterface.onPollComment(pollModel.pollId)
+                    likeCommentInterface.onComment(null, pollModel.pollId, DISCUSSION_TYPE_POLL)
                 }
                 visibility = if (pollModel.allowComments) View.VISIBLE else View.GONE
             }
