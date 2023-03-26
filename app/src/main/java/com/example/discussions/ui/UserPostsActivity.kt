@@ -135,6 +135,8 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
     }
 
     override fun onMenuClicked(post: PostModel?, poll: PollModel?, type: Int) {
+        /*IN USER POSTS ACTIVITY, THE POST ID IS NOT NULL AND THE TYPE IS ALWAYS POST*/
+
         val optionsBs = DiscussionOptionsBS(post, null, this@UserPostsActivity)
         optionsBs.show(supportFragmentManager, optionsBs.tag)
     }
