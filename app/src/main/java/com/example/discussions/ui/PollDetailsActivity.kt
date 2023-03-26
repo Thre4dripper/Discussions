@@ -24,11 +24,15 @@ import com.example.discussions.Constants
 import com.example.discussions.MyApplication
 import com.example.discussions.R
 import com.example.discussions.adapters.CommentsRecyclerAdapter
+import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
+import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.databinding.ActivityPollDetailsBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.models.CommentModel
 import com.example.discussions.models.PollModel
+import com.example.discussions.models.PostModel
+import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentControllers
 import com.example.discussions.ui.bottomSheets.comments.OptionsBS
 import com.example.discussions.viewModels.CommentsViewModel
@@ -37,7 +41,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PollDetailsActivity : AppCompatActivity(), CommentInterface {
+class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMenuInterface {
     private val TAG = "PollDetailsActivity"
 
     private lateinit var binding: ActivityPollDetailsBinding
@@ -188,7 +192,7 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface {
         }
 
         initLikeButton(poll)
-
+        initMenuButton(poll)
 
         /*Comments Logic Starts Here*/
         //set comments recycler view
@@ -397,6 +401,12 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface {
         }
     }
 
+    private fun initMenuButton(poll: PollModel) {
+        binding.pollDetailsMenuOptions.setOnClickListener {
+            onMenuClicked(null, poll, DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL)
+        }
+    }
+
     private fun likePoll(isLiked: Boolean, btnLikeStatus: Boolean) {
         pollLikeStatus = isLiked
         likeBtnStatus = btnLikeStatus
@@ -510,5 +520,49 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface {
     override fun onCommentLongClick(comment: CommentModel) {
         val optionsBS = OptionsBS(comment, this@PollDetailsActivity)
         optionsBS.show(supportFragmentManager, optionsBS.tag)
+    }
+
+    override fun onMenuClicked(post: PostModel?, poll: PollModel?, type: Int) {
+        /*IN USER POLLS ACTIVITY, THE POLL IS NOT NULL AND THE TYPE IS ALWAYS POLL*/
+
+        val optionsBS = DiscussionOptionsBS(null, poll, this)
+        optionsBS.show(supportFragmentManager, optionsBS.tag)
+    }
+
+    override fun onMenuEdit(postId: String?, pollId: String?, type: Int) {
+        //Edit not allowed for polls
+    }
+
+    override fun onMenuDelete(postId: String?, pollId: String?, type: Int) {
+        /*IN USER POLLS ACTIVITY, THE POLL ID IS NOT NULL AND THE TYPE IS ALWAYS POLL*/
+
+        MaterialAlertDialogBuilder(this)
+            .setTitle("Delete")
+            .setMessage("Are you sure you want to delete this poll?")
+            .setPositiveButton("Confirm") { dialog, _ ->
+                dialog.dismiss()
+                deletePoll(pollId!!)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
+    }
+
+    /**
+     * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
+     */
+    private fun deletePoll(pollId: String) {
+        //post delete api observer
+        viewModel.isPollDeleted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS)
+                    Toast.makeText(this, "Poll Deleted", Toast.LENGTH_SHORT).show()
+                else if (it == Constants.API_FAILED)
+                    Toast.makeText(this, "Problem Deleting Poll", Toast.LENGTH_SHORT)
+                        .show()
+            }
+        }
+        viewModel.deletePoll(this, pollId)
     }
 }

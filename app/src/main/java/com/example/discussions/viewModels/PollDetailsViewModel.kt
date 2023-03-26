@@ -25,6 +25,10 @@ class PollDetailsViewModel : ViewModel() {
     val isPollVoted: MutableLiveData<String?>
         get() = _isPollVoted
 
+    private var _isPollDeleted = MutableLiveData<String?>(null)
+    val isPollDeleted: LiveData<String?>
+        get() = _isPollDeleted
+
     fun isPollInAlreadyFetched(pollId: String): Boolean {
         //check if poll is in poll list
         return DiscussionRepository.discussions.value?.any { it.poll?.pollId == pollId }
@@ -76,6 +80,19 @@ class PollDetailsViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isPollFetched.value = response
+            }
+        })
+    }
+
+    fun deletePoll(context: Context, pollId: String) {
+        _isPollDeleted.value = null
+        PollRepository.deletePoll(context, pollId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPollDeleted.value = Constants.API_SUCCESS
+            }
+
+            override fun onError(response: String) {
+                _isPollDeleted.value = Constants.API_FAILED
             }
         })
     }

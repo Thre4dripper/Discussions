@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.discussions.Cloudinary
 import com.example.discussions.Constants
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PostModel
@@ -19,6 +20,10 @@ class PostDetailsViewModel : ViewModel() {
     val isPostFetched: MutableLiveData<String?>
         get() = _isPostFetched
 
+    private var _isPostDeleted = MutableLiveData<String?>(null)
+    val isPostDeleted: LiveData<String?>
+        get() = _isPostDeleted
+
     fun isPostInAlreadyFetched(postId: String): Boolean {
         //check if post is in post list
         return DiscussionRepository.discussions.value?.any { it.post?.postId == postId }
@@ -29,8 +34,9 @@ class PostDetailsViewModel : ViewModel() {
     }
 
     fun getPostFromRepository(postId: String) {
-        _post.value = DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.post
-            ?: PostRepository.userPostsList.value!!.find { it.post!!.postId == postId }!!.post
+        _post.value =
+            DiscussionRepository.discussions.value?.find { it.post?.postId == postId }?.post
+                ?: PostRepository.userPostsList.value!!.find { it.post!!.postId == postId }!!.post
     }
 
     fun likePost(context: Context, postId: String) {
@@ -49,6 +55,23 @@ class PostDetailsViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isPostFetched.value = response
+            }
+        })
+    }
+
+    fun deletePost(context: Context, postId: String) {
+        _isPostDeleted.value = null
+
+        val deletedPost = _post.value
+        PostRepository.deletePost(context, postId, object : ResponseCallback {
+            override fun onSuccess(response: String) {
+                _isPostDeleted.postValue(Constants.API_SUCCESS)
+                val imageUrl = deletedPost?.postImage ?: ""
+                if (imageUrl.isNotEmpty()) Cloudinary.deleteImage(context, imageUrl)
+            }
+
+            override fun onError(response: String) {
+                _isPostDeleted.postValue(Constants.API_FAILED)
             }
         })
     }

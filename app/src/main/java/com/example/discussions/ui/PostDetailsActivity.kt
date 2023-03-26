@@ -17,11 +17,15 @@ import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.CommentsRecyclerAdapter
+import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.CommentInterface
+import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
 import com.example.discussions.databinding.ActivityPostDetailsBinding
 import com.example.discussions.databinding.LoadingDialogBinding
 import com.example.discussions.models.CommentModel
+import com.example.discussions.models.PollModel
 import com.example.discussions.models.PostModel
+import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentControllers
 import com.example.discussions.ui.bottomSheets.comments.OptionsBS
 import com.example.discussions.viewModels.CommentsViewModel
@@ -30,7 +34,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PostDetailsActivity : AppCompatActivity(), CommentInterface {
+class PostDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMenuInterface {
     private val TAG = "PostDetailsActivity"
 
     private lateinit var binding: ActivityPostDetailsBinding
@@ -125,6 +129,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
         setUserInfo(post)
         setPostData(post)
         initLikeButton(post)
+        initMenuButton(post)
 
         /*Comments Logic Starts Here*/
         //set comments recycler view
@@ -251,6 +256,12 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
         }
     }
 
+    private fun initMenuButton(post: PostModel) {
+        binding.postDetailsMenuOptions.setOnClickListener {
+            onMenuClicked(post, null, DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST)
+        }
+    }
+
     private fun likePost(isLiked: Boolean, btnLikeStatus: Boolean) {
         postLikeStatus = isLiked
         likeBtnStatus = btnLikeStatus
@@ -363,5 +374,62 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface {
     override fun onCommentLongClick(comment: CommentModel) {
         val optionsBS = OptionsBS(comment, this@PostDetailsActivity)
         optionsBS.show(supportFragmentManager, optionsBS.tag)
+    }
+
+    override fun onMenuClicked(post: PostModel?, poll: PollModel?, type: Int) {
+        /*IN USER POSTS ACTIVITY, THE POST ID IS NOT NULL AND THE TYPE IS ALWAYS POST*/
+
+        val optionsBS = DiscussionOptionsBS(post, null, this)
+        optionsBS.show(supportFragmentManager, optionsBS.tag)
+    }
+
+    override fun onMenuEdit(postId: String?, pollId: String?, type: Int) {
+        val intent = Intent(this, CreateEditPostActivity::class.java)
+        intent.putExtra(Constants.POST_MODE, Constants.MODE_EDIT_POST)
+        intent.putExtra(Constants.POST_ID, postId)
+        val post = viewModel.post.value!!
+        intent.putExtra(Constants.POST_TITLE, post.title)
+        intent.putExtra(Constants.POST_CONTENT, post.content)
+        intent.putExtra(Constants.POST_IMAGE, post.postImage)
+        startActivity(intent)
+    }
+
+    override fun onMenuDelete(postId: String?, pollId: String?, type: Int) {
+        /*IN USER POSTS ACTIVITY, THE POST ID IS NOT NULL AND THE TYPE IS ALWAYS POST*/
+
+        MaterialAlertDialogBuilder(this).setTitle("Delete")
+            .setMessage("Are you sure you want to delete this post?")
+            .setPositiveButton("Confirm") { dialog, _ ->
+                dialog.dismiss()
+                deletePost(postId!!)
+            }.setNegativeButton("Cancel") { dialog, _ ->
+                dialog.dismiss()
+            }.show()
+    }
+
+    /**
+     * METHOD FOR SENDING DELETE POST REQ TO THE VIEW MODEL
+     */
+    private fun deletePost(postId: String) {
+        //post delete api observer
+        viewModel.isPostDeleted.observe(this) {
+            if (it != null) {
+                if (it == Constants.API_SUCCESS) {
+                    Toast.makeText(
+                        this,
+                        "Post Deleted",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    finish()
+                } else if (it == Constants.API_FAILED) {
+                    Toast.makeText(
+                        this,
+                        "Problem Deleting Post",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+        viewModel.deletePost(this, postId)
     }
 }

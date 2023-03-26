@@ -38,7 +38,7 @@
             app:layout_constraintTop_toTopOf="@+id/poll_details_back_btn" />
 
         <ImageView
-            android:id="@+id/polls_more_options"
+            android:id="@+id/poll_details_menu_options"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
