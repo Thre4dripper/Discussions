@@ -8,6 +8,7 @@ class Constants {
 
         const val PAGE_LOADING = "page_loading"
         const val PAGE_IDLE = "page_idle"
+        const val DISCUSSIONS_PAGING_SIZE = 10
 
         const val LIKE_DEBOUNCE_TIME = 3000L
 
@@ -81,6 +82,5 @@ class Constants {
         const val NOTIFICATION_TYPE_LIKE = "like"
         const val NOTIFICATION_TYPE_COMMENT = "comment"
         const val NOTIFICATION_TYPE_VOTE = "vote"
-
     }
 }

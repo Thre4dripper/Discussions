@@ -45,6 +45,7 @@ class DiscussionsRecyclerAdapter(
     companion object {
         const val DISCUSSION_TYPE_POST = 100
         const val DISCUSSION_TYPE_POLL = 101
+        const val DISCUSSION_TYPE_LOADING = 102
     }
 
 
@@ -55,11 +56,19 @@ class DiscussionsRecyclerAdapter(
                     .inflate(R.layout.item_discussion_post, parent, false)
                 PostViewHolder(view)
             }
+
             DISCUSSION_TYPE_POLL -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_discussion_poll, parent, false)
                 PollViewHolder(view)
             }
+
+            DISCUSSION_TYPE_LOADING -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.pagination_loader, parent, false)
+                LoadingViewHolder(view)
+            }
+
             else -> null!!
         }
     }
@@ -76,6 +85,7 @@ class DiscussionsRecyclerAdapter(
                     discussionMenuInterface
                 )
             }
+
             DISCUSSION_TYPE_POLL -> {
                 (holder as PollViewHolder).bind(
                     holder.binding,
@@ -89,6 +99,35 @@ class DiscussionsRecyclerAdapter(
                     discussionMenuInterface
                 )
             }
+        }
+    }
+
+    override fun submitList(list: MutableList<DiscussionModel>?) {
+        super.submitList(list)
+        afterSubmitList(list)
+    }
+
+    override fun submitList(list: MutableList<DiscussionModel>?, commitCallback: Runnable?) {
+        super.submitList(list, commitCallback)
+        afterSubmitList(list)
+    }
+
+    private fun afterSubmitList(list: MutableList<DiscussionModel>?) {
+        list?.remove(list.filter { it.type == DISCUSSION_TYPE_LOADING }
+            .let { if (it.isNotEmpty()) it[0] else null })
+
+        if (list?.size != 0 && list?.get(list.size - 1)?.next != null) {
+            list.add(
+                DiscussionModel(
+                    "",
+                    0,
+                    "",
+                    "",
+                    null,
+                    null,
+                    DISCUSSION_TYPE_LOADING
+                )
+            )
         }
     }
 
@@ -471,6 +510,8 @@ class DiscussionsRecyclerAdapter(
 
         }
     }
+
+    inner class LoadingViewHolder(itemView: View) : ViewHolder(itemView)
 
     class DiscussionsDiffCallback : DiffUtil.ItemCallback<DiscussionModel>() {
         override fun areItemsTheSame(oldItem: DiscussionModel, newItem: DiscussionModel) =

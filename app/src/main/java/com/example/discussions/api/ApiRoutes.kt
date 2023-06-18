@@ -46,6 +46,5 @@ class ApiRoutes {
 
         //DISCUSSIONS
         const val DISCUSSIONS_GET_ALL = "/api/discussion/get/"
-        const val DISCUSSIONS_LIMIT = 5
     }
 }

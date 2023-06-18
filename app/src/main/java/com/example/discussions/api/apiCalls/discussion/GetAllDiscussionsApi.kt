@@ -4,6 +4,7 @@ import android.content.Context
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.discussions.Constants
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
@@ -24,8 +25,8 @@ class GetAllDiscussionsApi {
         ) {
             val queue = Volley.newRequestQueue(context)
             val url = "${ApiRoutes.BASE_URL}${ApiRoutes.DISCUSSIONS_GET_ALL}" +
-                    "?limit=${ApiRoutes.DISCUSSIONS_LIMIT}" +
-                    "&offset=${(page - 1) * ApiRoutes.DISCUSSIONS_LIMIT}"
+                    "?limit=${Constants.DISCUSSIONS_PAGING_SIZE}" +
+                    "&offset=${(page - 1) * Constants.DISCUSSIONS_PAGING_SIZE}"
 
             val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
                 callback.onSuccess(response.toString())

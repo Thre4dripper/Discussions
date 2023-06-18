@@ -87,7 +87,8 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                 if (homeViewModel.hasMoreDiscussions.value!!
                     && homeViewModel.isLoadingMore.value == Constants.PAGE_IDLE
                     && lastVisibleItemPosition != RecyclerView.NO_POSITION
-                    && lastVisibleItemPosition == discussAdapter.itemCount - 1
+                    // api call when 4 items are left to be seen
+                    && lastVisibleItemPosition >= discussAdapter.itemCount - Constants.DISCUSSIONS_PAGING_SIZE / 2
                 ) {
                     homeViewModel.getAllDiscussions(requireContext())
                 }
