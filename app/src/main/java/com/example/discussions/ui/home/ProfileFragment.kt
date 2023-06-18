@@ -132,10 +132,12 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
                         getUserPosts()
                     }
+
                     Constants.AUTH_FAILURE_ERROR -> {
                         requireActivity().setResult(Constants.RESULT_LOGOUT)
                         requireActivity().finish()
                     }
+
                     else -> {
                         retryDialog.show()
                     }
@@ -169,7 +171,8 @@ class ProfileFragment : Fragment(), PostClickInterface {
                     val error = postsViewModel.isUserPostsFetched.value
 
                     //when empty is due to network error, showing toast
-                    if (postsViewModel.isUserPostsFetched.value != Constants.API_SUCCESS) {
+                    if (error != Constants.API_SUCCESS && error != null) {
+                        //TODO fix this toast message showing null everywhere
                         Toast.makeText(
                             requireContext(),
                             postsViewModel.isUserPostsFetched.value,

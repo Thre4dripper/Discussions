@@ -12,6 +12,7 @@ class DiscussionRepository {
         private const val TAG = "DiscussionRepository"
 
         val discussions = MutableLiveData<MutableList<DiscussionModel>?>(null)
+        val hasMoreDiscussions = MutableLiveData(false)
 
         fun getAllDiscussions(
             context: Context,
@@ -26,8 +27,14 @@ class DiscussionRepository {
                 page,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        val discussionModel = GetAllDiscussionsApi.parseAllDiscussionsJson(response)
-                        discussions.postValue(discussionModel)
+                        val newDiscussionsList =
+                            GetAllDiscussionsApi.parseAllDiscussionsJson(response)
+                        val oldDiscussionsList = discussions.value ?: mutableListOf()
+                        val updatedDiscussionsList = oldDiscussionsList.toMutableList()
+                        updatedDiscussionsList.addAll(newDiscussionsList)
+                        discussions.value = updatedDiscussionsList
+                        hasMoreDiscussions.value =
+                            updatedDiscussionsList[updatedDiscussionsList.size - 1].next != null
                         callback.onSuccess(response)
                     }
 

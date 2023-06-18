@@ -23,7 +23,9 @@ class GetAllDiscussionsApi {
             callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
-            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.DISCUSSIONS_GET_ALL}?page=$page"
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.DISCUSSIONS_GET_ALL}" +
+                    "?limit=${ApiRoutes.DISCUSSIONS_LIMIT}" +
+                    "&offset=${(page - 1) * ApiRoutes.DISCUSSIONS_LIMIT}"
 
             val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
                 callback.onSuccess(response.toString())
@@ -74,7 +76,7 @@ class GetAllDiscussionsApi {
                 }
                 discussionsList.add(
                     DiscussionModel(
-                        if(discussionType == "post") "post_$id" else "poll_$id",
+                        if (discussionType == "post") "post_$id" else "poll_$id",
                         rootObject.getInt("count"),
                         if (next == "null") null else next,
                         if (previous == "null") null else previous,

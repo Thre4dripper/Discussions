@@ -6,6 +6,9 @@ class Constants {
         const val API_FAILED = "error"
         const val AUTH_FAILURE_ERROR = "Auth Error"
 
+        const val PAGE_LOADING = "page_loading"
+        const val PAGE_IDLE = "page_idle"
+
         const val LIKE_DEBOUNCE_TIME = 3000L
 
         //for activity results

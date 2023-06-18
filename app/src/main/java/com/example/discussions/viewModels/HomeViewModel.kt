@@ -13,34 +13,44 @@ class HomeViewModel : ViewModel() {
 
 
     var discussions = DiscussionRepository.discussions
+    private var discussionsPage = 0
+    var hasMoreDiscussions = DiscussionRepository.hasMoreDiscussions
 
     private var _isDiscussionsFetched = MutableLiveData<String?>(null)
     val isDiscussionsFetched: LiveData<String?>
         get() = _isDiscussionsFetched
+
+    private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
+    val isLoadingMore: LiveData<String?>
+        get() = _isLoadingMore
 
     companion object {
         //TODO refactor this and make it local to each fragment/list
         var postsOrPollsOrNotificationsScrollToTop = false
     }
 
-    fun getAllDiscussions(context: Context, page: Int) {
-        if (_isDiscussionsFetched.value == Constants.API_SUCCESS) return
-        else _isDiscussionsFetched.value = null
+    fun getAllDiscussions(context: Context) {
+        _isDiscussionsFetched.value = null
+        _isLoadingMore.value = Constants.PAGE_LOADING
 
-        DiscussionRepository.getAllDiscussions(context, page, object : ResponseCallback {
+        discussionsPage++
+        DiscussionRepository.getAllDiscussions(context, discussionsPage, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isDiscussionsFetched.value = Constants.API_SUCCESS
+                _isLoadingMore.value = Constants.PAGE_IDLE
             }
 
             override fun onError(response: String) {
                 _isDiscussionsFetched.value = response
                 discussions.value = mutableListOf()
+                _isLoadingMore.value = Constants.PAGE_IDLE
             }
         })
     }
 
     fun refreshAllDiscussions(context: Context) {
-        _isDiscussionsFetched.value = null
-        getAllDiscussions(context, 1)
+        DiscussionRepository.discussions.value = null
+        discussionsPage = 0
+        getAllDiscussions(context)
     }
 }

@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.discussions.Constants
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
@@ -69,8 +72,27 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
             )
         }
 
+        paginatedFlow()
         getAllDiscussions()
         return binding.root
+    }
+
+    private fun paginatedFlow() {
+        binding.discussionRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val layoutManager: LayoutManager? = recyclerView.layoutManager
+                val lastVisibleItemPosition =
+                    (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
+
+                if (homeViewModel.hasMoreDiscussions.value!!
+                    && homeViewModel.isLoadingMore.value == Constants.PAGE_IDLE
+                    && lastVisibleItemPosition != RecyclerView.NO_POSITION
+                    && lastVisibleItemPosition == discussAdapter.itemCount - 1
+                ) {
+                    homeViewModel.getAllDiscussions(requireContext())
+                }
+            }
+        })
     }
 
     private fun getAllDiscussions() {
@@ -93,7 +115,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                     val error = homeViewModel.isDiscussionsFetched.value
 
                     //when empty list is due to network error
-                    if (error != Constants.API_SUCCESS) {
+                    if (error != Constants.API_SUCCESS && error != null) {
                         Toast.makeText(
                             requireContext(),
                             homeViewModel.isDiscussionsFetched.value,
@@ -107,8 +129,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                 }
             }
         }
-
-        homeViewModel.getAllDiscussions(requireContext(), 1)
+        homeViewModel.getAllDiscussions(requireContext())
     }
 
     override fun onPostClick(postId: String) {
