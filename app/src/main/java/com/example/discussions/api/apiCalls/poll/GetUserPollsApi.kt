@@ -65,7 +65,7 @@ class GetUserPollsApi {
                 val pollObject = resultsArray.getJSONObject(i)
                 val id = pollObject.getString("id")
                 val poll =
-                    GetPollByIdApi.parsePollByIdJson(resultsArray.getJSONObject(i).toString())
+                    GetPollByIdApi.parsePollByIdJson(pollObject.toString())
                 val type = DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL
 
                 pollsList.add(

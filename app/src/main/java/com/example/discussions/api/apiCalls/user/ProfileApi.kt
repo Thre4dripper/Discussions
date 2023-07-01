@@ -35,23 +35,23 @@ class ProfileApi {
 
         fun parseProfileJson(json: String): ProfileDataModel {
             val rootObject = JSONObject(json)
-            val userId = rootObject.getInt("user")
+            val userId = rootObject.getString("user")
             val profileImage = rootObject.getString("user_image")
             var username = rootObject.getString("username")
             val firstName = rootObject.getString("first_name")
             val lastName = rootObject.getString("last_name")
-            val postsCount = rootObject.getInt("user_post_count")
-            val pollsCount = rootObject.getInt("user_poll_count")
+            val postsCount = rootObject.getString("user_post_count")
+            val pollsCount = rootObject.getString("user_poll_count")
 
             username = "@$username"
             return ProfileDataModel(
-                userId.toString(),
+                userId,
                 profileImage,
                 username,
                 firstName,
                 lastName,
-                postsCount.toString(),
-                pollsCount.toString()
+                postsCount,
+                pollsCount
             )
         }
     }
