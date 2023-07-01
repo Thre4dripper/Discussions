@@ -3,7 +3,12 @@ package com.example.discussions.repositories
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.example.discussions.api.ResponseCallback
-import com.example.discussions.api.apiCalls.poll.*
+import com.example.discussions.api.apiCalls.poll.CreatePollApi
+import com.example.discussions.api.apiCalls.poll.DeletePollApi
+import com.example.discussions.api.apiCalls.poll.GetPollByIdApi
+import com.example.discussions.api.apiCalls.poll.GetUserPollsApi
+import com.example.discussions.api.apiCalls.poll.PollLikeApi
+import com.example.discussions.api.apiCalls.poll.PollVoteApi
 import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.PollModel
 import com.example.discussions.models.PollOptionModel
@@ -16,6 +21,7 @@ class PollRepository {
 
         val userPollsList = MutableLiveData<MutableList<DiscussionModel>?>(null)
         val singlePoll = MutableLiveData<PollModel?>(null)
+        var hasMorePolls = MutableLiveData(false)
 
         fun createPoll(
             context: Context,
@@ -62,13 +68,19 @@ class PollRepository {
         }
 
         fun getAllUserPolls(
-            context: Context, callback: ResponseCallback
+            context: Context, page: Int, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            GetUserPollsApi.getUserPollsJson(context, token, object : ResponseCallback {
+            GetUserPollsApi.getUserPollsJson(context, token, page, object : ResponseCallback {
                 override fun onSuccess(response: String) {
-                    userPollsList.postValue(GetUserPollsApi.parseUserPollsJson(response))
+                    val newUserPollsList = GetUserPollsApi.parseUserPollsJson(response)
+                    val oldUserPollsList = userPollsList.value ?: mutableListOf()
+                    val updatedUserPollsList = oldUserPollsList.toMutableList()
+                    updatedUserPollsList.addAll(newUserPollsList)
+
+                    userPollsList.value = updatedUserPollsList
+                    hasMorePolls.value = newUserPollsList.isNotEmpty()
                     callback.onSuccess(response)
                 }
 
@@ -90,6 +102,10 @@ class PollRepository {
                     }
                 }
             })
+        }
+
+        fun cancelGetRequest() {
+            GetUserPollsApi.cancelGetRequest()
         }
 
         fun pollVote(

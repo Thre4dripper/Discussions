@@ -9,6 +9,10 @@ class Constants {
         const val PAGE_LOADING = "page_loading"
         const val PAGE_IDLE = "page_idle"
         const val DISCUSSIONS_PAGING_SIZE = 10
+        const val POSTS_PAGING_SIZE = 10
+        const val POLLS_PAGING_SIZE = 8
+        const val COMMENTS_PAGING_SIZE = 10
+        const val NOTIFICATIONS_PAGING_SIZE = 10
 
         const val LIKE_DEBOUNCE_TIME = 3000L
 

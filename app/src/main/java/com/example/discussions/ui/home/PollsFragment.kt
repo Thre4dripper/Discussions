@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
 import com.example.discussions.adapters.interfaces.DiscussionMenuInterface
@@ -60,8 +62,28 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
             )
         }
 
+        paginatedFlow()
         getAllUserPolls()
         return binding.root
+    }
+
+    private fun paginatedFlow() {
+        binding.pollsRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
+                val lastVisibleItemPosition =
+                    (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
+
+                if (viewModel.hasMorePolls.value!!
+                    && viewModel.isLoadingMore.value == Constants.PAGE_IDLE
+                    && lastVisibleItemPosition != RecyclerView.NO_POSITION
+                    // api call when 4 items are left to be seen
+                    && lastVisibleItemPosition >= pollsAdapter.itemCount - Constants.POLLS_PAGING_SIZE / 2
+                ) {
+                    viewModel.getAllUserPolls(requireContext())
+                }
+            }
+        })
     }
 
     private fun getAllUserPolls() {

@@ -23,7 +23,7 @@ class ApiRoutes {
 
         // POLL
         const val POLL_CREATE = "/api/poll/create/"
-        const val POLL_GET_USER_POSTS = "/api/poll/getUserPolls/"//todo pagination
+        const val POLL_GET_USER_POLLS = "/api/poll/getUserPolls/"//todo pagination
         const val POLL_GET_POLL_BY_ID = "/api/poll/getPoll/"
         const val POLL_DELETE_POLL = "/api/poll/deletePoll/"
         const val POLL_VOTE = "/api/poll/vote/"
@@ -39,7 +39,7 @@ class ApiRoutes {
         const val COMMENTS_LIKE = "/api/post/like/"
 
         //NOTIFICATIONS
-        const val NOTIFICATIONS_GET_ALL = "/api/notification/get/"
+        const val NOTIFICATIONS_GET_ALL = "/api/notification/get/"//todo pagination
         const val NOTIFICATION_DELETE_BY_ID = "/api/notification/delete/"
         const val NOTIFICATION_DELETE_ALL = "/api/notification/delete_all/"
         const val NOTIFICATION_MARK_AS_READ = "/api/notification/set/"

@@ -32,9 +32,9 @@ class DiscussionRepository {
                         val oldDiscussionsList = discussions.value ?: mutableListOf()
                         val updatedDiscussionsList = oldDiscussionsList.toMutableList()
                         updatedDiscussionsList.addAll(newDiscussionsList)
+
                         discussions.value = updatedDiscussionsList
-                        hasMoreDiscussions.value =
-                            updatedDiscussionsList.lastOrNull()?.next != null
+                        hasMoreDiscussions.value = newDiscussionsList.isNotEmpty()
                         callback.onSuccess(response)
                     }
 
@@ -58,8 +58,8 @@ class DiscussionRepository {
                 })
         }
 
-        fun cancelAllRequests() {
-            GetAllDiscussionsApi.cancelAllRequests()
+        fun cancelGetRequest() {
+            GetAllDiscussionsApi.cancelGetRequest()
         }
     }
 }

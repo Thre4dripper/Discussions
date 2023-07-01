@@ -13,12 +13,17 @@ class HomeViewModel : ViewModel() {
 
 
     var discussions = DiscussionRepository.discussions
-    private var discussionsPage = 0
-    var hasMoreDiscussions = DiscussionRepository.hasMoreDiscussions
 
     private var _isDiscussionsFetched = MutableLiveData<String?>(null)
     val isDiscussionsFetched: LiveData<String?>
         get() = _isDiscussionsFetched
+
+
+    /**
+     * PAGINATION STUFF
+     */
+    private var discussionsPage = 0
+    var hasMoreDiscussions = DiscussionRepository.hasMoreDiscussions
 
     private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
     val isLoadingMore: LiveData<String?>
@@ -49,7 +54,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun refreshAllDiscussions(context: Context) {
-        DiscussionRepository.cancelAllRequests()
+        DiscussionRepository.cancelGetRequest()
         DiscussionRepository.discussions.value = null
         discussionsPage = 0
         getAllDiscussions(context)

@@ -1,7 +1,6 @@
 package com.example.discussions.api.apiCalls.discussion
 
 import android.content.Context
-import android.util.Log
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
@@ -54,7 +53,7 @@ class GetAllDiscussionsApi {
             queue!!.add(request)
         }
 
-        fun cancelAllRequests() {
+        fun cancelGetRequest() {
             queue!!.cancelAll(TAG)
         }
 

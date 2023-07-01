@@ -37,6 +37,16 @@ class PollsViewModel : ViewModel() {
     val isPollVoted: LiveData<String?>
         get() = _isPollVoted
 
+    /**
+     * PAGINATION STUFF
+     */
+    private var pollsPage = 0
+    var hasMorePolls = PollRepository.hasMorePolls
+
+    private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
+    val isLoadingMore: LiveData<String?>
+        get() = _isLoadingMore
+
     companion object {
         //TODO use this in user polls activity
         var userPollsScrollToIndex = false
@@ -44,27 +54,28 @@ class PollsViewModel : ViewModel() {
 
 
     fun getAllUserPolls(context: Context) {
-        if (_isUserPollsFetched.value == Constants.API_SUCCESS) return
-        else {
-            _isUserPollsFetched.value = null
-        }
-        userPollsScrollToIndex = true
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = true
+        _isUserPollsFetched.value = null
+        _isLoadingMore.value = Constants.PAGE_LOADING
 
-        PollRepository.getAllUserPolls(context, object : ResponseCallback {
+        pollsPage++
+        PollRepository.getAllUserPolls(context, pollsPage, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isUserPollsFetched.value = Constants.API_SUCCESS
+                _isLoadingMore.value = Constants.PAGE_IDLE
             }
 
             override fun onError(response: String) {
                 _isUserPollsFetched.value = response
                 _userPollsList.value = mutableListOf()
+                _isLoadingMore.value = Constants.PAGE_IDLE
             }
         })
     }
 
     fun refreshAllUserPolls(context: Context) {
-        _isUserPollsFetched.value = null
+        PollRepository.cancelGetRequest()
+        PollRepository.userPollsList.value = null
+        pollsPage = 0
         getAllUserPolls(context)
     }
 
