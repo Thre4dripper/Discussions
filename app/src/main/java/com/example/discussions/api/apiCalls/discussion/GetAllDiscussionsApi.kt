@@ -1,7 +1,9 @@
 package com.example.discussions.api.apiCalls.discussion
 
 import android.content.Context
+import android.util.Log
 import com.android.volley.DefaultRetryPolicy
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.discussions.Constants
@@ -17,13 +19,15 @@ import org.json.JSONObject
 
 class GetAllDiscussionsApi {
     companion object {
+        private const val TAG = "GetAllDiscussionsApi"
+        var queue: RequestQueue? = null
         fun getAllDiscussionsJson(
             context: Context,
             token: String,
             page: Int,
             callback: ResponseCallback
         ) {
-            val queue = Volley.newRequestQueue(context)
+            queue = Volley.newRequestQueue(context)
             val url = "${ApiRoutes.BASE_URL}${ApiRoutes.DISCUSSIONS_GET_ALL}" +
                     "?limit=${Constants.DISCUSSIONS_PAGING_SIZE}" +
                     "&offset=${(page - 1) * Constants.DISCUSSIONS_PAGING_SIZE}"
@@ -46,7 +50,12 @@ class GetAllDiscussionsApi {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
             )
 
-            queue.add(request)
+            request.tag = TAG
+            queue!!.add(request)
+        }
+
+        fun cancelAllRequests() {
+            queue!!.cancelAll(TAG)
         }
 
         fun parseAllDiscussionsJson(json: String): MutableList<DiscussionModel> {

@@ -49,6 +49,7 @@ class HomeViewModel : ViewModel() {
     }
 
     fun refreshAllDiscussions(context: Context) {
+        DiscussionRepository.cancelAllRequests()
         DiscussionRepository.discussions.value = null
         discussionsPage = 0
         getAllDiscussions(context)

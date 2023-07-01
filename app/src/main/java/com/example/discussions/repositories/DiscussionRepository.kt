@@ -34,7 +34,7 @@ class DiscussionRepository {
                         updatedDiscussionsList.addAll(newDiscussionsList)
                         discussions.value = updatedDiscussionsList
                         hasMoreDiscussions.value =
-                            updatedDiscussionsList[updatedDiscussionsList.size - 1].next != null
+                            updatedDiscussionsList.lastOrNull()?.next != null
                         callback.onSuccess(response)
                     }
 
@@ -56,6 +56,10 @@ class DiscussionRepository {
                         }
                     }
                 })
+        }
+
+        fun cancelAllRequests() {
+            GetAllDiscussionsApi.cancelAllRequests()
         }
     }
 }
