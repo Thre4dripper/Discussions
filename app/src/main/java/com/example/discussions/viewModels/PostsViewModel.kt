@@ -35,29 +35,44 @@ class PostsViewModel : ViewModel() {
     val isPostLikedChanged: LiveData<String?>
         get() = _isPostLikedChanged
 
+    /**
+     * PAGINATION STUFF
+     */
+    private var postsPage = 0
+    var hasMorePosts = PostRepository.hasMorePosts
+
+    private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
+    val isLoadingMore: LiveData<String?>
+        get() = _isLoadingMore
+
     companion object {
         var userPostsScrollToIndex = false
     }
 
     fun getAllUserPosts(context: Context, userId: String) {
-        if (_isUserPostsFetched.value == Constants.API_SUCCESS) return
-        else _isUserPostsFetched.value = null
-        userPostsScrollToIndex = true
+        _isUserPostsFetched.value = null
+        _isLoadingMore.value = Constants.PAGE_LOADING
 
-        PostRepository.getAllUserPosts(context, userId, object : ResponseCallback {
+        postsPage++
+        PostRepository.getAllUserPosts(context, userId, postsPage, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isUserPostsFetched.value = Constants.API_SUCCESS
+                _isLoadingMore.value = Constants.PAGE_IDLE
             }
 
             override fun onError(response: String) {
                 _isUserPostsFetched.value = response
                 _userPostsList.value = mutableListOf()
+                _isLoadingMore.value = Constants.PAGE_IDLE
             }
         })
     }
 
     fun refreshUserPosts() {
+        PostRepository.cancelGetRequest()
+        PostRepository.userPostsList.value = null
         _isUserPostsFetched.value = null
+        postsPage = 0
     }
 
     fun deletePost(context: Context, postId: String) {

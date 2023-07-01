@@ -14,6 +14,7 @@ class PostRepository {
 
         var userPostsList = MutableLiveData<MutableList<DiscussionModel>?>(null)
         var singlePost = MutableLiveData<PostModel?>(null)
+        var hasMorePosts = MutableLiveData(true)
 
         fun createPost(
             context: Context,
@@ -57,34 +58,49 @@ class PostRepository {
         }
 
         fun getAllUserPosts(
-            context: Context, userId: String, callback: ResponseCallback
+            context: Context, userId: String, page: Int, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
-            GetUserPostsApi.getUserPostsJson(context, userId, token, object : ResponseCallback {
-                override fun onSuccess(response: String) {
-                    userPostsList.postValue(GetUserPostsApi.parseUserPostsJson(response))
-                    callback.onSuccess(response)
-                }
+            GetUserPostsApi.getUserPostsJson(
+                context,
+                userId,
+                token,
+                page,
+                object : ResponseCallback {
+                    override fun onSuccess(response: String) {
+                        val newUserPostsList = GetUserPostsApi.parseUserPostsJson(response)
+                        val oldUserPostsList = userPostsList.value ?: mutableListOf()
+                        val updatedUserPostsList = oldUserPostsList.toMutableList()
+                        updatedUserPostsList.addAll(newUserPostsList)
 
-                override fun onError(response: String) {
-                    if (response.contains("com.android.volley.TimeoutError")) {
-                        callback.onError("Time Out")
-                    } else if (response.contains("com.android.volley.NoConnectionError")) {
-                        callback.onError("Please check your internet connection")
-                    } else if (response.contains("com.android.volley.AuthFailureError")) {
-                        callback.onError("Auth Error")
-                    } else if (response.contains("com.android.volley.NetworkError")) {
-                        callback.onError("Network Error")
-                    } else if (response.contains("com.android.volley.ServerError")) {
-                        callback.onError("Server Error")
-                    } else if (response.contains("com.android.volley.ParseError")) {
-                        callback.onError("Parse Error")
-                    } else {
-                        callback.onError("Something went wrong")
+                        userPostsList.value = updatedUserPostsList
+                        hasMorePosts.value = newUserPostsList.isNotEmpty()
+                        callback.onSuccess(response)
                     }
-                }
-            })
+
+                    override fun onError(response: String) {
+                        if (response.contains("com.android.volley.TimeoutError")) {
+                            callback.onError("Time Out")
+                        } else if (response.contains("com.android.volley.NoConnectionError")) {
+                            callback.onError("Please check your internet connection")
+                        } else if (response.contains("com.android.volley.AuthFailureError")) {
+                            callback.onError("Auth Error")
+                        } else if (response.contains("com.android.volley.NetworkError")) {
+                            callback.onError("Network Error")
+                        } else if (response.contains("com.android.volley.ServerError")) {
+                            callback.onError("Server Error")
+                        } else if (response.contains("com.android.volley.ParseError")) {
+                            callback.onError("Parse Error")
+                        } else {
+                            callback.onError("Something went wrong")
+                        }
+                    }
+                })
+        }
+
+        fun cancelGetRequest() {
+            GetUserPostsApi.cancelGetRequest()
         }
 
         fun updatePost(
