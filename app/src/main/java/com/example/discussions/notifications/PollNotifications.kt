@@ -22,7 +22,8 @@ class PollNotifications {
             val pollTitle = data.getJSONObject("poll").getString("title")
             val pollContent = data.getJSONObject("poll").getString("content")
 
-            val notificationId = ("${Constants.POLL_LIKE_NOTIFICATION_ID}$pollId").toInt()
+            val notificationHash = FCMConfig.stringToUniqueHash(pollId)
+            val notificationId = ("${Constants.POLL_LIKE_NOTIFICATION_ID}$notificationHash").toInt()
             val notificationTitle = "$notifier liked your poll"
             val notificationContent =
                 if (pollTitle.isEmpty() && pollContent.isEmpty()) "Tap to view poll" else "$pollTitle $pollContent"
@@ -66,7 +67,8 @@ class PollNotifications {
             val pollContent = data.getJSONObject("poll").getString("content")
             val pollComment = data.getJSONObject("poll").getString("comment")
 
-            val notificationId = ("${Constants.POLL_COMMENT_NOTIFICATION_ID}$pollId").toInt()
+            val notificationHash = FCMConfig.stringToUniqueHash(pollId)
+            val notificationId = ("${Constants.POLL_COMMENT_NOTIFICATION_ID}$notificationHash").toInt()
             val notificationTitle = "$notifier commented on your poll"
             val notificationContent =
                 if (pollTitle.isEmpty() && pollContent.isEmpty()) "Tap to view poll"

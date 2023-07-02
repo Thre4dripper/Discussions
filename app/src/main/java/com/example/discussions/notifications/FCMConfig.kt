@@ -15,6 +15,7 @@ import org.json.JSONObject
 import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.math.abs
 
 
 class FCMConfig : FirebaseMessagingService() {
@@ -129,6 +130,14 @@ class FCMConfig : FirebaseMessagingService() {
                 e.printStackTrace()
                 null
             }
+        }
+
+        fun stringToUniqueHash(string: String): Int {
+            var hash = 0
+            for (i in string.indices) {
+                hash = string[i].code + (hash shl 6) + (hash shl 16) - hash
+            }
+            return abs(hash).toString().substring(1).toInt()
         }
     }
 }

@@ -21,7 +21,8 @@ class CommentNotifications {
             val commentId = data.getJSONObject("comment").getString("id")
             val commentContent = data.getJSONObject("comment").getString("content")
 
-            val notificationId = ("${Constants.COMMENT_LIKE_NOTIFICATION_ID}$commentId").toInt()
+            val notificationHash = FCMConfig.stringToUniqueHash(commentId)
+            val notificationId = ("${Constants.COMMENT_LIKE_NOTIFICATION_ID}$notificationHash").toInt()
             val notificationTitle = "$notifier liked your comment"
             //TODO find comment is of post or poll
             val notificationContent =
@@ -66,7 +67,8 @@ class CommentNotifications {
             val commentContent = data.getJSONObject("comment").getString("content")
             val commentReply = data.getJSONObject("comment").getString("comment")
 
-            val notificationId = ("${Constants.COMMENT_REPLY_NOTIFICATION_ID}$commendId").toInt()
+            val notificationHash = FCMConfig.stringToUniqueHash(commendId)
+            val notificationId = ("${Constants.COMMENT_REPLY_NOTIFICATION_ID}$notificationHash").toInt()
             val notificationTitle = "$notifier replied on your comment"
 
             //TODO find comment is of post or poll

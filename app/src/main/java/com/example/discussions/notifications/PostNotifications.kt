@@ -22,7 +22,8 @@ class PostNotifications {
             val postTitle = data.getJSONObject("post").getString("title")
             val postContent = data.getJSONObject("post").getString("content")
 
-            val notificationId = ("${Constants.POST_LIKE_NOTIFICATION_ID}$postId").toInt()
+            val notificationHash = FCMConfig.stringToUniqueHash(postId)
+            val notificationId = ("${Constants.POST_LIKE_NOTIFICATION_ID}$notificationHash").toInt()
             val notificationTitle = "$notifier liked your post"
             val notificationContent =
                 if (postTitle.isEmpty() && postContent.isEmpty()) "Tap to view post" else "$postTitle $postContent"
@@ -69,7 +70,8 @@ class PostNotifications {
             val postContent = data.getJSONObject("post").getString("content")
             val postComment = data.getJSONObject("post").getString("comment")
 
-            val notificationId = ("${Constants.POST_COMMENT_NOTIFICATION_ID}$postId").toInt()
+            val notificationHash = FCMConfig.stringToUniqueHash(postId)
+            val notificationId = ("${Constants.POST_COMMENT_NOTIFICATION_ID}$notificationHash").toInt()
             val notificationTitle = "$notifier commented on your post"
             val notificationContent =
                 if (postTitle.isEmpty() && postContent.isEmpty()) "Tap to view post"
