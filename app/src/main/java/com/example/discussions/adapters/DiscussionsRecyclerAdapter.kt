@@ -103,20 +103,19 @@ class DiscussionsRecyclerAdapter(
     }
 
     override fun submitList(list: MutableList<DiscussionModel>?) {
-        super.submitList(list)
         afterSubmitList(list)
+        super.submitList(list)
     }
 
     override fun submitList(list: MutableList<DiscussionModel>?, commitCallback: Runnable?) {
-        super.submitList(list, commitCallback)
         afterSubmitList(list)
+        super.submitList(list, commitCallback)
     }
 
     private fun afterSubmitList(list: MutableList<DiscussionModel>?) {
-        list?.remove(list.filter { it.type == DISCUSSION_TYPE_LOADING }
-            .let { if (it.isNotEmpty()) it[0] else null })
+        list?.removeIf { it.type == DISCUSSION_TYPE_LOADING }
 
-        if (list?.size != 0 && list?.get(list.size - 1)?.next != null) {
+        if (list?.size != 0 && list?.last()?.next != null) {
             list.add(
                 DiscussionModel(
                     "",

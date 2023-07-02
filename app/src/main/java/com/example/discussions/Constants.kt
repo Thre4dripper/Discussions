@@ -13,7 +13,7 @@ class Constants {
         const val POLLS_PAGING_SIZE = 8
         const val COMMENTS_PAGING_SIZE = 10
         const val NOTIFICATIONS_PAGING_SIZE = 10
-        const val PROFILE_POSTS_PAGING_SIZE = 10
+        const val PROFILE_POSTS_PAGING_SIZE = 15
 
         const val LIKE_DEBOUNCE_TIME = 3000L
 

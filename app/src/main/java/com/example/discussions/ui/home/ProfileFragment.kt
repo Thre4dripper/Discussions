@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
@@ -81,6 +82,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
         }
 
         getProfileObserver()
+        paginatedUserPostsFlow()
         getUserPostsObserver()
         getProfile()
         return binding.root
@@ -123,7 +125,6 @@ class ProfileFragment : Fragment(), PostClickInterface {
                 loadingDialog.dismiss()
                 when (it) {
                     Constants.API_SUCCESS -> {
-
                         Glide.with(this)
                             .load(viewModel.profileDataModel.profileImage)
                             .into(binding.profileIv)
@@ -152,13 +153,30 @@ class ProfileFragment : Fragment(), PostClickInterface {
         viewModel.getProfile(requireContext())
     }
 
+    private fun paginatedUserPostsFlow() {
+        binding.profilePostsRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
+                val lastVisibleItemPosition =
+                    (layoutManager as StaggeredGridLayoutManager?)!!.findLastVisibleItemPositions(null)[0]
+
+                if (postsViewModel.hasMorePosts.value!!
+                    && postsViewModel.isLoadingMore.value == Constants.PAGE_IDLE
+                    && lastVisibleItemPosition != RecyclerView.NO_POSITION
+                    // api call when 4 items are left to be seen
+                    && lastVisibleItemPosition >= profileAdapter.itemCount - Constants.PROFILE_POSTS_PAGING_SIZE / 2
+                ) {
+                    postsViewModel.getAllUserPosts(requireContext(), viewModel.profileDataModel.userId)
+                }
+            }
+        })
+    }
+
     private fun getUserPostsObserver() {
         postsViewModel.userPostsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 //updating posts list recycler view
                 profileAdapter.submitList(it)
-                //updating posts count
-                binding.profilePostsCountTv.text = it.size.toString()
 
                 //hiding progress bar and lottie animation, when posts are loaded
                 binding.profilePostsProgressBar.visibility = View.GONE
@@ -172,7 +190,6 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
                     //when empty is due to network error, showing toast
                     if (error != Constants.API_SUCCESS && error != null) {
-                        //TODO fix this toast message showing null everywhere
                         Toast.makeText(
                             requireContext(),
                             postsViewModel.isUserPostsFetched.value,

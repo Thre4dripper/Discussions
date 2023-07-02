@@ -17,19 +17,72 @@ import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.PostModel
 
 class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface) :
-    ListAdapter<DiscussionModel, ProfileRecyclerAdapter.ProfilePostsViewHolder>(ProfileDiffCallback()) {
+    ListAdapter<DiscussionModel, ViewHolder>(ProfileDiffCallback()) {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProfilePostsViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_user_post, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return when (viewType) {
+            DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_user_post, parent, false)
 
-        return ProfilePostsViewHolder(view)
+                ProfilePostsViewHolder(view)
+            }
+
+            DiscussionsRecyclerAdapter.DISCUSSION_TYPE_LOADING -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.pagination_loader, parent, false)
+                LoadingViewHolder(view)
+            }
+
+            else -> null!!
+        }
     }
 
-    override fun onBindViewHolder(holder: ProfilePostsViewHolder, position: Int) {
-        val discussionPost = getItem(position).post!!
-        holder.bind(holder.binding, discussionPost, postClickInterface)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val discussionPost = getItem(position)
+
+        if (holder.itemViewType == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST) {
+            (holder as ProfilePostsViewHolder).bind(
+                holder.binding,
+                discussionPost.post!!,
+                postClickInterface
+            )
+        }
+    }
+
+    override fun submitList(list: MutableList<DiscussionModel>?) {
+        afterSubmitList(list)
+        super.submitList(list)
+    }
+
+    override fun submitList(list: MutableList<DiscussionModel>?, commitCallback: Runnable?) {
+        afterSubmitList(list)
+        super.submitList(list, commitCallback)
+    }
+
+    private fun afterSubmitList(list: MutableList<DiscussionModel>?) {
+        list?.removeIf { it.type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_LOADING }
+
+        val loader = DiscussionModel(
+            "",
+            0,
+            "",
+            "",
+            null,
+            null,
+            DiscussionsRecyclerAdapter.DISCUSSION_TYPE_LOADING
+        )
+        if (list?.size != 0 && list?.last()?.next != null) {
+            list.add(loader)
+            list.add(loader)
+            list.add(loader)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val item = getItem(position)
+        return item.type
     }
 
     class ProfilePostsViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -77,11 +130,13 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
         }
     }
 
+    inner class LoadingViewHolder(itemView: View) : ViewHolder(itemView)
     class ProfileDiffCallback : DiffUtil.ItemCallback<DiscussionModel>() {
         override fun areItemsTheSame(oldItem: DiscussionModel, newItem: DiscussionModel) =
             oldItem.id == newItem.id
 
-        override fun areContentsTheSame(oldItem: DiscussionModel, newItem: DiscussionModel) = oldItem == newItem
+        override fun areContentsTheSame(oldItem: DiscussionModel, newItem: DiscussionModel) =
+            oldItem == newItem
     }
 
 }
