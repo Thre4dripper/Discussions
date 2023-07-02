@@ -23,7 +23,7 @@ class HomeViewModel : ViewModel() {
      * PAGINATION STUFF
      */
     private var discussionsPage = 0
-    var hasMoreDiscussions = DiscussionRepository.hasMoreDiscussions
+    val hasMoreDiscussions = DiscussionRepository.hasMoreDiscussions
 
     private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
     val isLoadingMore: LiveData<String?>

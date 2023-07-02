@@ -21,7 +21,7 @@ class PollRepository {
 
         val userPollsList = MutableLiveData<MutableList<DiscussionModel>?>(null)
         val singlePoll = MutableLiveData<PollModel?>(null)
-        var hasMorePolls = MutableLiveData(false)
+        val hasMorePolls = MutableLiveData(false)
 
         fun createPoll(
             context: Context,

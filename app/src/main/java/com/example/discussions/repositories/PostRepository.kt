@@ -14,7 +14,7 @@ class PostRepository {
 
         var userPostsList = MutableLiveData<MutableList<DiscussionModel>?>(null)
         var singlePost = MutableLiveData<PostModel?>(null)
-        var hasMorePosts = MutableLiveData(true)
+        val hasMorePosts = MutableLiveData(true)
 
         fun createPost(
             context: Context,

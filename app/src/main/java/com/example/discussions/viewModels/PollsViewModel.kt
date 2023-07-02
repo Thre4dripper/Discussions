@@ -41,7 +41,7 @@ class PollsViewModel : ViewModel() {
      * PAGINATION STUFF
      */
     private var pollsPage = 0
-    var hasMorePolls = PollRepository.hasMorePolls
+    val hasMorePolls = PollRepository.hasMorePolls
 
     private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
     val isLoadingMore: LiveData<String?>

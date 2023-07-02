@@ -50,7 +50,7 @@ class GetUserPollsApi {
         }
 
         fun cancelGetRequest() {
-            queue!!.cancelAll(TAG)
+            queue?.cancelAll(TAG)
         }
 
         fun parseUserPollsJson(json: String): MutableList<DiscussionModel> {

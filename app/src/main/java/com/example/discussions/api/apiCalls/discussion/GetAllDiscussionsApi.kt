@@ -54,7 +54,7 @@ class GetAllDiscussionsApi {
         }
 
         fun cancelGetRequest() {
-            queue!!.cancelAll(TAG)
+            queue?.cancelAll(TAG)
         }
 
         fun parseAllDiscussionsJson(json: String): MutableList<DiscussionModel> {
@@ -76,11 +76,11 @@ class GetAllDiscussionsApi {
                 var type: Int
                 if (discussionType == "post") {
                     post =
-                        GetPostByIdApi.parsePostByIdJson(resultsArray.getJSONObject(i).toString())
+                        GetPostByIdApi.parsePostByIdJson(discussionObject.toString())
                     type = DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST
                 } else {
                     poll =
-                        GetPollByIdApi.parsePollByIdJson(resultsArray.getJSONObject(i).toString())
+                        GetPollByIdApi.parsePollByIdJson(discussionObject.toString())
                     type = DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POLL
                 }
                 discussionsList.add(

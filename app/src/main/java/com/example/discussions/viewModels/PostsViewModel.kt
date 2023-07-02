@@ -39,7 +39,7 @@ class PostsViewModel : ViewModel() {
      * PAGINATION STUFF
      */
     private var postsPage = 0
-    var hasMorePosts = PostRepository.hasMorePosts
+    val hasMorePosts = PostRepository.hasMorePosts
 
     private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
     val isLoadingMore: LiveData<String?>
