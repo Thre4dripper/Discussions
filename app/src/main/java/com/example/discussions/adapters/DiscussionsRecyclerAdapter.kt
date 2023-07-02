@@ -43,9 +43,9 @@ class DiscussionsRecyclerAdapter(
     ListAdapter<DiscussionModel, ViewHolder>(DiscussionsDiffCallback()) {
 
     companion object {
-        const val DISCUSSION_TYPE_POST = 100
-        const val DISCUSSION_TYPE_POLL = 101
-        const val DISCUSSION_TYPE_LOADING = 102
+        const val DISCUSSION_TYPE_POST = Constants.VIEW_TYPE_POST
+        const val DISCUSSION_TYPE_POLL = Constants.VIEW_TYPE_POLL
+        const val DISCUSSION_TYPE_LOADING = Constants.VIEW_TYPE_LOADING
     }
 
 

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.ItemUserPostBinding
@@ -19,17 +20,21 @@ import com.example.discussions.models.PostModel
 class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface) :
     ListAdapter<DiscussionModel, ViewHolder>(ProfileDiffCallback()) {
 
+    companion object {
+        const val PROFILE_POST_TYPE_POST = Constants.VIEW_TYPE_POST
+        const val PROFILE_POST_TYPE_LOADING = Constants.VIEW_TYPE_LOADING
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (viewType) {
-            DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST -> {
+            PROFILE_POST_TYPE_POST -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_user_post, parent, false)
 
                 ProfilePostsViewHolder(view)
             }
 
-            DiscussionsRecyclerAdapter.DISCUSSION_TYPE_LOADING -> {
+            PROFILE_POST_TYPE_LOADING -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.pagination_loader, parent, false)
                 LoadingViewHolder(view)
@@ -42,11 +47,9 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val discussionPost = getItem(position)
 
-        if (holder.itemViewType == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_POST) {
+        if (holder.itemViewType == PROFILE_POST_TYPE_POST) {
             (holder as ProfilePostsViewHolder).bind(
-                holder.binding,
-                discussionPost.post!!,
-                postClickInterface
+                holder.binding, discussionPost.post!!, postClickInterface
             )
         }
     }
@@ -62,7 +65,7 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
     }
 
     private fun afterSubmitList(list: MutableList<DiscussionModel>?) {
-        list?.removeIf { it.type == DiscussionsRecyclerAdapter.DISCUSSION_TYPE_LOADING }
+        list?.removeIf { it.type == PROFILE_POST_TYPE_LOADING }
 
         val loader = DiscussionModel(
             "",
@@ -71,7 +74,7 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
             "",
             null,
             null,
-            DiscussionsRecyclerAdapter.DISCUSSION_TYPE_LOADING
+            PROFILE_POST_TYPE_LOADING
         )
         if (list?.size != 0 && list?.last()?.next != null) {
             list.add(loader)
@@ -108,17 +111,14 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
                 binding.itemUserPostImage.foreground = null
             } else {
                 binding.itemUserPostImage.foreground = ContextCompat.getDrawable(
-                    binding.root.context,
-                    R.drawable.item_user_post_grad
+                    binding.root.context, R.drawable.item_user_post_grad
                 )
             }
 
             val image = postModel.postImage
             if (image != "") {
                 binding.itemUserPostImage.visibility = View.VISIBLE
-                Glide.with(itemView.context)
-                    .load(image)
-                    .override(Target.SIZE_ORIGINAL)
+                Glide.with(itemView.context).load(image).override(Target.SIZE_ORIGINAL)
                     .into(binding.itemUserPostImage)
             } else {
                 binding.itemUserPostImage.visibility = View.GONE

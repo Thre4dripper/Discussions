@@ -87,5 +87,12 @@ class Constants {
         const val NOTIFICATION_TYPE_LIKE = "like"
         const val NOTIFICATION_TYPE_COMMENT = "comment"
         const val NOTIFICATION_TYPE_VOTE = "vote"
+
+        //for multiview recycler view
+        const val VIEW_TYPE_POST = 100
+        const val VIEW_TYPE_POLL = 101
+        const val VIEW_TYPE_COMMENT = 102
+        const val VIEW_TYPE_NOTIFICATION = 103
+        const val VIEW_TYPE_LOADING = 105
     }
 }
