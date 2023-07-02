@@ -1,6 +1,11 @@
 package com.example.discussions.ui.home
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
@@ -8,6 +13,7 @@ import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ActivityHomeBinding
 import com.example.discussions.ui.bottomSheets.CreatePostsBS
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class HomeActivity : AppCompatActivity() {
     private val TAG = "HomeActivity"
@@ -27,8 +33,57 @@ class HomeActivity : AppCompatActivity() {
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
 
+        initPermissions()
         initFragments()
     }
+
+    private fun initPermissions() {
+        //request notification permission whether it is granted or not
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
+    private var requestPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+            if(!isGranted) {
+                when {
+                    //this should handle the case when user has denied the permission but not permanently
+                    shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS) -> {
+                        MaterialAlertDialogBuilder(this)
+                            .setTitle("Notifications Permission")
+                            .setMessage("Notifications permission is required to receive device notifications")
+                            .setPositiveButton("Enable") { dialog, _ ->
+                                dialog.dismiss()
+                                initPermissions()
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .show()
+                    }
+
+                    //this should handle the case when user has permanently denied the permission
+                    else -> {
+                        MaterialAlertDialogBuilder(this)
+                            .setTitle("Notifications Permission")
+                            .setMessage("It seems like you have permanently denied notifications permission. You can enable it from settings")
+                            .setPositiveButton("Settings") { dialog, _ ->
+                                dialog.dismiss()
+                                //open settings of the app
+                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                val uri = Uri.fromParts("package", packageName, null)
+                                intent.data = uri
+                                startActivity(intent)
+                            }
+                            .setNegativeButton("Cancel") { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .show()
+                    }
+                }
+            }
+        }
 
     private fun initFragments() {
         val discussFragment = DiscussFragment()
@@ -36,35 +91,56 @@ class HomeActivity : AppCompatActivity() {
 
         //initial fragment
         supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, discussFragment, Constants.TAG_DISCUSS_FRAGMENT).commit()
+            .replace(R.id.fragment_container, discussFragment, Constants.TAG_DISCUSS_FRAGMENT)
+            .commit()
 
         //bottom navigation listener
         binding.bottomNavigationView.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.navigation_home -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, discussFragment, Constants.TAG_DISCUSS_FRAGMENT)
+                        .replace(
+                            R.id.fragment_container,
+                            discussFragment,
+                            Constants.TAG_DISCUSS_FRAGMENT
+                        )
                         .commit()
                     true
                 }
+
                 R.id.navigation_poll -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, PollsFragment(), Constants.TAG_POLLS_FRAGMENT)
+                        .replace(
+                            R.id.fragment_container,
+                            PollsFragment(),
+                            Constants.TAG_POLLS_FRAGMENT
+                        )
                         .commit()
                     true
                 }
+
                 R.id.navigation_notification -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, NotificationFragment(), Constants.TAG_NOTIFICATION_FRAGMENT)
+                        .replace(
+                            R.id.fragment_container,
+                            NotificationFragment(),
+                            Constants.TAG_NOTIFICATION_FRAGMENT
+                        )
                         .commit()
                     true
                 }
+
                 R.id.navigation_profile -> {
                     supportFragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, profileFragment, Constants.TAG_PROFILE_FRAGMENT)
+                        .replace(
+                            R.id.fragment_container,
+                            profileFragment,
+                            Constants.TAG_PROFILE_FRAGMENT
+                        )
                         .commit()
                     true
                 }
+
                 else -> false
             }
         }
