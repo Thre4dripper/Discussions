@@ -18,6 +18,7 @@ import com.example.discussions.adapters.interfaces.NotificationInterface
 import com.example.discussions.databinding.ItemNotificationCommentBinding
 import com.example.discussions.databinding.ItemNotificationPollBinding
 import com.example.discussions.databinding.ItemNotificationPostBinding
+import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.NotificationModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -42,21 +43,25 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                     .inflate(R.layout.item_notification_post, parent, false)
                 PostNotificationViewHolder(view)
             }
+
             NOTIFICATION_ITEM_TYPE_POLL -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_notification_poll, parent, false)
                 PollNotificationViewHolder(view)
             }
+
             NOTIFICATION_ITEM_TYPE_COMMENT -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_notification_comment, parent, false)
                 CommentNotificationViewHolder(view)
             }
+
             NOTIFICATION_ITEM_TYPE_LOADING -> {
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.pagination_loader, parent, false)
                 LoadingViewHolder(view)
             }
+
             else -> null!!
         }
     }
@@ -77,6 +82,7 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                     R.anim.translate
                 )
             }
+
             NOTIFICATION_ITEM_TYPE_POLL -> {
                 (holder as PollNotificationViewHolder).bind(
                     holder.binding,
@@ -89,6 +95,7 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                     R.anim.translate
                 )
             }
+
             NOTIFICATION_ITEM_TYPE_COMMENT -> {
                 (holder as CommentNotificationViewHolder).bind(
                     holder.binding,
@@ -101,6 +108,40 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                     R.anim.translate
                 )
             }
+        }
+    }
+
+    override fun submitList(list: MutableList<NotificationModel>?) {
+        afterSubmitList(list)
+        super.submitList(list)
+    }
+
+    override fun submitList(list: MutableList<NotificationModel>?, commitCallback: Runnable?) {
+        afterSubmitList(list)
+        super.submitList(list, commitCallback)
+    }
+
+    private fun afterSubmitList(list: MutableList<NotificationModel>?) {
+        list?.removeIf { it.category == Constants.NOTIFICATION_CATEGORY_LOADER }
+
+        if (list?.size != 0 && list?.last()?.next != null) {
+            list.add(
+                NotificationModel(
+                    "",
+                    0,
+                    "",
+                    "",
+                    "",
+                    Constants.NOTIFICATION_CATEGORY_LOADER,
+                    false,
+                    "",
+                    "",
+                    "",
+                    null,
+                    null,
+                    null,
+                )
+            )
         }
     }
 
