@@ -2,6 +2,9 @@ package com.example.discussions.models
 
 data class NotificationModel(
     val notificationId: String,
+    val count: Int,
+    val next: String?,
+    val previous: String?,
     val type: String,
     val category: String,
     val isRead: Boolean,

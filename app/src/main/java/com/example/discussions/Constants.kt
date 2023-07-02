@@ -81,6 +81,7 @@ class Constants {
         const val NOTIFICATION_CATEGORY_POST = "post"
         const val NOTIFICATION_CATEGORY_POLL = "poll"
         const val NOTIFICATION_CATEGORY_COMMENT = "comment"
+        const val NOTIFICATION_CATEGORY_LOADER = "loader"
         const val NOTIFICATION_CATEGORY_INVALID = "invalid"
 
         //notification types

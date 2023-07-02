@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
 import com.example.discussions.R
@@ -65,8 +66,28 @@ class NotificationFragment : Fragment(), NotificationInterface {
         itemTouchHelper.attachToRecyclerView(binding.notificationRv)
 
         setDeleteAllNotificationsButton()
+        paginatedFlow()
         getAllNotifications()
         return binding.root
+    }
+
+    private fun paginatedFlow() {
+        binding.notificationRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
+                val lastVisibleItemPosition =
+                    (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
+
+                if (viewModel.hasMoreNotifications.value!!
+                    && viewModel.isLoadingMore.value == Constants.PAGE_IDLE
+                    && lastVisibleItemPosition != RecyclerView.NO_POSITION
+                    // api call when 4 items are left to be seen
+                    && lastVisibleItemPosition >= notificationAdapter.itemCount - Constants.NOTIFICATIONS_PAGING_SIZE / 2
+                ) {
+                    viewModel.getAllNotifications(requireContext())
+                }
+            }
+        })
     }
 
     private fun getAllNotifications() {

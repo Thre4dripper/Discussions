@@ -28,27 +28,47 @@ class NotificationsViewModel : ViewModel() {
     val isNotificationRead: LiveData<String?>
         get() = _isNotificationRead
 
+    /**
+     * PAGINATION STUFF
+     */
+    private var notificationsPage = 0
+    var hasMoreNotifications = NotificationRepository.hasMoreNotifications
+
+    private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
+    val isLoadingMore: LiveData<String?>
+        get() = _isLoadingMore
+
+    companion object {
+        //todo use this instead of HomeViewModel.postsOrPollsOrNotificationsScrollToTop
+        var notificationsScrollToIndex = false
+    }
+
     fun getAllNotifications(context: Context) {
-        if (_isNotificationsFetched.value == Constants.API_SUCCESS) return
-        else {
-            _isNotificationsFetched.value = null
-        }
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = true
+        _isNotificationsFetched.value = null
+        _isLoadingMore.value = Constants.PAGE_LOADING
 
-        NotificationRepository.getAllNotifications(context, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isNotificationsFetched.value = Constants.API_SUCCESS
-            }
+        notificationsPage++
+        NotificationRepository.getAllNotifications(
+            context,
+            notificationsPage,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    _isNotificationsFetched.value = Constants.API_SUCCESS
+                    _isLoadingMore.value = Constants.PAGE_IDLE
+                }
 
-            override fun onError(response: String) {
-                _isNotificationsFetched.value = response
-                notificationsList.value = mutableListOf()
-            }
-        })
+                override fun onError(response: String) {
+                    _isNotificationsFetched.value = response
+                    notificationsList.value = mutableListOf()
+                    _isLoadingMore.value = Constants.PAGE_IDLE
+                }
+            })
     }
 
     fun refreshAllNotifications(context: Context) {
-        _isNotificationsFetched.value = null
+        NotificationRepository.cancelGetRequest()
+        NotificationRepository.notificationsList.value = null
+        notificationsPage = 0
         getAllNotifications(context)
     }
 

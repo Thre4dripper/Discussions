@@ -2,7 +2,8 @@ package com.example.discussions.api.apiCalls.notification
 
 import android.content.Context
 import com.android.volley.DefaultRetryPolicy
-import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.discussions.Constants
 import com.example.discussions.api.ApiRoutes
@@ -11,20 +12,24 @@ import com.example.discussions.models.CommentNotificationModel
 import com.example.discussions.models.NotificationModel
 import com.example.discussions.models.PollNotificationModel
 import com.example.discussions.models.PostNotificationModel
-import org.json.JSONArray
 import org.json.JSONObject
 
 class GetAllNotificationsApi {
     companion object {
+        private const val TAG = "GetAllNotificationsApi"
+        var queue: RequestQueue? = null
         fun getAllNotificationsJson(
             context: Context,
             token: String,
+            page: Int,
             callback: ResponseCallback
         ) {
-            val queue = Volley.newRequestQueue(context)
-            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.NOTIFICATIONS_GET_ALL}"
+            queue = Volley.newRequestQueue(context)
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.NOTIFICATIONS_GET_ALL}" +
+                    "?limit=${Constants.NOTIFICATIONS_PAGING_SIZE}" +
+                    "&offset=${(page - 1) * Constants.NOTIFICATIONS_PAGING_SIZE}"
 
-            val request = object : JsonArrayRequest(Method.GET, url, null, { response ->
+            val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
                 callback.onSuccess(response.toString())
             }, { error ->
                 callback.onError(error.toString())
@@ -42,15 +47,25 @@ class GetAllNotificationsApi {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
             )
 
-            queue.add(request)
+            request.tag = TAG
+            queue!!.add(request)
         }
 
-        fun parseAllNotificationsJson(response: String): MutableList<NotificationModel> {
-            val rootObject = JSONArray(response)
-            val notificationsList = mutableListOf<NotificationModel>()
+        fun cancelGetRequest() {
+            queue?.cancelAll(TAG)
+        }
 
-            for (i in 0 until rootObject.length()) {
-                val notificationObject = rootObject.getJSONObject(i)
+        fun parseAllNotificationsJson(json: String): MutableList<NotificationModel> {
+            val rootObject = JSONObject(json)
+            val notificationsList = mutableListOf<NotificationModel>()
+            val resultsArray = rootObject.getJSONArray("results")
+
+            val next = rootObject.getString("next")
+            val previous = rootObject.getString("previous")
+
+            for (i in 0 until resultsArray.length()) {
+                val notificationObject = resultsArray.getJSONObject(i)
+
                 val createdByObject = notificationObject.getJSONObject("created_by")
                 var username = createdByObject.getString("username")
                 val userImage = createdByObject.getString("image")
@@ -74,6 +89,9 @@ class GetAllNotificationsApi {
                 notificationsList.add(
                     NotificationModel(
                         notificationObject.getString("id"),
+                        rootObject.getInt("count"),
+                        if (next == "null") null else next,
+                        if (previous == "null") null else previous,
                         notificationObject.getString("type"),
                         category,
                         notificationObject.getBoolean("is_read"),

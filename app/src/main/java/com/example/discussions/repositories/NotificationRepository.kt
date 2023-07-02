@@ -15,20 +15,27 @@ class NotificationRepository {
         private const val TAG = "NotificationRepository"
 
         var notificationsList = MutableLiveData<MutableList<NotificationModel>?>(null)
+        val hasMoreNotifications = MutableLiveData(false)
 
         fun getAllNotifications(
-            context: Context, callback: ResponseCallback
+            context: Context, page: Int, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
             GetAllNotificationsApi.getAllNotificationsJson(
                 context,
                 token,
+                page,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        notificationsList.postValue(
+                        val newNotificationsList =
                             GetAllNotificationsApi.parseAllNotificationsJson(response)
-                        )
+                        val oldNotificationsList = notificationsList.value ?: mutableListOf()
+                        val updatedNotificationsList = oldNotificationsList.toMutableList()
+                        updatedNotificationsList.addAll(newNotificationsList)
+
+                        notificationsList.value = updatedNotificationsList
+                        hasMoreNotifications.value = newNotificationsList.isNotEmpty()
                         callback.onSuccess(response)
                     }
 
@@ -50,6 +57,10 @@ class NotificationRepository {
                         }
                     }
                 })
+        }
+
+        fun cancelGetRequest() {
+            GetAllNotificationsApi.cancelGetRequest()
         }
 
         fun deleteNotificationById(

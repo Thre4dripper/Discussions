@@ -20,7 +20,8 @@ import com.example.discussions.databinding.ItemNotificationPollBinding
 import com.example.discussions.databinding.ItemNotificationPostBinding
 import com.example.discussions.models.NotificationModel
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
 
 class NotificationRecyclerAdapter(private var notificationInterface: NotificationInterface) :
     ListAdapter<NotificationModel, ViewHolder>(
@@ -28,9 +29,10 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
     ) {
 
     companion object {
-        const val NOTIFICATION_ITEM_TYPE_POST = 100
-        const val NOTIFICATION_ITEM_TYPE_POLL = 101
-        const val NOTIFICATION_ITEM_TYPE_COMMENT = 102
+        const val NOTIFICATION_ITEM_TYPE_POST = Constants.VIEW_TYPE_POST
+        const val NOTIFICATION_ITEM_TYPE_POLL = Constants.VIEW_TYPE_POLL
+        const val NOTIFICATION_ITEM_TYPE_COMMENT = Constants.VIEW_TYPE_COMMENT
+        const val NOTIFICATION_ITEM_TYPE_LOADING = Constants.VIEW_TYPE_LOADING
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -49,6 +51,11 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                 val view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.item_notification_comment, parent, false)
                 CommentNotificationViewHolder(view)
+            }
+            NOTIFICATION_ITEM_TYPE_LOADING -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.pagination_loader, parent, false)
+                LoadingViewHolder(view)
             }
             else -> null!!
         }
@@ -103,6 +110,7 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
             Constants.NOTIFICATION_CATEGORY_POST -> NOTIFICATION_ITEM_TYPE_POST
             Constants.NOTIFICATION_CATEGORY_POLL -> NOTIFICATION_ITEM_TYPE_POLL
             Constants.NOTIFICATION_CATEGORY_COMMENT -> NOTIFICATION_ITEM_TYPE_COMMENT
+            Constants.NOTIFICATION_CATEGORY_LOADER -> NOTIFICATION_ITEM_TYPE_LOADING
             else -> null!!
         }
     }
@@ -340,6 +348,8 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
             }
         }
     }
+
+    inner class LoadingViewHolder(itemView: View) : ViewHolder(itemView)
 
     class NotificationDiffCallback : DiffUtil.ItemCallback<NotificationModel>() {
         override fun areItemsTheSame(
