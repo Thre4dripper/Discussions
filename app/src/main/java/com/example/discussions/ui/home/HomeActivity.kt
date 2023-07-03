@@ -87,6 +87,8 @@ class HomeActivity : AppCompatActivity() {
 
     private fun initFragments() {
         val discussFragment = DiscussFragment()
+        val pollsFragment = PollsFragment()
+        val notificationFragment = NotificationFragment()
         val profileFragment = ProfileFragment()
 
         //initial fragment
@@ -112,7 +114,7 @@ class HomeActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragment_container,
-                            PollsFragment(),
+                            pollsFragment,
                             Constants.TAG_POLLS_FRAGMENT
                         )
                         .commit()
@@ -123,7 +125,7 @@ class HomeActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.fragment_container,
-                            NotificationFragment(),
+                            notificationFragment,
                             Constants.TAG_NOTIFICATION_FRAGMENT
                         )
                         .commit()
