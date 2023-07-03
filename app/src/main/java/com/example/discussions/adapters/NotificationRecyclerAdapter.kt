@@ -18,7 +18,6 @@ import com.example.discussions.adapters.interfaces.NotificationInterface
 import com.example.discussions.databinding.ItemNotificationCommentBinding
 import com.example.discussions.databinding.ItemNotificationPollBinding
 import com.example.discussions.databinding.ItemNotificationPostBinding
-import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.NotificationModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -157,6 +156,7 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
     }
 
     class PostNotificationViewHolder(itemView: View) : ViewHolder(itemView) {
+        private val TAG = "PostNotificationViewHolder"
         val binding = DataBindingUtil.bind<ItemNotificationPostBinding>(itemView)!!
 
         fun bind(
@@ -235,10 +235,8 @@ class NotificationRecyclerAdapter(private var notificationInterface: Notificatio
                 DateUtils.MINUTE_IN_MILLIS
             )
 
-            if (notifiedPost.postImage.isEmpty())
-                binding.itemNotificationPostImage.visibility = View.GONE
-            else
-                binding.itemNotificationPostImage.visibility = View.VISIBLE
+            binding.itemNotificationPostImageCv.visibility =
+                if (notifiedPost.postImage.isEmpty()) View.GONE else View.VISIBLE
 
             Glide.with(itemView.context)
                 .load(notifiedPost.postImage)
