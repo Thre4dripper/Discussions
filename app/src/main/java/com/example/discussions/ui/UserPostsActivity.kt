@@ -5,10 +5,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.DiscussionsRecyclerAdapter
@@ -21,6 +24,7 @@ import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.PostRepository
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
+import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.PostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -49,29 +53,99 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
             adapter = userPostsAdapter
         }
 
-        //getting user posts from view model
+        //getting user id from intent
+        val userId = intent.getStringExtra(Constants.USER_ID)!!
+
+        //getting username from intent
         val username = intent.getStringExtra(Constants.USERNAME)
         binding.userPostsHeaderTv.text = getString(R.string.user_post_label, username)
 
         //getting post id from intent
-        val postId = intent.getStringExtra(Constants.POST_ID)!!
+        val postId = intent.getStringExtra(Constants.POST_ID)
         PostsViewModel.userPostsScrollToIndex = true
 
         //getting post index from post id
-        val postIndex = viewModel.userPostsList.value?.indexOfFirst { it.post!!.postId == postId }!!
+        val postIndex =
+            if (postId == null)
+                0
+            else
+                viewModel.userPostsList.value?.indexOfFirst { it.post?.postId == postId } ?: 0
+
+        binding.userPostsSwipeLayout.setOnRefreshListener {
+            viewModel.refreshUserPosts()
+            viewModel.getAllUserPosts(this, userId)
+        }
+
+        paginatedFlow(userId)
+
+        if (viewModel.userPostsList.value == null) {
+            viewModel.refreshUserPosts()
+            viewModel.getAllUserPosts(this, userId)
+        }
+
+        //only first time scroll to index
+        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = true
         getUserPosts(postIndex)
+    }
+
+    private fun paginatedFlow(userId: String) {
+        binding.userPostsRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
+                val lastVisibleItemPosition =
+                    (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
+
+                if (PostsViewModel.hasMorePosts.value!!
+                    && PostsViewModel.paginationStatus.value == Constants.PAGE_IDLE
+                    && lastVisibleItemPosition != RecyclerView.NO_POSITION
+                    // api call when 4 items are left to be seen
+                    && lastVisibleItemPosition >= userPostsAdapter.itemCount - Constants.POSTS_PAGING_SIZE / 2
+                ) {
+                    viewModel.getAllUserPosts(this@UserPostsActivity, userId)
+                }
+            }
+        })
     }
 
     /**
      * METHOD FOR GETTING USER POSTS FROM POST REPOSITORY AND POPULATING THE RECYCLER VIEW
      */
     private fun getUserPosts(postIndex: Int) {
-        //no api will be called in this case as the user posts are already fetched in the previous activity
+        binding.userPostsProgressBar.visibility = View.VISIBLE
         viewModel.userPostsList.observe(this) {
-            userPostsAdapter.submitList(it) {
-                if (PostsViewModel.userPostsScrollToIndex) binding.userPostsRv.scrollToPosition(
-                    postIndex
-                )
+            if (it != null) {
+                userPostsAdapter.submitList(it) {
+                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop) {
+                        binding.userPostsRv.scrollToPosition(postIndex)
+                        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+                    }
+                }
+                //hiding all loading
+                binding.userPostsSwipeLayout.isRefreshing = false
+                binding.userPostsProgressBar.visibility = View.GONE
+                binding.userPostsLottieNoData.visibility = View.GONE
+
+                //when empty list is loaded
+                if (it.isEmpty()) {
+                    binding.userPostsLottieNoData.visibility = View.VISIBLE
+                    val error = viewModel.isUserPostsFetched.value
+
+                    //when empty list is due to network error
+                    if (error != Constants.API_SUCCESS && error != null) {
+                        Toast.makeText(
+                            this,
+                            viewModel.isUserPostsFetched.value,
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+
+                    //todo handle all these errors
+                    if (error == Constants.AUTH_FAILURE_ERROR) {
+                        setResult(Constants.RESULT_LOGOUT)
+                        finish()
+                    }
+                }
             }
         }
     }

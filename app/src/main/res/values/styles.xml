@@ -163,6 +163,9 @@
         <item name="cardCornerRadius">24dp</item>
         <item name="cardElevation">5dp</item>
         <item name="android:layout_marginTop">32dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
     </style>
 
     //Edit Profile Activity Styles
@@ -218,6 +221,7 @@
     </style>
 
     //Bottom Sheets Options Dialog
+
     <style name="BSOptionsTvStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

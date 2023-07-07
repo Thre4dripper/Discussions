@@ -29,6 +29,7 @@ class Constants {
 
         //user constants
         const val PROFILE_IMAGE = "profile_image"
+        const val USER_ID = "user_id"
         const val USERNAME = "username"
         const val FIRST_NAME = "first_name"
         const val LAST_NAME = "last_name"

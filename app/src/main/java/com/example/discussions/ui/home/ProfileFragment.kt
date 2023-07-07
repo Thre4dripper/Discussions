@@ -69,6 +69,14 @@ class ProfileFragment : Fragment(), PostClickInterface {
             settingsCallback.launch(Intent(requireContext(), SettingsActivity::class.java))
         }
 
+        //for launching user posts activity
+        binding.profilePostsCountCv.setOnClickListener {
+            val intent = Intent(requireContext(), UserPostsActivity::class.java)
+            intent.putExtra(Constants.USER_ID, viewModel.profileDataModel.userId)
+            intent.putExtra(Constants.USERNAME, viewModel.profileDataModel.username)
+            startActivity(intent)
+        }
+
         binding.lifecycleOwner = this
 
         initDialogs()
@@ -158,15 +166,21 @@ class ProfileFragment : Fragment(), PostClickInterface {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 val layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
                 val lastVisibleItemPosition =
-                    (layoutManager as StaggeredGridLayoutManager?)!!.findLastVisibleItemPositions(null)[0]
+                    (layoutManager as StaggeredGridLayoutManager?)!!.findLastVisibleItemPositions(
+                        null
+                    )[0]
 
-                if (postsViewModel.hasMorePosts.value!!
-                    && postsViewModel.isLoadingMore.value == Constants.PAGE_IDLE
+
+                if (PostsViewModel.hasMorePosts.value!!
+                    && PostsViewModel.paginationStatus.value == Constants.PAGE_IDLE
                     && lastVisibleItemPosition != RecyclerView.NO_POSITION
                     // api call when 4 items are left to be seen
                     && lastVisibleItemPosition >= profileAdapter.itemCount - Constants.PROFILE_POSTS_PAGING_SIZE / 2
                 ) {
-                    postsViewModel.getAllUserPosts(requireContext(), viewModel.profileDataModel.userId)
+                    postsViewModel.getAllUserPosts(
+                        requireContext(),
+                        viewModel.profileDataModel.userId
+                    )
                 }
             }
         })
@@ -233,6 +247,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
     override fun onPostClick(postId: String) {
         val intent = Intent(requireContext(), UserPostsActivity::class.java)
         intent.putExtra(Constants.POST_ID, postId)
+        intent.putExtra(Constants.USER_ID, viewModel.profileDataModel.userId)
         intent.putExtra(Constants.USERNAME, binding.profileUsernameTv.text.toString())
         startActivity(intent)
     }

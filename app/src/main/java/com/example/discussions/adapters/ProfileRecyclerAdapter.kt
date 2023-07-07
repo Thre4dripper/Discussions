@@ -55,16 +55,16 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
     }
 
     override fun submitList(list: MutableList<DiscussionModel>?) {
-        afterSubmitList(list)
-        super.submitList(list)
+        val loaderList = afterSubmitList(list?.toMutableList())
+        super.submitList(loaderList)
     }
 
     override fun submitList(list: MutableList<DiscussionModel>?, commitCallback: Runnable?) {
-        afterSubmitList(list)
-        super.submitList(list, commitCallback)
+        val loaderList = afterSubmitList(list?.toMutableList())
+        super.submitList(loaderList, commitCallback)
     }
 
-    private fun afterSubmitList(list: MutableList<DiscussionModel>?) {
+    private fun afterSubmitList(list: MutableList<DiscussionModel>?): MutableList<DiscussionModel> {
         list?.removeIf { it.type == PROFILE_POST_TYPE_LOADING }
 
         val loader = DiscussionModel(
@@ -81,6 +81,8 @@ class ProfileRecyclerAdapter(private val postClickInterface: PostClickInterface)
             list.add(loader)
             list.add(loader)
         }
+
+        return list!!
     }
 
     override fun getItemViewType(position: Int): Int {

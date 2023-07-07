@@ -13,7 +13,7 @@ import com.example.discussions.repositories.PostRepository
 
 class PostsViewModel : ViewModel() {
 
-    private val TAG = "UserPostsViewModel"
+    private val TAG = "PostsViewModel"
 
     //all posts list from repository
     private var discussionsPostsList = DiscussionRepository.discussions
@@ -35,35 +35,33 @@ class PostsViewModel : ViewModel() {
     val isPostLikedChanged: LiveData<String?>
         get() = _isPostLikedChanged
 
-    /**
-     * PAGINATION STUFF
-     */
-    private var postsPage = 0
-    val hasMorePosts = PostRepository.hasMorePosts
-
-    private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
-    val isLoadingMore: LiveData<String?>
-        get() = _isLoadingMore
-
     companion object {
         var userPostsScrollToIndex = false
+
+        /**
+         * PAGINATION STUFF
+         * only this has to be static because it is used in profile fragment and user posts activity
+         */
+        var postsPage = 0
+        val hasMorePosts = PostRepository.hasMorePosts
+        val paginationStatus = MutableLiveData(Constants.PAGE_IDLE)
     }
 
     fun getAllUserPosts(context: Context, userId: String) {
         _isUserPostsFetched.value = null
-        _isLoadingMore.value = Constants.PAGE_LOADING
+        paginationStatus.value = Constants.PAGE_LOADING
 
         postsPage++
         PostRepository.getAllUserPosts(context, userId, postsPage, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isUserPostsFetched.value = Constants.API_SUCCESS
-                _isLoadingMore.value = Constants.PAGE_IDLE
+                paginationStatus.value = Constants.PAGE_IDLE
             }
 
             override fun onError(response: String) {
                 _isUserPostsFetched.value = response
                 _userPostsList.value = mutableListOf()
-                _isLoadingMore.value = Constants.PAGE_IDLE
+                paginationStatus.value = Constants.PAGE_IDLE
             }
         })
     }
@@ -72,6 +70,7 @@ class PostsViewModel : ViewModel() {
         PostRepository.cancelGetRequest()
         PostRepository.userPostsList.value = null
         _isUserPostsFetched.value = null
+        paginationStatus.value = Constants.PAGE_IDLE
         postsPage = 0
     }
 

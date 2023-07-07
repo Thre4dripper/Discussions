@@ -34,17 +34,51 @@
         </com.google.android.material.card.MaterialCardView>
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/user_posts_rv"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/user_posts_swipe_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/light_gray"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/user_posts_header_cv"
-            tools:listitem="@layout/item_discussion_post" />
+            app:layout_constraintTop_toBottomOf="@+id/user_posts_header_cv">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/user_posts_rv"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@color/light_gray"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_posts_header_cv"
+                tools:listitem="@layout/item_discussion_post" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+        <ProgressBar
+            android:id="@+id/user_posts_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:indeterminateTint="@color/login_header_color"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/user_posts_swipe_layout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/user_posts_swipe_layout" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/user_posts_lottie_no_data"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/no_data" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
