@@ -85,7 +85,7 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
                     (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
 
                 if (homeViewModel.hasMoreDiscussions.value!!
-                    && homeViewModel.isLoadingMore.value == Constants.PAGE_IDLE
+                    && homeViewModel.paginationStatus.value == Constants.PAGE_IDLE
                     && lastVisibleItemPosition != RecyclerView.NO_POSITION
                     // api call when 4 items are left to be seen
                     && lastVisibleItemPosition >= discussAdapter.itemCount - Constants.DISCUSSIONS_PAGING_SIZE / 2

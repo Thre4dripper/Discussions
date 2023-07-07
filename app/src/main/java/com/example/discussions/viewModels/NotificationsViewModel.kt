@@ -34,9 +34,9 @@ class NotificationsViewModel : ViewModel() {
     private var notificationsPage = 0
     var hasMoreNotifications = NotificationRepository.hasMoreNotifications
 
-    private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
-    val isLoadingMore: LiveData<String?>
-        get() = _isLoadingMore
+    private var _paginationStatus = MutableLiveData(Constants.PAGE_IDLE)
+    val paginationStatus: LiveData<String?>
+        get() = _paginationStatus
 
     companion object {
         //todo use this instead of HomeViewModel.postsOrPollsOrNotificationsScrollToTop
@@ -45,7 +45,7 @@ class NotificationsViewModel : ViewModel() {
 
     fun getAllNotifications(context: Context) {
         _isNotificationsFetched.value = null
-        _isLoadingMore.value = Constants.PAGE_LOADING
+        _paginationStatus.value = Constants.PAGE_LOADING
 
         notificationsPage++
         NotificationRepository.getAllNotifications(
@@ -54,13 +54,13 @@ class NotificationsViewModel : ViewModel() {
             object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     _isNotificationsFetched.value = Constants.API_SUCCESS
-                    _isLoadingMore.value = Constants.PAGE_IDLE
+                    _paginationStatus.value = Constants.PAGE_IDLE
                 }
 
                 override fun onError(response: String) {
                     _isNotificationsFetched.value = response
                     notificationsList.value = mutableListOf()
-                    _isLoadingMore.value = Constants.PAGE_IDLE
+                    _paginationStatus.value = Constants.PAGE_IDLE
                 }
             })
     }
@@ -69,6 +69,7 @@ class NotificationsViewModel : ViewModel() {
         NotificationRepository.cancelGetRequest()
         NotificationRepository.notificationsList.value = null
         notificationsPage = 0
+        _paginationStatus.value = Constants.PAGE_IDLE
         getAllNotifications(context)
     }
 

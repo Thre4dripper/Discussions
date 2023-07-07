@@ -79,7 +79,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
                     (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
 
                 if (viewModel.hasMoreNotifications.value!!
-                    && viewModel.isLoadingMore.value == Constants.PAGE_IDLE
+                    && viewModel.paginationStatus.value == Constants.PAGE_IDLE
                     && lastVisibleItemPosition != RecyclerView.NO_POSITION
                     // api call when 4 items are left to be seen
                     && lastVisibleItemPosition >= notificationAdapter.itemCount - Constants.NOTIFICATIONS_PAGING_SIZE / 2

@@ -103,16 +103,16 @@ class DiscussionsRecyclerAdapter(
     }
 
     override fun submitList(list: MutableList<DiscussionModel>?) {
-        afterSubmitList(list)
-        super.submitList(list)
+        val loaderList = afterSubmitList(list?.toMutableList())
+        super.submitList(loaderList)
     }
 
     override fun submitList(list: MutableList<DiscussionModel>?, commitCallback: Runnable?) {
-        afterSubmitList(list)
-        super.submitList(list, commitCallback)
+        val loaderList = afterSubmitList(list?.toMutableList())
+        super.submitList(loaderList, commitCallback)
     }
 
-    private fun afterSubmitList(list: MutableList<DiscussionModel>?) {
+    private fun afterSubmitList(list: MutableList<DiscussionModel>?): MutableList<DiscussionModel>? {
         list?.removeIf { it.type == DISCUSSION_TYPE_LOADING }
 
         if (list?.size != 0 && list?.last()?.next != null) {
@@ -128,6 +128,8 @@ class DiscussionsRecyclerAdapter(
                 )
             )
         }
+
+        return list
     }
 
     override fun getItemViewType(position: Int): Int {

@@ -25,9 +25,9 @@ class HomeViewModel : ViewModel() {
     private var discussionsPage = 0
     val hasMoreDiscussions = DiscussionRepository.hasMoreDiscussions
 
-    private var _isLoadingMore = MutableLiveData(Constants.PAGE_IDLE)
-    val isLoadingMore: LiveData<String?>
-        get() = _isLoadingMore
+    private var _paginationStatus = MutableLiveData(Constants.PAGE_IDLE)
+    val paginationStatus: LiveData<String?>
+        get() = _paginationStatus
 
     companion object {
         //TODO refactor this and make it local to each fragment/list
@@ -36,19 +36,19 @@ class HomeViewModel : ViewModel() {
 
     fun getAllDiscussions(context: Context) {
         _isDiscussionsFetched.value = null
-        _isLoadingMore.value = Constants.PAGE_LOADING
+        _paginationStatus.value = Constants.PAGE_LOADING
 
         discussionsPage++
         DiscussionRepository.getAllDiscussions(context, discussionsPage, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 _isDiscussionsFetched.value = Constants.API_SUCCESS
-                _isLoadingMore.value = Constants.PAGE_IDLE
+                _paginationStatus.value = Constants.PAGE_IDLE
             }
 
             override fun onError(response: String) {
                 _isDiscussionsFetched.value = response
                 discussions.value = mutableListOf()
-                _isLoadingMore.value = Constants.PAGE_IDLE
+                _paginationStatus.value = Constants.PAGE_IDLE
             }
         })
     }
@@ -57,6 +57,7 @@ class HomeViewModel : ViewModel() {
         DiscussionRepository.cancelGetRequest()
         DiscussionRepository.discussions.value = null
         discussionsPage = 0
+        _paginationStatus.value = Constants.PAGE_IDLE
         getAllDiscussions(context)
     }
 }

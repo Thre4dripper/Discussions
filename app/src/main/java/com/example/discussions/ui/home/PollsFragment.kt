@@ -75,7 +75,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
                     (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
 
                 if (viewModel.hasMorePolls.value!!
-                    && viewModel.isLoadingMore.value == Constants.PAGE_IDLE
+                    && viewModel.paginationStatus.value == Constants.PAGE_IDLE
                     && lastVisibleItemPosition != RecyclerView.NO_POSITION
                     // api call when 4 items are left to be seen
                     && lastVisibleItemPosition >= pollsAdapter.itemCount - Constants.POLLS_PAGING_SIZE / 2
@@ -105,7 +105,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
                     val error = viewModel.isUserPollsFetched.value
 
                     //when empty list is due to network error
-                    if (error != Constants.API_SUCCESS) {
+                    if (error != Constants.API_SUCCESS && error != null) {
                         Toast.makeText(
                             requireContext(),
                             viewModel.isUserPollsFetched.value,
