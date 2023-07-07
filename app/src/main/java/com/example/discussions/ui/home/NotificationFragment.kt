@@ -27,7 +27,6 @@ import com.example.discussions.models.NotificationModel
 import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PostDetailsActivity
 import com.example.discussions.ui.bottomSheets.NotificationOptionsBS
-import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.NotificationsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -95,7 +94,7 @@ class NotificationFragment : Fragment(), NotificationInterface {
         viewModel.notificationsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 notificationAdapter.submitList(it) {
-                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop)
+                    if (NotificationsViewModel.notificationsScrollToTop)
                         binding.notificationRv.scrollToPosition(0)
                 }
                 //hiding all loading

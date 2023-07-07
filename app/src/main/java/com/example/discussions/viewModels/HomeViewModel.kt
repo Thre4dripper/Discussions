@@ -30,8 +30,7 @@ class HomeViewModel : ViewModel() {
         get() = _paginationStatus
 
     companion object {
-        //TODO refactor this and make it local to each fragment/list
-        var postsOrPollsOrNotificationsScrollToTop = false
+        var discussionsScrollToTop = false
     }
 
     fun getAllDiscussions(context: Context) {

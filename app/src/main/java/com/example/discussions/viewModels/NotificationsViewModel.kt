@@ -39,8 +39,7 @@ class NotificationsViewModel : ViewModel() {
         get() = _paginationStatus
 
     companion object {
-        //todo use this instead of HomeViewModel.postsOrPollsOrNotificationsScrollToTop
-        var notificationsScrollToIndex = false
+        var notificationsScrollToTop = false
     }
 
     fun getAllNotifications(context: Context) {
@@ -75,7 +74,7 @@ class NotificationsViewModel : ViewModel() {
 
     fun deleteNotificationById(context: Context, notificationId: String) {
         _isNotificationDeleted.value = null
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        notificationsScrollToTop = false
 
         val oldNotificationsList = notificationsList.value!!.toMutableList()
         val notificationIndex =
@@ -102,7 +101,7 @@ class NotificationsViewModel : ViewModel() {
 
     fun deleteAllNotifications(context: Context) {
         _isAllNotificationsDeleted.value = null
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        notificationsScrollToTop = false
 
         val oldNotificationsList = notificationsList.value!!.toMutableList()
         notificationsList.value = mutableListOf()
@@ -123,7 +122,7 @@ class NotificationsViewModel : ViewModel() {
 
     fun readNotification(context: Context, notificationId: String) {
         _isNotificationRead.value = null
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        notificationsScrollToTop = false
 
         val oldNotificationsList = notificationsList.value!!
         val newNotificationsList = notificationsList.value!!.toMutableList()

@@ -26,7 +26,6 @@ import com.example.discussions.ui.PollDetailsActivity
 import com.example.discussions.ui.PollResultsActivity
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
-import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.PollsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -91,7 +90,7 @@ class PollsFragment : Fragment(), PollClickInterface, LikeCommentInterface,
         viewModel.userPollsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 pollsAdapter.submitList(it) {
-                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop)
+                    if (PollsViewModel.pollsScrollToTop)
                         binding.pollsRv.scrollToPosition(0)
                 }
                 //hiding all loading

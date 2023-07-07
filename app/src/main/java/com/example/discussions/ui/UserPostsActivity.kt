@@ -24,7 +24,6 @@ import com.example.discussions.models.PostModel
 import com.example.discussions.repositories.PostRepository
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentsBS
-import com.example.discussions.viewModels.HomeViewModel
 import com.example.discussions.viewModels.PostsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
@@ -62,7 +61,7 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
 
         //getting post id from intent
         val postId = intent.getStringExtra(Constants.POST_ID)
-        PostsViewModel.userPostsScrollToIndex = true
+        PostsViewModel.postsScrollToIndex = true
 
         //getting post index from post id
         val postIndex =
@@ -84,7 +83,7 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
         }
 
         //only first time scroll to index
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = true
+        PostsViewModel.postsScrollToIndex = true
         getUserPosts(postIndex)
     }
 
@@ -115,9 +114,9 @@ class UserPostsActivity : AppCompatActivity(), PostClickInterface, LikeCommentIn
         viewModel.userPostsList.observe(this) {
             if (it != null) {
                 userPostsAdapter.submitList(it) {
-                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop) {
+                    if (PostsViewModel.postsScrollToIndex) {
                         binding.userPostsRv.scrollToPosition(postIndex)
-                        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+                        PostsViewModel.postsScrollToIndex = false
                     }
                 }
                 //hiding all loading

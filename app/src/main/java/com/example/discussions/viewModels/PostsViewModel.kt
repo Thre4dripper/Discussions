@@ -36,13 +36,13 @@ class PostsViewModel : ViewModel() {
         get() = _isPostLikedChanged
 
     companion object {
-        var userPostsScrollToIndex = false
+        var postsScrollToIndex = false
 
         /**
          * PAGINATION STUFF
          * only this has to be static because it is used in profile fragment and user posts activity
          */
-        var postsPage = 0
+        private var postsPage = 0
         val hasMorePosts = PostRepository.hasMorePosts
         val paginationStatus = MutableLiveData(Constants.PAGE_IDLE)
     }
@@ -76,8 +76,7 @@ class PostsViewModel : ViewModel() {
 
     fun deletePost(context: Context, postId: String) {
         _isPostDeleted.value = null
-        userPostsScrollToIndex = false
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        postsScrollToIndex = false
 
         //deleted post for deleting image
         val deletedPost = discussionsPostsList.value?.find { it.post?.postId == postId }
@@ -100,8 +99,7 @@ class PostsViewModel : ViewModel() {
 
     fun likePost(context: Context, postId: String) {
         _isPostLikedChanged.value = null
-        userPostsScrollToIndex = false
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        postsScrollToIndex = false
 
         PostRepository.likePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {

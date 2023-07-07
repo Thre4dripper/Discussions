@@ -48,8 +48,7 @@ class PollsViewModel : ViewModel() {
         get() = _paginationStatus
 
     companion object {
-        //TODO use this in user polls activity
-        var userPollsScrollToIndex = false
+        var pollsScrollToTop = false
     }
 
 
@@ -82,8 +81,7 @@ class PollsViewModel : ViewModel() {
 
     fun deletePoll(context: Context, pollId: String) {
         _isPollDeleted.value = null
-        userPollsScrollToIndex = false
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        pollsScrollToTop = false
 
         PollRepository.deletePoll(context, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -98,8 +96,7 @@ class PollsViewModel : ViewModel() {
 
     fun likePoll(context: Context, pollId: String) {
         _isPollLikedChanged.value = null
-        userPollsScrollToIndex = false
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        pollsScrollToTop = false
 
         PollRepository.likePoll(context, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {
@@ -115,8 +112,7 @@ class PollsViewModel : ViewModel() {
 
     fun pollVote(context: Context, pollId: String, optionId: String) {
         _isPollVoted.value = null
-        userPollsScrollToIndex = false
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        pollsScrollToTop = false
 
         //changing vote status to voting, this will trigger progress bar in recycler view
         val votedPoll = _allPollsList.value?.find { it.poll!!.pollId == pollId }

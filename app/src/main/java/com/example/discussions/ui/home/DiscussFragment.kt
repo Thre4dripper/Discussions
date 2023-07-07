@@ -101,9 +101,9 @@ class DiscussFragment : Fragment(), LikeCommentInterface, PostClickInterface, Po
         homeViewModel.discussions.observe(viewLifecycleOwner) {
             if (it != null) {
                 discussAdapter.submitList(it) {
-                    if (HomeViewModel.postsOrPollsOrNotificationsScrollToTop) binding.discussionRv.scrollToPosition(
-                        0
-                    )
+                    if (HomeViewModel.discussionsScrollToTop) {
+                        binding.discussionRv.scrollToPosition(0)
+                    }
                 }
                 //hiding all loading
                 binding.discussSwipeLayout.isRefreshing = false

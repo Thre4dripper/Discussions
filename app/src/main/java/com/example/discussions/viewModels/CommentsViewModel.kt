@@ -154,7 +154,7 @@ class CommentsViewModel : ViewModel() {
     }
 
     fun likePost(context: Context, postId: String) {
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        commentsScrollToTop = false
         PostRepository.likePost(context, postId, object : ResponseCallback {
             override fun onSuccess(response: String) {}
             override fun onError(response: String) {}
@@ -162,7 +162,7 @@ class CommentsViewModel : ViewModel() {
     }
 
     fun likePoll(context: Context, pollId: String) {
-        HomeViewModel.postsOrPollsOrNotificationsScrollToTop = false
+        commentsScrollToTop = false
         PollRepository.likePoll(context, pollId, object : ResponseCallback {
             override fun onSuccess(response: String) {}
             override fun onError(response: String) {}

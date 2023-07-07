@@ -14,8 +14,8 @@ class ApiRoutes {
 
         // POST
         const val POST_CREATE = "/api/post/create/"
-        const val POST_GET_POSTS = "/api/post/getPosts/"//todo pagination
-        const val POST_GET_USER_POSTS = "/api/post/getUserPosts/"//todo pagination
+        const val POST_GET_POSTS = "/api/post/getPosts/"
+        const val POST_GET_USER_POSTS = "/api/post/getUserPosts/"
         const val POST_GET_POST_BY_ID = "/api/post/getPost/"
         const val POST_DELETE_POST = "/api/post/delete/"
         const val POST_UPDATE_POST = "/api/post/update/"
