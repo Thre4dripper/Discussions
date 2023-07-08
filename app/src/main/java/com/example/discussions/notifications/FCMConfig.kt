@@ -137,7 +137,7 @@ class FCMConfig : FirebaseMessagingService() {
             for (i in string.indices) {
                 hash = string[i].code + (hash shl 6) + (hash shl 16) - hash
             }
-            return abs(hash).toString().substring(1).toInt()
+            return abs(hash).toString().substring(2).toInt()
         }
     }
 }
