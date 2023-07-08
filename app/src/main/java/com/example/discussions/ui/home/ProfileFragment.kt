@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
+import com.example.discussions.MyApplication
 import com.example.discussions.adapters.ProfileRecyclerAdapter
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentProfileBinding
@@ -138,7 +139,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
                             .into(binding.profileIv)
 
                         binding.profile = viewModel.profileDataModel
-
+                        MyApplication.username = viewModel.profileDataModel.username
                         getUserPosts()
                     }
 

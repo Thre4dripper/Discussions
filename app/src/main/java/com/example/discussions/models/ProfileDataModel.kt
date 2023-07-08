@@ -8,5 +8,4 @@ data class ProfileDataModel(
     val lastName: String,
     val postsCount: String,
     val pollsCount: String,
-//    val Posts: List<PostDataModel>,
 )

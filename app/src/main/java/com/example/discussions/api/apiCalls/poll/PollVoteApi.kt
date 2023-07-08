@@ -48,9 +48,8 @@ class PollVoteApi {
             val rootObject = JSONObject(json)
 
             val createdByObject = rootObject.getJSONObject("created_by")
-            var username = createdByObject.getString("username")
+            val username = createdByObject.getString("username")
             val userImage = createdByObject.getString("image")
-            username = "@$username"
 
             val pollOptionsList = mutableListOf<PollOptionModel>()
             val pollOptionsArray = rootObject.getJSONArray("poll_option")
@@ -71,7 +70,7 @@ class PollVoteApi {
                     votedByList.add(
                         PollVotedByModel(
                             votedByObject.getString("id"),
-                            "@" + votedByObject.getString("username"),
+                            votedByObject.getString("username"),
                             votedByObject.getString("image")
                         )
                     )

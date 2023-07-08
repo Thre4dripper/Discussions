@@ -37,13 +37,12 @@ class ProfileApi {
             val rootObject = JSONObject(json)
             val userId = rootObject.getString("user")
             val profileImage = rootObject.getString("user_image")
-            var username = rootObject.getString("username")
+            val username = rootObject.getString("username")
             val firstName = rootObject.getString("first_name")
             val lastName = rootObject.getString("last_name")
             val postsCount = rootObject.getString("user_post_count")
             val pollsCount = rootObject.getString("user_poll_count")
 
-            username = "@$username"
             return ProfileDataModel(
                 userId,
                 profileImage,

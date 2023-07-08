@@ -25,7 +25,7 @@ class OptionsBS(
     ): View {
         binding = BsCommentOptionsBinding.inflate(inflater, container, false)
 
-        if (comment.username != "@${MyApplication.username}") {
+        if (comment.username != MyApplication.username) {
             binding.optionEditCommentTv.visibility = View.GONE
             binding.optionDeleteCommentTv.visibility = View.GONE
         }

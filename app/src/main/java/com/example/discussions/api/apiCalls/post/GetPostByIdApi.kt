@@ -47,9 +47,8 @@ class GetPostByIdApi {
             val rootObject = JSONObject(json)
 
             val createdByObject = rootObject.getJSONObject("created_by")
-            var username = createdByObject.getString("username")
+            val username = createdByObject.getString("username")
             val userImage = createdByObject.getString("image")
-            username = "@$username"
 
             return PostModel(
                 rootObject.getString("id"),

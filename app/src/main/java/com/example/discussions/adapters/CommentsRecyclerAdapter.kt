@@ -60,7 +60,8 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
             binding.itemCommentUserImage.layoutParams.width = avatarSize
             binding.itemCommentUserImage.layoutParams.height = avatarSize
 
-            binding.itemCommentUserName.text = commentModel.username
+            binding.itemCommentUserName.text =
+                itemView.context.getString(R.string.username_display, commentModel.username)
             binding.itemCommentContent.text = commentModel.comment
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())

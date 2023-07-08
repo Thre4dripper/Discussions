@@ -168,7 +168,8 @@ class DiscussionsRecyclerAdapter(
                 context.startActivity(intent)
             }
 
-            binding.itemPostUsername.text = postModel.username
+            binding.itemPostUsername.text =
+                itemView.context.getString(R.string.username_display, postModel.username)
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             dateFormat.timeZone = TimeZone.getTimeZone("UTC")
@@ -335,7 +336,8 @@ class DiscussionsRecyclerAdapter(
                 context.startActivity(intent)
             }
 
-            binding.itemPollUsername.text = pollModel.username
+            binding.itemPollUsername.text =
+                itemView.context.getString(R.string.username_display, pollModel.username)
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             dateFormat.timeZone = TimeZone.getTimeZone("UTC")
@@ -386,7 +388,7 @@ class DiscussionsRecyclerAdapter(
                         //checking if the current user has voted for this option
                         //AND
                         //checking if any votedBy list contains the current user's username
-                        if (pollModel.isVoted && pollOptions[i].votedBy.any { it.username == "@${MyApplication.username}" }) {
+                        if (pollModel.isVoted && pollOptions[i].votedBy.any { it.username == MyApplication.username }) {
                             ResourcesCompat.getDrawable(
                                 resources,
                                 R.drawable.ic_circle_checked,
@@ -432,7 +434,7 @@ class DiscussionsRecyclerAdapter(
 
             binding.itemPollPrivacyIcon.apply {
                 visibility =
-                    if (pollModel.isPrivate && pollModel.username != "@${MyApplication.username}") View.VISIBLE else View.GONE
+                    if (pollModel.isPrivate && pollModel.username != MyApplication.username) View.VISIBLE else View.GONE
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     tooltipText = "Private poll, only creator can see the stats"
                 }
@@ -444,7 +446,7 @@ class DiscussionsRecyclerAdapter(
             //view results button
             binding.itemPollViewResultsBtn.apply {
                 visibility = if (pollModel.isVoted) {
-                    if (pollModel.isPrivate && pollModel.username != "@${MyApplication.username}")
+                    if (pollModel.isPrivate && pollModel.username != MyApplication.username)
                         View.GONE
                     else View.VISIBLE
                 } else View.GONE

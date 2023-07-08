@@ -67,9 +67,8 @@ class GetAllNotificationsApi {
                 val notificationObject = resultsArray.getJSONObject(i)
 
                 val createdByObject = notificationObject.getJSONObject("created_by")
-                var username = createdByObject.getString("username")
+                val username = createdByObject.getString("username")
                 val userImage = createdByObject.getString("image")
-                username = "@$username"
 
                 val post = notificationObject.get("post")
                 val poll = notificationObject.get("poll")

@@ -337,7 +337,7 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
 
         binding.pollDetailsPrivacyIcon.apply {
             visibility =
-                if (poll.isPrivate && poll.username != "@${MyApplication.username}") View.VISIBLE else View.GONE
+                if (poll.isPrivate && poll.username != MyApplication.username) View.VISIBLE else View.GONE
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 tooltipText = "Private poll, only creator can see the stats"
             }
@@ -348,7 +348,7 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
         //view results button
         binding.pollDetailsViewResultsBtn.apply {
             visibility = if (poll.isVoted) {
-                if (poll.isPrivate && poll.username != "@${MyApplication.username}")
+                if (poll.isPrivate && poll.username != MyApplication.username)
                     View.GONE
                 else View.VISIBLE
             } else View.GONE

@@ -51,9 +51,8 @@ class GetCommentsApi {
             for (i in 0 until rootObject.length()) {
                 val commentObject = rootObject.getJSONObject(i)
                 val createdByObject = commentObject.getJSONObject("created_by")
-                var username = createdByObject.getString("username")
+                val username = createdByObject.getString("username")
                 val userImage = createdByObject.getString("image")
-                username = "@$username"
 
                 val commentId = commentObject.getString("id")
                 val parentCommentId = commentObject.getString("parent_id")

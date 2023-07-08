@@ -29,7 +29,7 @@ class DiscussionOptionsBS(
         binding = BsDiscussionOptionsBinding.inflate(inflater, container, false)
 
         if (post != null) {
-            if (post!!.username == "@${MyApplication.username}") {
+            if (post!!.username == MyApplication.username) {
                 binding.optionEditDiscussionTv.visibility = View.VISIBLE
                 binding.optionDeleteDiscussionTv.visibility = View.VISIBLE
             } else {
@@ -37,7 +37,7 @@ class DiscussionOptionsBS(
                 binding.optionDeleteDiscussionTv.visibility = View.GONE
             }
         } else if (poll != null) {
-            if (poll!!.username == "@${MyApplication.username}") {
+            if (poll!!.username == MyApplication.username) {
                 //edit not allowed for polls
                 binding.optionEditDiscussionTv.visibility = View.GONE
                 binding.optionDeleteDiscussionTv.visibility = View.VISIBLE

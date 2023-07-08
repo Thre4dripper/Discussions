@@ -38,7 +38,8 @@ class PollResultsRecyclerAdapter :
                 .placeholder(R.drawable.ic_profile)
                 .into(binding.itemVotedByProfileIv)
 
-            binding.itemVotedByUsernameTv.text = pollVotedByModel.username
+            binding.itemVotedByUsernameTv.text =
+                itemView.context.getString(R.string.username_display, pollVotedByModel.username)
         }
     }
 

@@ -48,9 +48,8 @@ class GetAllPostsApi {
             for (i in 0 until rootObject.length()) {
                 val postObject = rootObject.getJSONObject(i)
                 val createdByObject = postObject.getJSONObject("created_by")
-                var username = createdByObject.getString("username")
+                val username = createdByObject.getString("username")
                 val userImage = createdByObject.getString("image")
-                username = "@$username"
 
                 postsList.add(
                     PostModel(

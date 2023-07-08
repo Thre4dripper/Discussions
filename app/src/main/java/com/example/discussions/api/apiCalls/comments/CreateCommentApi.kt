@@ -51,9 +51,8 @@ class CreateCommentApi {
         fun parseCreateCommentJson(response: String): CommentModel {
             val rootObject = JSONObject(response)
             val createdByObject = rootObject.getJSONObject("created_by")
-            var username = createdByObject.getString("username")
+            val username = createdByObject.getString("username")
             val userImage = createdByObject.getString("image")
-            username = "@$username"
 
             val commentId = rootObject.getString("id")
             val parentCommentId = rootObject.getString("parent_id")
