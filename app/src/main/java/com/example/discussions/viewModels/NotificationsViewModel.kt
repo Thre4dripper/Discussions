@@ -1,6 +1,7 @@
 package com.example.discussions.viewModels
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -58,8 +59,11 @@ class NotificationsViewModel : ViewModel() {
 
                 override fun onError(response: String) {
                     _isNotificationsFetched.value = response
-                    notificationsList.value = mutableListOf()
+                    val alternateList = notificationsList.value?.toMutableList() ?: mutableListOf()
+                    notificationsList.value = alternateList
                     _paginationStatus.value = Constants.PAGE_IDLE
+
+                    Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
                 }
             })
     }

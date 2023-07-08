@@ -1,6 +1,7 @@
 package com.example.discussions.viewModels
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -46,8 +47,11 @@ class HomeViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isDiscussionsFetched.value = response
-                discussions.value = mutableListOf()
+                val alternateList = discussions.value?.toMutableList() ?: mutableListOf()
+                discussions.value = alternateList
                 _paginationStatus.value = Constants.PAGE_IDLE
+
+                Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
             }
         })
     }

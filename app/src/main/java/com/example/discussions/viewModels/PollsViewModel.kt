@@ -1,6 +1,7 @@
 package com.example.discussions.viewModels
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -65,8 +66,11 @@ class PollsViewModel : ViewModel() {
 
             override fun onError(response: String) {
                 _isUserPollsFetched.value = response
-                _userPollsList.value = mutableListOf()
+                val alternateList = _userPollsList.value?.toMutableList() ?: mutableListOf()
+                _userPollsList.value = alternateList
                 _paginationStatus.value = Constants.PAGE_IDLE
+
+                Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
             }
         })
     }
