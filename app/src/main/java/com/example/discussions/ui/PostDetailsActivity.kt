@@ -80,7 +80,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
 
         retryDialog = MaterialAlertDialogBuilder(this)
             .setTitle("Oops!")
-            .setMessage("Error getting profile")
+            .setMessage("Error getting post details.")
             .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
@@ -173,7 +173,8 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             .into(binding.postDetailsUserImage)
 
         //set user name and time
-        binding.postDetailsUsername.text = post.username
+        binding.postDetailsUsername.text =
+            getString(R.string.username_display, post.username)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
         val date = dateFormat.parse(post.createdAt)

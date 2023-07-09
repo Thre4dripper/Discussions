@@ -79,7 +79,37 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             @Suppress("DEPRECATION")
             onBackPressed()
         }
-        getPollDetails(pollId)
+
+        if (MyApplication.isUsernameInitialized())
+            getPollDetails(pollId)
+        else {
+            initUsername()
+        }
+    }
+
+    private fun initUsername() {
+        loadingDialog.show()
+        viewModel.isUsernameFetched.observe(this) {
+            if (it != null) {
+                loadingDialog.dismiss()
+                if (it == Constants.API_SUCCESS) {
+                    getPollDetails(pollId)
+                } else {
+                    //retry dialog configured for retrying to get username
+                    retryDialog = "Oops".initRetryDialog("Error getting user details", {
+                        //positive button
+                        retryDialog.dismiss()
+                        loadingDialog.show()
+                        viewModel.getUsername(this)
+                    }, {
+                        //negative button
+                        setResult(Constants.RESULT_CLOSE)
+                        finish()
+                    })
+                }
+            }
+        }
+        viewModel.getUsername(this)
     }
 
     private fun initPollOptionLayouts() {
@@ -137,20 +167,37 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             .setCancelable(false).show()
         loadingDialog.dismiss()
 
-        retryDialog = MaterialAlertDialogBuilder(this)
-            .setTitle("Oops!")
-            .setMessage("Error getting profile")
+        //retry dialog configured for retrying to get poll details
+        retryDialog = "Oops".initRetryDialog("Error getting poll details", {
+            retryDialog.dismiss()
+            loadingDialog.show()
+            viewModel.getPollFromApi(this, pollId)
+        }, {
+            setResult(Constants.RESULT_CLOSE)
+            finish()
+        })
+        retryDialog.dismiss()
+    }
+
+    /**
+     * RETRY DIALOG BUILDING FUNCTION
+     */
+    private fun String.initRetryDialog(
+        message: String,
+        positiveFn: () -> Unit,
+        negativeFn: () -> Unit
+    ): AlertDialog {
+        return MaterialAlertDialogBuilder(this@PollDetailsActivity)
+            .setTitle(this)
+            .setMessage(message)
             .setCancelable(false)
-            .setPositiveButton("Retry") { dialog, _ ->
-                dialog.dismiss()
-                getPollDetails(pollId)
+            .setPositiveButton("Retry") { _, _ ->
+                positiveFn()
             }
             .setNegativeButton("Cancel") { _, _ ->
-                setResult(Constants.RESULT_CLOSE)
-                finish()
+                negativeFn()
             }
             .show()
-        retryDialog.dismiss()
     }
 
     private fun getPollDetails(pollId: String) {
@@ -236,7 +283,8 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             .into(binding.pollDetailsUserImage)
 
         //set user name and time
-        binding.pollDetailsUsername.text = poll.username
+        binding.pollDetailsUsername.text =
+            getString(R.string.username_display, poll.username)
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
         val date = dateFormat.parse(poll.createdAt)

@@ -19,10 +19,10 @@ class PollResultsViewModel : ViewModel() {
         get() = _votedByList
 
     fun getPollDetails(pollId: String) {
-        //TODO handle all list ,  user list and single list case
         poll =
             DiscussionRepository.discussions.value?.find { it.poll?.pollId == pollId }?.poll?.copy()
-                ?: PollRepository.userPollsList.value?.find { it.poll!!.pollId == pollId }!!.poll!!.copy()
+                ?: PollRepository.userPollsList.value?.find { it.poll!!.pollId == pollId }?.poll?.copy()
+                        ?: PollRepository.singlePoll.value?.copy()!!
         pollQuestion = poll.content
         pollOptions = poll.pollOptions
     }

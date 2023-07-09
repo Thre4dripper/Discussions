@@ -94,7 +94,6 @@ class Constants {
         const val VIEW_TYPE_POST = 100
         const val VIEW_TYPE_POLL = 101
         const val VIEW_TYPE_COMMENT = 102
-        const val VIEW_TYPE_NOTIFICATION = 103
-        const val VIEW_TYPE_LOADING = 105
+        const val VIEW_TYPE_LOADING = 104
     }
 }
