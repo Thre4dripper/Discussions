@@ -27,7 +27,6 @@ class LoginViewModel : ViewModel() {
         val token = LoginStore.getJWTToken(context)
         Log.d(TAG, "checkLoginStatus: ${UserStore.getDeviceToken(context)}")
         if (loginStatus && token != null) {
-            MyApplication.username = UserStore.getUserName(context)!!
             isAuthenticated.postValue(Constants.API_SUCCESS)
         }
     }

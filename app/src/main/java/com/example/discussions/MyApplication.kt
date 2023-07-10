@@ -1,6 +1,7 @@
 package com.example.discussions
 
 import android.app.Application
+import com.example.discussions.store.UserStore
 
 class MyApplication : Application() {
     companion object {
@@ -15,6 +16,7 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        username = UserStore.getUserName(this)!!
         Cloudinary.setupCloudinary(this)
     }
 }
