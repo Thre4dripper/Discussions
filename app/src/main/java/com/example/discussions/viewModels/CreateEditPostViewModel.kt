@@ -79,42 +79,61 @@ class CreateEditPostViewModel : ViewModel() {
                 override fun onSuccess(response: String) {
                     _isPostCreatedOrUpdated.postValue(Constants.API_SUCCESS)
 
-                    //TODO its not necessary that user post is in all posts list
-                    //getting old post from all posts list and user posts list
-                    val oldPost = _discussionsPosts.value?.find { it.post?.postId == postId }!!
-                    val oldUserPost = _userPosts.value?.find { it.post?.postId == postId }!!
+                    //getting old post from all posts list, user posts list and single post
+                    val oldPost = _discussionsPosts.value?.find { it.post?.postId == postId }
+                    val oldUserPost = _userPosts.value?.find { it.post?.postId == postId }
+                    val singlePost = PostRepository.singlePost.value?.let {
+                        if (it.postId == postId) it else null
+                    }
 
-                    //creating copy of the post from all posts list
-                    val newPost = oldPost.post!!.copy(
-                        title = postTitle,
-                        content = postContent,
-                        postImage = postImage,
-                    )
+                    //when post is in all posts list
+                    if (oldPost != null) {
+                        //creating copy of the post from all posts list
+                        val newPost = oldPost.post!!.copy(
+                            title = postTitle,
+                            content = postContent,
+                            postImage = postImage,
+                        )
+                        val newDiscussionPost = oldPost.copy(
+                            post = newPost
+                        )
 
-                    val newDiscussionPost = oldPost.copy(
-                        post = newPost
-                    )
+                        val newAllPosts = _discussionsPosts.value?.toMutableList()
+                        newAllPosts?.set(newAllPosts.indexOf(oldPost), newDiscussionPost)
 
-                    //creating copy of the post from user posts list
-                    val newUserPost = oldUserPost.post!!.copy(
-                        title = postTitle,
-                        content = postContent,
-                        postImage = postImage,
-                    )
+                        _discussionsPosts.postValue(newAllPosts)
+                    }
 
-                    val newUserDiscussionPost = oldUserPost.copy(
-                        post = newUserPost
-                    )
+                    //when post is in user posts list
+                    if (oldUserPost != null) {
+                        //creating copy of the post from user posts list
+                        val newUserPost = oldUserPost.post!!.copy(
+                            title = postTitle,
+                            content = postContent,
+                            postImage = postImage,
+                        )
 
-                    //updating the post in all posts list and user posts list for real time update in the UI
-                    val newAllPosts = _discussionsPosts.value?.toMutableList()
-                    val newUserPosts = _userPosts.value?.toMutableList()
+                        val newUserDiscussionPost = oldUserPost.copy(
+                            post = newUserPost
+                        )
 
-                    newAllPosts?.set(newAllPosts.indexOf(oldPost), newDiscussionPost)
-                    newUserPosts?.set(newUserPosts.indexOf(oldUserPost), newUserDiscussionPost)
+                        val newUserPosts = _userPosts.value?.toMutableList()
+                        newUserPosts?.set(newUserPosts.indexOf(oldUserPost), newUserDiscussionPost)
 
-                    _discussionsPosts.postValue(newAllPosts)
-                    _userPosts.postValue(newUserPosts)
+                        _userPosts.postValue(newUserPosts)
+                    }
+
+                    //when post is in single post
+                    if (singlePost != null) {
+                        //creating copy of the post from single post
+                        val newSinglePost = singlePost.copy(
+                            title = postTitle,
+                            content = postContent,
+                            postImage = postImage,
+                        )
+
+                        PostRepository.singlePost.postValue(newSinglePost)
+                    }
                 }
 
                 override fun onError(response: String) {
