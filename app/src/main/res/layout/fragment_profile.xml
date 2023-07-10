@@ -72,7 +72,7 @@
             <TextView
                 android:id="@+id/profile_username_tv"
                 style="@style/ProfileDescTvStyle"
-                android:text="@{profile.username}"
+                android:text="@{@string/username_display(profile.username)}"
                 android:textColor="@color/light_gray"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toStartOf="@+id/profile_settings_btn"

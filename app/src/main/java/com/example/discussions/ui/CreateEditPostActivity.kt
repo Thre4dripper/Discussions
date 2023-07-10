@@ -100,7 +100,8 @@ class CreateEditPostActivity : AppCompatActivity() {
                         .circleCrop()
                         .into(binding.createPostProfileIv)
 
-                    binding.createPostUsernameTv.text = viewModel.username
+                    binding.createPostUsernameTv.text =
+                        getString(R.string.username_display, viewModel.username)
                 } else {
                     Toast.makeText(this, "Error fetching user data", Toast.LENGTH_SHORT).show()
                 }
