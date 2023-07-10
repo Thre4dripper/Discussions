@@ -79,37 +79,7 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             @Suppress("DEPRECATION")
             onBackPressed()
         }
-
-        if (MyApplication.isUsernameInitialized())
-            getPollDetails(pollId)
-        else {
-            initUsername()
-        }
-    }
-
-    private fun initUsername() {
-        loadingDialog.show()
-        viewModel.isUsernameFetched.observe(this) {
-            if (it != null) {
-                loadingDialog.dismiss()
-                if (it == Constants.API_SUCCESS) {
-                    getPollDetails(pollId)
-                } else {
-                    //retry dialog configured for retrying to get username
-                    retryDialog = "Oops".initRetryDialog("Error getting user details", {
-                        //positive button
-                        retryDialog.dismiss()
-                        loadingDialog.show()
-                        viewModel.getUsername(this)
-                    }, {
-                        //negative button
-                        setResult(Constants.RESULT_CLOSE)
-                        finish()
-                    })
-                }
-            }
-        }
-        viewModel.getUsername(this)
+        getPollDetails(pollId)
     }
 
     private fun initPollOptionLayouts() {
@@ -167,37 +137,21 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             .setCancelable(false).show()
         loadingDialog.dismiss()
 
-        //retry dialog configured for retrying to get poll details
-        retryDialog = "Oops".initRetryDialog("Error getting poll details", {
-            retryDialog.dismiss()
-            loadingDialog.show()
-            viewModel.getPollFromApi(this, pollId)
-        }, {
-            setResult(Constants.RESULT_CLOSE)
-            finish()
-        })
-        retryDialog.dismiss()
-    }
-
-    /**
-     * RETRY DIALOG BUILDING FUNCTION
-     */
-    private fun String.initRetryDialog(
-        message: String,
-        positiveFn: () -> Unit,
-        negativeFn: () -> Unit
-    ): AlertDialog {
-        return MaterialAlertDialogBuilder(this@PollDetailsActivity)
-            .setTitle(this)
-            .setMessage(message)
+        //retry dialog
+        retryDialog = MaterialAlertDialogBuilder(this)
+            .setTitle("Oops!")
+            .setMessage("Error getting profile")
             .setCancelable(false)
-            .setPositiveButton("Retry") { _, _ ->
-                positiveFn()
+            .setPositiveButton("Retry") { dialog, _ ->
+                dialog.dismiss()
+                getPollDetails(pollId)
             }
             .setNegativeButton("Cancel") { _, _ ->
-                negativeFn()
+                setResult(Constants.RESULT_CLOSE)
+                finish()
             }
             .show()
+        retryDialog.dismiss()
     }
 
     private fun getPollDetails(pollId: String) {

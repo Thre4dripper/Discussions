@@ -5,12 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.discussions.Constants
-import com.example.discussions.MyApplication
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.PollModel
 import com.example.discussions.repositories.DiscussionRepository
 import com.example.discussions.repositories.PollRepository
-import com.example.discussions.repositories.ProfileRepository
 
 class PollDetailsViewModel : ViewModel() {
     private val TAG = "PollDetailsViewModel"
@@ -30,23 +28,6 @@ class PollDetailsViewModel : ViewModel() {
     private var _isPollDeleted = MutableLiveData<String?>(null)
     val isPollDeleted: LiveData<String?>
         get() = _isPollDeleted
-
-    private var _isUsernameFetched = MutableLiveData<String>(null)
-    val isUsernameFetched: LiveData<String>
-        get() = _isUsernameFetched
-
-    fun getUsername(context: Context) {
-        ProfileRepository.getUsernameAndImage(context, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                ProfileRepository.map[Constants.USERNAME]?.let { MyApplication.username = it }
-                _isUsernameFetched.postValue(Constants.API_SUCCESS)
-            }
-
-            override fun onError(response: String) {
-                _isUsernameFetched.postValue(response)
-            }
-        })
-    }
 
     fun isPollInAlreadyFetched(pollId: String): Boolean {
         //check if poll is in poll list
