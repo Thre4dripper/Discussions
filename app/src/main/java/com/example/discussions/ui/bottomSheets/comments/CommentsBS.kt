@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.discussions.Constants
 import com.example.discussions.R
@@ -77,8 +78,23 @@ class CommentsBS(
             })
         }
 
+        paginatedFlow()
         //setting up swipe to refresh
-        binding.commentsSwipeLayout.setOnRefreshListener { getAllComments() }
+        binding.commentsSwipeLayout.setOnRefreshListener {
+            //reset all the variables
+            viewModel.refreshAllComments()
+
+            //fetching all comments again
+            if (CommentControllers.commentType == Constants.COMMENT_TYPE_POST) viewModel.getComments(
+                requireContext(), id, null
+            )
+            else if (CommentControllers.commentType == Constants.COMMENT_TYPE_POLL) viewModel.getComments(
+                requireContext(), null, id
+            )
+        }
+
+        //reset all the variables
+        viewModel.refreshAllComments()
         //getting all comments
         getAllComments()
 
@@ -162,6 +178,30 @@ class CommentsBS(
         }
     }
 
+    private fun paginatedFlow() {
+        binding.commentsRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
+                val lastVisibleItemPosition =
+                    (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
+
+                if (viewModel.hasMoreComments.value!!
+                    && viewModel.paginationStatus.value == Constants.PAGE_IDLE
+                    && lastVisibleItemPosition != RecyclerView.NO_POSITION
+                    // api call when 4 items are left to be seen
+                    && lastVisibleItemPosition >= commentsAdapter.itemCount - Constants.COMMENTS_PAGING_SIZE / 2
+                ) {
+                    if (CommentControllers.commentType == Constants.COMMENT_TYPE_POST) viewModel.getComments(
+                        requireContext(), id, null
+                    )
+                    else if (CommentControllers.commentType == Constants.COMMENT_TYPE_POLL) viewModel.getComments(
+                        requireContext(), null, id
+                    )
+                }
+            }
+        })
+    }
+
     private fun getAllComments() {
         //resetting fetch comment type on refresh all comments
         CommentControllers.commentType = type
@@ -170,7 +210,9 @@ class CommentsBS(
         viewModel.commentsList.observe(viewLifecycleOwner) {
             if (it != null) {
                 commentsAdapter.submitList(it) {
-                    if (CommentsViewModel.commentsScrollToTop) binding.commentsRv.scrollToPosition(0)
+                    if (CommentsViewModel.commentsScrollToTop) {
+                        binding.commentsRv.scrollToPosition(0)
+                    }
                 }
                 //hiding all loading
                 binding.commentsSwipeLayout.isRefreshing = false
