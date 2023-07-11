@@ -18,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
 import com.example.discussions.MyApplication
@@ -143,7 +145,8 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
-                getPollDetails(pollId)
+                loadingDialog.show()
+                viewModel.getPollFromApi(this, pollId)
             }
             .setNegativeButton("Cancel") { _, _ ->
                 setResult(Constants.RESULT_CLOSE)
@@ -202,8 +205,14 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
         }
 
         //set swipe refresh
-        binding.pollDetailsSwipeRefresh.setOnRefreshListener { getComments(poll) }
+        binding.pollDetailsSwipeRefresh.setOnRefreshListener {
+            commentsViewModel.refreshAllComments()
+            commentsViewModel.getComments(this, null, poll.pollId)
+        }
+
         //get comments
+        paginatedFlow()
+        commentsViewModel.refreshAllComments()
         getComments(poll)
 
         //setting all the comment observers that will restore comment type every time new comment is added or edited
@@ -411,6 +420,25 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
     private fun likePoll(isLiked: Boolean, btnLikeStatus: Boolean) {
         pollLikeStatus = isLiked
         likeBtnStatus = btnLikeStatus
+    }
+
+    private fun paginatedFlow() {
+        binding.pollDetailsCommentsRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
+                val lastVisibleItemPosition =
+                    (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
+
+                if (commentsViewModel.hasMoreComments.value!!
+                    && commentsViewModel.paginationStatus.value == Constants.PAGE_IDLE
+                    && lastVisibleItemPosition != RecyclerView.NO_POSITION
+                    // api call when 4 items are left to be seen
+                    && lastVisibleItemPosition >= commentsAdapter.itemCount - Constants.COMMENTS_PAGING_SIZE / 2
+                ) {
+                    commentsViewModel.getComments(this@PollDetailsActivity, null, pollId)
+                }
+            }
+        })
     }
 
     private fun getComments(poll: PollModel) {

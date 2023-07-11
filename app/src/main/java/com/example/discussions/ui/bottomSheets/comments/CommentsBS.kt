@@ -78,7 +78,6 @@ class CommentsBS(
             })
         }
 
-        paginatedFlow()
         //setting up swipe to refresh
         binding.commentsSwipeLayout.setOnRefreshListener {
             //reset all the variables
@@ -93,6 +92,7 @@ class CommentsBS(
             )
         }
 
+        paginatedFlow()
         //reset all the variables
         viewModel.refreshAllComments()
         //getting all comments

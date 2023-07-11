@@ -12,6 +12,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.Target
 import com.example.discussions.Constants
@@ -84,7 +86,8 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
-                getPostDetails(postId)
+                loadingDialog.show()
+                viewModel.getPostFromApi(this, postId)
             }
             .setNegativeButton("Cancel") { _, _ ->
                 setResult(Constants.RESULT_CLOSE)
@@ -139,8 +142,14 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
         }
 
         //set swipe refresh
-        binding.postDetailsSwipeRefresh.setOnRefreshListener { getComments(post) }
+        binding.postDetailsSwipeRefresh.setOnRefreshListener {
+            commentsViewModel.refreshAllComments()
+            commentsViewModel.getComments(this, post.postId, null)
+        }
+
         //get comments
+        paginatedFlow()
+        commentsViewModel.refreshAllComments()
         getComments(post)
 
         //setting all the comment observers that will restore comment type every time new comment is added or edited
@@ -266,6 +275,25 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
     private fun likePost(isLiked: Boolean, btnLikeStatus: Boolean) {
         postLikeStatus = isLiked
         likeBtnStatus = btnLikeStatus
+    }
+
+    private fun paginatedFlow() {
+        binding.postDetailsCommentsRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                val layoutManager: RecyclerView.LayoutManager? = recyclerView.layoutManager
+                val lastVisibleItemPosition =
+                    (layoutManager as LinearLayoutManager?)!!.findLastVisibleItemPosition()
+
+                if (commentsViewModel.hasMoreComments.value!!
+                    && commentsViewModel.paginationStatus.value == Constants.PAGE_IDLE
+                    && lastVisibleItemPosition != RecyclerView.NO_POSITION
+                    // api call when 4 items are left to be seen
+                    && lastVisibleItemPosition >= commentsAdapter.itemCount - Constants.COMMENTS_PAGING_SIZE / 2
+                ) {
+                    commentsViewModel.getComments(this@PostDetailsActivity, postId, null)
+                }
+            }
+        })
     }
 
     private fun getComments(post: PostModel) {
