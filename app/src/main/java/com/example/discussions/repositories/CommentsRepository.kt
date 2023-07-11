@@ -255,6 +255,7 @@ class CommentsRepository {
                     c.count,
                     c.next,
                     c.previous,
+                    c.type,
                     c.parentCommentId,
                     c.comment,
                     c.username,

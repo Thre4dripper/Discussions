@@ -10,24 +10,96 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.ItemCommentBinding
 import com.example.discussions.models.CommentModel
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+import java.util.TimeZone
 
 class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
     ListAdapter<CommentModel, ViewHolder>(CommentsDiffCallback()) {
 
+    companion object {
+        const val COMMENTS_TYPE_COMMENT = Constants.VIEW_TYPE_COMMENT
+        private const val COMMENTS_TYPE_LOADING = Constants.VIEW_TYPE_LOADING
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_comment, parent, false)
-        return CommentViewHolder(view)
+        return when (viewType) {
+            COMMENTS_TYPE_COMMENT -> {
+                val binding = DataBindingUtil.inflate<ItemCommentBinding>(
+                    LayoutInflater.from(parent.context),
+                    R.layout.item_comment,
+                    parent,
+                    false
+                )
+                CommentViewHolder(binding.root)
+            }
+
+            COMMENTS_TYPE_LOADING -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.pagination_loader, parent, false)
+                LoadingViewHolder(view)
+            }
+
+            else -> null!!
+        }
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val comment = getItem(position)
-        (holder as CommentViewHolder).bind(holder.binding, comment, itemCount, commentInterface)
+        if (holder.itemViewType == COMMENTS_TYPE_COMMENT) {
+            (holder as CommentViewHolder).bind(
+                holder.binding,
+                comment,
+                itemCount,
+                commentInterface
+            )
+        }
+    }
+
+    override fun submitList(list: MutableList<CommentModel>?) {
+        val loaderList = afterSubmitList(list?.toMutableList())
+        super.submitList(loaderList)
+    }
+
+    override fun submitList(list: MutableList<CommentModel>?, commitCallback: Runnable?) {
+        val loaderList = afterSubmitList(list?.toMutableList())
+        super.submitList(loaderList, commitCallback)
+    }
+
+    private fun afterSubmitList(list: MutableList<CommentModel>?): MutableList<CommentModel>? {
+        list?.removeIf { it.type == COMMENTS_TYPE_LOADING }
+
+        if (list?.size != 0 && list?.last()?.next != null) {
+            list.add(
+                CommentModel(
+                    "",
+                    0,
+                    null,
+                    null,
+                    type = COMMENTS_TYPE_LOADING,
+                    null,
+                    "",
+                    "",
+                    "",
+                    "",
+                    false,
+                    0,
+                    mutableListOf()
+                )
+            )
+        }
+
+        return list
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        val comment = getItem(position)
+        return comment.type
     }
 
     class CommentViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -125,6 +197,8 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
             return (dp * context.resources.displayMetrics.density).toInt()
         }
     }
+
+    inner class LoadingViewHolder(itemView: View) : ViewHolder(itemView)
 
     class CommentsDiffCallback : DiffUtil.ItemCallback<CommentModel>() {
         override fun areItemsTheSame(oldItem: CommentModel, newItem: CommentModel) =

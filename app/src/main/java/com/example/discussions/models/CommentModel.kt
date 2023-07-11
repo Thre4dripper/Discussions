@@ -5,6 +5,7 @@ data class CommentModel(
     val count: Int,
     val next: String?,
     val previous: String?,
+    val type: Int,
     val parentCommentId: String?,
     val comment: String,
     val username: String,

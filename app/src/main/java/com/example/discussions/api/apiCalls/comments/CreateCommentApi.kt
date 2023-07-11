@@ -3,6 +3,7 @@ package com.example.discussions.api.apiCalls.comments
 import android.content.Context
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.CommentModel
@@ -66,6 +67,7 @@ class CreateCommentApi {
                 0,
                 null,
                 null,
+                CommentsRecyclerAdapter.COMMENTS_TYPE_COMMENT,
                 if (parentCommentId == "null") null else parentCommentId,
                 comment,
                 username,

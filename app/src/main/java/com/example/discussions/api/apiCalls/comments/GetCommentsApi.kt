@@ -5,6 +5,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.discussions.Constants
+import com.example.discussions.adapters.CommentsRecyclerAdapter
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.CommentModel
@@ -95,8 +96,9 @@ class GetCommentsApi {
                     CommentModel(
                         commentId,
                         count,
-                        next,
-                        previous,
+                        if (next == "null") null else next,
+                        if (previous == "null") null else previous,
+                        CommentsRecyclerAdapter.COMMENTS_TYPE_COMMENT,
                         if (parentCommentId == "null") null else parentCommentId,
                         comment,
                         username,
