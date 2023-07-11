@@ -269,7 +269,7 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
     }
 
     private fun getComments(post: PostModel) {
-        //todo handle get comments in detail activities
+        //TODO handle get comments in detail activities
         //resetting fetch comment type on refresh all comments
         CommentControllers.commentType = Constants.COMMENT_TYPE_POST
 

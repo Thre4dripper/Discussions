@@ -11,7 +11,7 @@ class Constants {
         const val DISCUSSIONS_PAGING_SIZE = 10
         const val POSTS_PAGING_SIZE = 8
         const val POLLS_PAGING_SIZE = 8
-        const val COMMENTS_PAGING_SIZE = 10
+        const val COMMENTS_PAGING_SIZE = 8
         const val NOTIFICATIONS_PAGING_SIZE = 15
         const val PROFILE_POSTS_PAGING_SIZE = 15
 

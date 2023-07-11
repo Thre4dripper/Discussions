@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.format.DateUtils
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.ProgressBar
@@ -432,7 +431,6 @@ class PollDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
                 binding.pollDetailsCommentsLottie.visibility = View.GONE
                 binding.pollDetailsCommentsRv.visibility = View.VISIBLE
 
-                Log.d(TAG, "getComments: $it")
                 //when empty list is loaded
                 if (it.isEmpty()) {
                     binding.pollDetailsCommentsLottie.visibility = View.VISIBLE
