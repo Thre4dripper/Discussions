@@ -2,6 +2,9 @@ package com.example.discussions.models
 
 data class CommentModel(
     val commentId: String,
+    val count: Int,
+    val next: String?,
+    val previous: String?,
     val parentCommentId: String?,
     val comment: String,
     val username: String,

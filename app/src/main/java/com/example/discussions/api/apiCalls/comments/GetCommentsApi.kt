@@ -1,7 +1,10 @@
 package com.example.discussions.api.apiCalls.comments
 
 import android.content.Context
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.discussions.Constants
 import com.example.discussions.api.ApiRoutes
 import com.example.discussions.api.ResponseCallback
 import com.example.discussions.models.CommentModel
@@ -11,16 +14,20 @@ import org.json.JSONObject
 class GetCommentsApi {
     companion object {
         private const val TAG = "GetCommentsApi"
+        var queue: RequestQueue? = null
 
         fun getCommentsJson(
             context: Context,
             token: String,
+            page: Int,
             postId: String?,
             pollId: String?,
             callback: ResponseCallback
         ) {
-            val queue = Volley.newRequestQueue(context)
-            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.COMMENTS_GET_COMMENTS}"
+            queue = Volley.newRequestQueue(context)
+            val url = "${ApiRoutes.BASE_URL}${ApiRoutes.COMMENTS_GET_COMMENTS}" +
+                    "?limit=${Constants.COMMENTS_PAGING_SIZE}" +
+                    "&offset=${(page - 1) * Constants.COMMENTS_PAGING_SIZE}"
 
             val body = JSONObject()
             if (postId != null) {
@@ -29,7 +36,7 @@ class GetCommentsApi {
                 body.put("poll_id", pollId)
             }
 
-            val request = object : CustomRequest(Method.POST, url, body, { response ->
+            val request = object : JsonObjectRequest(Method.POST, url, body, { response ->
                 callback.onSuccess(response.toString())
             }, { err ->
                 callback.onError(err.toString())
@@ -41,15 +48,35 @@ class GetCommentsApi {
                 }
             }
 
-            queue.add(request)
+            request.tag = TAG
+            queue!!.add(request)
         }
 
-        fun parseCommentsJson(response: String): MutableList<CommentModel> {
-            val rootObject = JSONArray(response)
-            val commentsList = mutableListOf<CommentModel>()
+        fun cancelGetRequest() {
+            queue?.cancelAll(TAG)
+        }
 
-            for (i in 0 until rootObject.length()) {
-                val commentObject = rootObject.getJSONObject(i)
+        fun parseCommentsJson(json: String): MutableList<CommentModel> {
+            val rootObject = JSONObject(json)
+            val resultsArray = rootObject.getJSONArray("results")
+
+            val count = rootObject.getInt("count")
+            val next = rootObject.getString("next")
+            val previous = rootObject.getString("previous")
+
+            return recursiveParse(resultsArray, count, next, previous)
+        }
+
+        private fun recursiveParse(
+            json: JSONArray,
+            count: Int,
+            next: String?,
+            previous: String?
+        ): MutableList<CommentModel> {
+            val commentsList = mutableListOf<CommentModel>()
+            for (i in 0 until json.length()) {
+                val commentObject = json.getJSONObject(i)
+
                 val createdByObject = commentObject.getJSONObject("created_by")
                 val username = createdByObject.getString("username")
                 val userImage = createdByObject.getString("image")
@@ -62,11 +89,14 @@ class GetCommentsApi {
                 val likes = commentObject.getInt("like_count")
 
                 val repliesList =
-                    parseCommentsJson(commentObject.getJSONArray("replies").toString())
+                    recursiveParse(commentObject.getJSONArray("replies"), 0, null, null)
 
                 commentsList.add(
                     CommentModel(
                         commentId,
+                        count,
+                        next,
+                        previous,
                         if (parentCommentId == "null") null else parentCommentId,
                         comment,
                         username,
@@ -78,7 +108,6 @@ class GetCommentsApi {
                     )
                 )
             }
-
             return commentsList
         }
     }

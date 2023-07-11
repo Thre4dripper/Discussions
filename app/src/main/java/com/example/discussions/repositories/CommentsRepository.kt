@@ -11,21 +11,32 @@ class CommentsRepository {
     companion object {
         private const val TAG = "CommentsRepository"
         val commentsList = MutableLiveData<MutableList<CommentModel>?>(null)
+        val hasMoreComments = MutableLiveData<Boolean>(false)
 
         fun getAllComments(
-            context: Context, postId: String?, pollId: String?, callback: ResponseCallback
+            context: Context,
+            page: Int,
+            postId: String?,
+            pollId: String?,
+            callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
 
             GetCommentsApi.getCommentsJson(
                 context,
                 token,
+                page,
                 postId,
                 pollId,
                 object : ResponseCallback {
                     override fun onSuccess(response: String) {
-                        val comments = GetCommentsApi.parseCommentsJson(response)
-                        commentsList.postValue(comments.toMutableList())
+                        val newCommentsList = GetCommentsApi.parseCommentsJson(response)
+                        val oldCommentsList = commentsList.value ?: mutableListOf()
+                        val updatedCommentsList = oldCommentsList.toMutableList()
+                        updatedCommentsList.addAll(newCommentsList)
+
+                        commentsList.value = updatedCommentsList
+                        hasMoreComments.value = newCommentsList.isNotEmpty()
                         callback.onSuccess(response)
                     }
 
@@ -48,6 +59,10 @@ class CommentsRepository {
                     }
                 })
 
+        }
+
+        fun cancelGetRequest() {
+            GetCommentsApi.cancelGetRequest()
         }
 
         fun createComment(
@@ -237,6 +252,9 @@ class CommentsRepository {
             for (c in comments) {
                 val newComment = CommentModel(
                     c.commentId,
+                    c.count,
+                    c.next,
+                    c.previous,
                     c.parentCommentId,
                     c.comment,
                     c.username,

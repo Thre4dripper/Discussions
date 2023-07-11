@@ -63,6 +63,9 @@ class CreateCommentApi {
 
             return CommentModel(
                 commentId,
+                0,
+                null,
+                null,
                 if (parentCommentId == "null") null else parentCommentId,
                 comment,
                 username,

@@ -1,6 +1,7 @@
 package com.example.discussions.viewModels
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,24 +38,53 @@ class CommentsViewModel : ViewModel() {
     val isCommentLikedChanged: LiveData<String?>
         get() = _isCommentLikedChanged
 
+    /**
+     * PAGINATION STUFF
+     */
+    private var commentsPage = 0
+    val hasMoreComments = CommentsRepository.hasMoreComments
+
+    private var _paginationStatus = MutableLiveData(Constants.PAGE_IDLE)
+    val paginationStatus: LiveData<String?>
+        get() = _paginationStatus
+
+
     companion object {
         var commentsScrollToTop = false
     }
 
     fun getComments(context: Context, postId: String?, pollId: String?) {
         _isCommentsFetched.value = null
-        CommentsRepository.commentsList.value = null
-        commentsScrollToTop = true
-        CommentsRepository.getAllComments(context, postId, pollId, object : ResponseCallback {
-            override fun onSuccess(response: String) {
-                _isCommentsFetched.value = Constants.API_SUCCESS
-            }
+        _paginationStatus.value = Constants.PAGE_LOADING
 
-            override fun onError(response: String) {
-                _isCommentsFetched.value = response
-                commentsList.value = null
-            }
-        })
+        commentsPage++
+        CommentsRepository.getAllComments(
+            context,
+            commentsPage,
+            postId,
+            pollId,
+            object : ResponseCallback {
+                override fun onSuccess(response: String) {
+                    _isCommentsFetched.value = Constants.API_SUCCESS
+                    _paginationStatus.value = Constants.PAGE_IDLE
+                }
+
+                override fun onError(response: String) {
+                    _isCommentsFetched.value = response
+                    val alternateList = commentsList.value?.toMutableList() ?: mutableListOf()
+                    commentsList.value = alternateList
+                    _paginationStatus.value = Constants.PAGE_IDLE
+
+                    Toast.makeText(context, response, Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
+    fun refreshAllComments() {
+        CommentsRepository.cancelGetRequest()
+        CommentsRepository.commentsList.value = null
+        commentsPage = 0
+        _paginationStatus.value = Constants.PAGE_IDLE
     }
 
     fun createComment(
@@ -65,7 +95,9 @@ class CommentsViewModel : ViewModel() {
         content: String
     ) {
         _isCommentAdded.value = null
-        commentsScrollToTop = false
+
+        //scroll to top only when new comment is added
+        commentsScrollToTop = commentId == null
         CommentsRepository.createComment(
             context,
             postId,
