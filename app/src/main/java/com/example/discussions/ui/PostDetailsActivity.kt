@@ -30,6 +30,7 @@ import com.example.discussions.models.PostModel
 import com.example.discussions.ui.bottomSheets.DiscussionOptionsBS
 import com.example.discussions.ui.bottomSheets.comments.CommentControllers
 import com.example.discussions.ui.bottomSheets.comments.OptionsBS
+import com.example.discussions.ui.home.HomeActivity
 import com.example.discussions.viewModels.CommentsViewModel
 import com.example.discussions.viewModels.PostDetailsViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -193,6 +194,21 @@ class PostDetailsActivity : AppCompatActivity(), CommentInterface, DiscussionMen
             System.currentTimeMillis(),
             DateUtils.MINUTE_IN_MILLIS
         )
+
+        //open profile on user image or name click
+        binding.postDetailsUserImage.setOnClickListener {
+            openProfile(post.username)
+        }
+
+        binding.postDetailsUsername.setOnClickListener {
+            openProfile(post.username)
+        }
+    }
+
+    private fun openProfile(username: String) {
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.putExtra(Constants.USERNAME, username)
+        startActivity(intent)
     }
 
     private fun setPostData(post: PostModel) {
