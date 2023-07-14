@@ -49,6 +49,10 @@ class ProfileFragment : Fragment(), PostClickInterface {
         viewModel = ViewModelProvider(requireActivity())[ProfileViewModel::class.java]
         postsViewModel = ViewModelProvider(requireActivity())[PostsViewModel::class.java]
 
+        //username from which profile is to be fetched
+        val username =
+            requireActivity().intent.getStringExtra(Constants.USERNAME) ?: MyApplication.username
+
         //for launching profile image zoom activity
         binding.profileIv.setOnClickListener {
             val intent = Intent(requireContext(), ZoomImageActivity::class.java)
@@ -60,14 +64,20 @@ class ProfileFragment : Fragment(), PostClickInterface {
         }
 
         //for launching edit details activity
-        binding.editProfileBtn.setOnClickListener {
-            val intent = Intent(requireContext(), EditDetailsActivity::class.java)
-            startActivity(intent)
+        binding.editProfileBtn.apply {
+            setOnClickListener {
+                val intent = Intent(requireContext(), EditDetailsActivity::class.java)
+                startActivity(intent)
+            }
+            visibility = if (username == MyApplication.username) View.VISIBLE else View.GONE
         }
 
         //for launching settings activity
-        binding.profileSettingsBtn.setOnClickListener {
-            settingsCallback.launch(Intent(requireContext(), SettingsActivity::class.java))
+        binding.profileSettingsBtn.apply {
+            setOnClickListener {
+                settingsCallback.launch(Intent(requireContext(), SettingsActivity::class.java))
+            }
+            visibility = if (username == MyApplication.username) View.VISIBLE else View.GONE
         }
 
         //for launching user posts activity
@@ -80,9 +90,6 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
         binding.lifecycleOwner = this
 
-        //username from which profile is to be fetched
-        val username =
-            requireActivity().intent.getStringExtra(Constants.USERNAME) ?: MyApplication.username
 
         initDialogs(username)
         initPostsRecyclerView()
