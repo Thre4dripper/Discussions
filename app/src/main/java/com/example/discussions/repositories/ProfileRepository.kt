@@ -96,10 +96,10 @@ class ProfileRepository {
         }
 
         fun getProfile(
-            context: Context, callback: ResponseCallback
+            context: Context, username: String, callback: ResponseCallback
         ) {
             val token = LoginStore.getJWTToken(context)!!
-            ProfileApi.getProfileJson(context, token, object : ResponseCallback {
+            ProfileApi.getProfileJson(context, token, username, object : ResponseCallback {
                 override fun onSuccess(response: String) {
                     profileDataModel = ProfileApi.parseProfileJson(response)
                     callback.onSuccess("Success")

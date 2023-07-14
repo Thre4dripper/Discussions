@@ -13,12 +13,15 @@ class ProfileApi {
         private const val TAG = "ProfileApi"
 
         fun getProfileJson(
-            context: Context, token: String, callback: ResponseCallback
+            context: Context, token: String, username: String, callback: ResponseCallback
         ) {
             val queue = Volley.newRequestQueue(context)
             val url = "${ApiRoutes.BASE_URL}${ApiRoutes.USER_PROFILE}"
 
-            val request = object : JsonObjectRequest(Method.GET, url, null, { response ->
+            val body = JSONObject()
+            body.put("username", username)
+
+            val request = object : JsonObjectRequest(Method.POST, url, body, { response ->
                 callback.onSuccess(response.toString())
             }, { error ->
                 callback.onError(error.toString())

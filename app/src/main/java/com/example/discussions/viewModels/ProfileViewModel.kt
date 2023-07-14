@@ -16,12 +16,11 @@ class ProfileViewModel : ViewModel() {
     val isProfileFetched: LiveData<String?>
         get() = _isProfileFetched
 
-    fun getProfile(context: Context) {
+    fun getProfile(context: Context, username: String) {
         if (_isProfileFetched.value == Constants.API_SUCCESS) return
         else _isProfileFetched.value = null
 
-
-        ProfileRepository.getProfile(context, object : ResponseCallback {
+        ProfileRepository.getProfile(context, username, object : ResponseCallback {
             override fun onSuccess(response: String) {
                 profileDataModel = ProfileRepository.profileDataModel!!
                 _isProfileFetched.postValue(Constants.API_SUCCESS)

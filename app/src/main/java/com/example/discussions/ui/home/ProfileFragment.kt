@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.discussions.Constants
+import com.example.discussions.MyApplication
 import com.example.discussions.adapters.ProfileRecyclerAdapter
 import com.example.discussions.adapters.interfaces.PostClickInterface
 import com.example.discussions.databinding.FragmentProfileBinding
@@ -79,24 +80,28 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
         binding.lifecycleOwner = this
 
-        initDialogs()
+
+        val username =
+            requireActivity().intent.getStringExtra(Constants.USERNAME) ?: MyApplication.username
+
+        initDialogs(username)
         initPostsRecyclerView()
         initSettingsCallback()
 
         //swipe to refresh
         binding.profileSwipeLayout.setOnRefreshListener {
             viewModel.refreshProfile()
-            getProfile()
+            getProfile(username)
         }
 
         getProfileObserver()
         paginatedUserPostsFlow()
         getUserPostsObserver()
-        getProfile()
+        getProfile(username)
         return binding.root
     }
 
-    private fun initDialogs() {
+    private fun initDialogs(username: String) {
         val dialogBinding = LoadingDialogBinding.inflate(layoutInflater)
         loadingDialog = MaterialAlertDialogBuilder(requireContext()).setView(dialogBinding.root)
             .setCancelable(false).show()
@@ -108,7 +113,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
             .setCancelable(false)
             .setPositiveButton("Retry") { dialog, _ ->
                 dialog.dismiss()
-                getProfile()
+                getProfile(username)
             }
             .setNegativeButton("Cancel") { _, _ ->
                 requireActivity().setResult(Constants.RESULT_CLOSE)
@@ -155,9 +160,9 @@ class ProfileFragment : Fragment(), PostClickInterface {
         }
     }
 
-    private fun getProfile() {
+    private fun getProfile(username: String) {
         loadingDialog.show()
-        viewModel.getProfile(requireContext())
+        viewModel.getProfile(requireContext(), username)
     }
 
     private fun paginatedUserPostsFlow() {
