@@ -1,6 +1,7 @@
 package com.example.discussions.adapters
 
 import android.content.Context
+import android.content.Intent
 import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.example.discussions.R
 import com.example.discussions.adapters.interfaces.CommentInterface
 import com.example.discussions.databinding.ItemCommentBinding
 import com.example.discussions.models.CommentModel
+import com.example.discussions.ui.home.HomeActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -129,11 +131,25 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
             binding.verticalLine3.visibility =
                 if (commentModel.replies.isNotEmpty()) View.VISIBLE else View.GONE
 
-            binding.itemCommentUserImage.layoutParams.width = avatarSize
-            binding.itemCommentUserImage.layoutParams.height = avatarSize
+            binding.itemCommentUserImage.apply {
+                layoutParams.width = avatarSize
+                layoutParams.height = avatarSize
 
-            binding.itemCommentUserName.text =
-                itemView.context.getString(R.string.username_display, commentModel.username)
+                //open profile on click
+                setOnClickListener {
+                    openProfile(binding, commentModel)
+                }
+            }
+
+            binding.itemCommentUserName.apply {
+                text =
+                    itemView.context.getString(R.string.username_display, commentModel.username)
+
+                //open profile on click
+                setOnClickListener {
+                    openProfile(binding, commentModel)
+                }
+            }
             binding.itemCommentContent.text = commentModel.comment
 
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
@@ -195,6 +211,16 @@ class CommentsRecyclerAdapter(private var commentInterface: CommentInterface) :
 
         private fun dpToFloat(context: Context, dp: Float): Int {
             return (dp * context.resources.displayMetrics.density).toInt()
+        }
+
+        /**
+         * function to open the profile of the user by clicking on the user image or username
+         */
+        private fun openProfile(binding: ItemCommentBinding, commentModel: CommentModel) {
+            val context = binding.root.context
+            val intent = Intent(context, HomeActivity::class.java)
+            intent.putExtra(Constants.USERNAME, commentModel.username)
+            context.startActivity(intent)
         }
     }
 
