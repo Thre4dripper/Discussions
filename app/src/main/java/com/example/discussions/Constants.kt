@@ -44,6 +44,10 @@ class Constants {
         //for intents
         const val ZOOM_IMAGE_URL = "imageUrl"
 
+        //home activity modes
+        const val HOME_ACTIVITY_HOME_MODE = "home_mode"
+        const val HOME_ACTIVITY_PROFILE_MODE = "profile_mode"
+
         //for posts modes
         const val POST_MODE = "post_mode"
         const val MODE_CREATE_POST = "create_post"

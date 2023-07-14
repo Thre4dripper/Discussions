@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -19,6 +20,7 @@ class HomeActivity : AppCompatActivity() {
     private val TAG = "HomeActivity"
 
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var mode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,8 +35,31 @@ class HomeActivity : AppCompatActivity() {
             bottomSheet.show(supportFragmentManager, bottomSheet.tag)
         }
 
+        //get username from intent
+        val username = intent.getStringExtra(Constants.USERNAME)
+
+        //when username is not null, it means that the activity is opened for profile
+        mode = if (username != null) {
+            hideBottomNavigation()
+            Constants.HOME_ACTIVITY_PROFILE_MODE
+        } else {
+            showBottomNavigation()
+            Constants.HOME_ACTIVITY_HOME_MODE
+        }
         initPermissions()
         initFragments()
+    }
+
+    private fun hideBottomNavigation() {
+        binding.bottomNavigationView.visibility = View.GONE
+        binding.bottomAppBar.visibility = View.GONE
+        binding.homeFab.visibility = View.GONE
+    }
+
+    private fun showBottomNavigation() {
+        binding.bottomNavigationView.visibility = View.VISIBLE
+        binding.bottomAppBar.visibility = View.VISIBLE
+        binding.homeFab.visibility = View.VISIBLE
     }
 
     private fun initPermissions() {
@@ -46,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
 
     private var requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if(!isGranted) {
+            if (!isGranted) {
                 when {
                     //this should handle the case when user has denied the permission but not permanently
                     shouldShowRequestPermissionRationale(android.Manifest.permission.POST_NOTIFICATIONS) -> {
@@ -91,10 +116,16 @@ class HomeActivity : AppCompatActivity() {
         val notificationFragment = NotificationFragment()
         val profileFragment = ProfileFragment()
 
-        //initial fragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, discussFragment, Constants.TAG_DISCUSS_FRAGMENT)
-            .commit()
+        //initial fragment according to the mode
+        if (mode == Constants.HOME_ACTIVITY_HOME_MODE) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, discussFragment, Constants.TAG_DISCUSS_FRAGMENT)
+                .commit()
+        } else if (mode == Constants.HOME_ACTIVITY_PROFILE_MODE) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, profileFragment, Constants.TAG_DISCUSS_FRAGMENT)
+                .commit()
+        }
 
         //bottom navigation listener
         binding.bottomNavigationView.setOnItemSelectedListener {
@@ -150,6 +181,14 @@ class HomeActivity : AppCompatActivity() {
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
+
+        //back functionality is different for profile mode
+        if (mode == Constants.HOME_ACTIVITY_PROFILE_MODE) {
+            setResult(Constants.RESULT_CLOSE)
+            finish()
+            return
+        }
+
         val fragment = supportFragmentManager.findFragmentByTag(Constants.TAG_DISCUSS_FRAGMENT)
 
         //close app only when it is on discuss fragment

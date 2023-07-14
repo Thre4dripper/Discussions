@@ -31,6 +31,7 @@ import com.example.discussions.models.DiscussionModel
 import com.example.discussions.models.PollModel
 import com.example.discussions.models.PostModel
 import com.example.discussions.ui.ZoomImageActivity
+import com.example.discussions.ui.home.HomeActivity
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -160,12 +161,14 @@ class DiscussionsRecyclerAdapter(
                 .circleCrop()
                 .into(binding.itemPostUserImage)
 
-            //navigating to zoom image activity on clicking profile image
+            //navigating to profile activity on clicking profile image
             binding.itemPostUserImage.setOnClickListener {
-                val context = binding.itemPostUserImage.context
-                val intent = Intent(context, ZoomImageActivity::class.java)
-                intent.putExtra(Constants.ZOOM_IMAGE_URL, postModel.userImage)
-                context.startActivity(intent)
+                openProfile(binding, postModel)
+            }
+
+            //navigating to profile activity on clicking username
+            binding.itemPostUsername.setOnClickListener {
+                openProfile(binding, postModel)
             }
 
             binding.itemPostUsername.text =
@@ -263,6 +266,19 @@ class DiscussionsRecyclerAdapter(
                 postClickInterface.onPostClick(postModel.postId)
             }
         }
+
+        /**
+         * Function to open the profile of the user who posted the post
+         */
+        private fun openProfile(
+            binding: ItemDiscussionPostBinding,
+            postModel: PostModel
+        ) {
+            val context = binding.root.context
+            val intent = Intent(context, HomeActivity::class.java)
+            intent.putExtra(Constants.USERNAME, postModel.username)
+            context.startActivity(intent)
+        }
     }
 
     inner class PollViewHolder(itemView: View) : ViewHolder(itemView) {
@@ -328,12 +344,14 @@ class DiscussionsRecyclerAdapter(
                 .circleCrop()
                 .into(binding.itemPollUserImage)
 
-            //navigating to zoom image activity on clicking profile image
+            //navigating to profile activity on clicking profile image
             binding.itemPollUserImage.setOnClickListener {
-                val context = binding.itemPollUserImage.context
-                val intent = Intent(context, ZoomImageActivity::class.java)
-                intent.putExtra(Constants.ZOOM_IMAGE_URL, pollModel.userImage)
-                context.startActivity(intent)
+                openProfile(binding, pollModel)
+            }
+
+            //navigate to profile activity on clicking username
+            binding.itemPollUsername.setOnClickListener {
+                openProfile(binding, pollModel)
             }
 
             binding.itemPollUsername.text =
@@ -511,6 +529,19 @@ class DiscussionsRecyclerAdapter(
                 pollClickInterface.onPollClick(pollModel.pollId)
             }
 
+        }
+
+        /**
+         * Function to open the profile of the user who posted the post
+         */
+        private fun openProfile(
+            binding: ItemDiscussionPollBinding,
+            pollModel: PollModel
+        ) {
+            val context = binding.root.context
+            val intent = Intent(context, HomeActivity::class.java)
+            intent.putExtra(Constants.USERNAME, pollModel.username)
+            context.startActivity(intent)
         }
     }
 

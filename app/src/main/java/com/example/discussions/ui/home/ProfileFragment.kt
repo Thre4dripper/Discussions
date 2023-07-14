@@ -80,7 +80,7 @@ class ProfileFragment : Fragment(), PostClickInterface {
 
         binding.lifecycleOwner = this
 
-
+        //username from which profile is to be fetched
         val username =
             requireActivity().intent.getStringExtra(Constants.USERNAME) ?: MyApplication.username
 
