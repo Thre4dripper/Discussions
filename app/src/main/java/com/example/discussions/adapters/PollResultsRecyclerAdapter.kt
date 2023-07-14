@@ -1,5 +1,6 @@
 package com.example.discussions.adapters
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +9,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.example.discussions.Constants
 import com.example.discussions.R
 import com.example.discussions.databinding.ItemPollVotedByBinding
 import com.example.discussions.models.PollVotedByModel
+import com.example.discussions.ui.home.HomeActivity
 
 class PollResultsRecyclerAdapter :
     ListAdapter<PollVotedByModel, ViewHolder>(
@@ -38,8 +41,33 @@ class PollResultsRecyclerAdapter :
                 .placeholder(R.drawable.ic_profile)
                 .into(binding.itemVotedByProfileIv)
 
-            binding.itemVotedByUsernameTv.text =
-                itemView.context.getString(R.string.username_display, pollVotedByModel.username)
+
+            // open profile
+            binding.itemVotedByProfileIv.setOnClickListener {
+                openProfile(binding, pollVotedByModel)
+            }
+
+            binding.itemVotedByUsernameTv.apply {
+                text =
+                    itemView.context.getString(R.string.username_display, pollVotedByModel.username)
+                // open profile
+                setOnClickListener {
+                    openProfile(binding, pollVotedByModel)
+                }
+            }
+        }
+
+        /**
+         * function to open the profile of the user by clicking on the user image or username
+         */
+        private fun openProfile(
+            binding: ItemPollVotedByBinding,
+            pollVotedByModel: PollVotedByModel
+        ) {
+            val context = binding.root.context
+            val intent = Intent(context, HomeActivity::class.java)
+            intent.putExtra(Constants.USERNAME, pollVotedByModel.username)
+            context.startActivity(intent)
         }
     }
 
