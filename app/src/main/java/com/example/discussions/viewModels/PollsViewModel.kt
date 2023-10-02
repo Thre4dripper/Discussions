@@ -119,7 +119,7 @@ class PollsViewModel : ViewModel() {
         pollsScrollToTop = false
 
         //changing vote status to voting, this will trigger progress bar in recycler view
-        val votedPoll = _allPollsList.value?.find { it.poll!!.pollId == pollId }
+        val votedPoll = _allPollsList.value?.find { it.poll?.pollId == pollId }
         val votedPollIndex: Int
         val newPollsList: MutableList<DiscussionModel>
 
@@ -132,7 +132,7 @@ class PollsViewModel : ViewModel() {
             _allPollsList.value = newPollsList
         }
 
-        val votedUserPoll = _userPollsList.value?.find { it.poll!!.pollId == pollId }
+        val votedUserPoll = _userPollsList.value?.find { it.poll?.pollId == pollId }
         val votedUserPollIndex: Int
         val newUserPollsList: MutableList<DiscussionModel>
 
